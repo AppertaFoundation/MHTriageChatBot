@@ -1,3 +1,7 @@
+# Summary
+
+A sample bot forked from the Microsoft Bot Framework samples provided.
+
 # LUIS Bot Sample
 
 A sample bot integrated with a LUIS.ai application for understanding natural language.
