@@ -1,4 +1,4 @@
-# Description
+# LUIS Bot Sample - Modified from Microsoft Sample intelligence-LUIS
 
 A sample bot forked from the Microsoft Bot Framework samples provided. The only alterations made to the sample were to the environmental variables, as described below.
 
