@@ -1,6 +1,8 @@
 # echobot - forked from Microft Bot Samples.
 
-A sample bot forked from fuselabs (https://github.com/fuselabs/echobot) in order to test deployment to several messaging services. This bot echoes back to the user what they says, preceded by "You said".
+A sample bot forked from fuselabs (https://github.com/fuselabs/echobot). A simple bot that echoes back to the user what they have said, preceded by "You said".
+
+The purpose of using this sample was to test deployment to a variety of major messaging services.
 
 A MICROSOFT_APP_ID and MICROSOFT_APP_PASSWORD were obtained by registering the bot with the Microsoft Bot Framework (https://dev.botframework.com).
 
