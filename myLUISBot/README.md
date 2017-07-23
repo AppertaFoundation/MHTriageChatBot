@@ -1,6 +1,26 @@
-# Summary
+# Description
 
-A sample bot forked from the Microsoft Bot Framework samples provided.
+A sample bot forked from the Microsoft Bot Framework samples provided. The only alterations made to the sample were to the environmental variables, as described below.
+
+## Alterations to sample code
+
+MICROSOFT_APP_ID and MICROSOFT_APP_PASSWORD environmental variables were added to the sample file. These were obtained by registering the bot on the Microsoft Bot Framework Portal. 
+
+The LUIS_MODEL_URL was obtained following training and testing in the Microsoft Cognitive Service LUIS. Training data was provided by the sample.
+
+## Deployment
+
+A Web App was created in the Microsoft Azure portal and the deployment source set to this GitHub project. 
+
+In the Microsoft bot Framework Portal, the bot was connected to a Twilio (SMS) channel. A Twilio account had prevously been set up an configured as per the Microsoft docs provided in order to perform this connection.
+
+## SMS Deployment
+
+The notes on channel support listed in the README for the sample (see below) state that some of the features of the sample are not supported for SMS. The intention of deploying this bot to SMS was in order to clarify specifically which features are and are not supported by SMS.
+
+The majority of other channels are fully supported, with the exception of email.
+
+Tests demonstrated that all features but those requiring MMS messaging are supported on SMS. Further investigation revealed that Twilio does not support MMS in the UK, and that it supports MMS only within the US and Canada.
 
 # LUIS Bot Sample
 
