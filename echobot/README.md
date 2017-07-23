@@ -1,3 +1,20 @@
+# echobot - forked from Microft Bot Samples.
+
+A sample bot forked from fuselabs (https://github.com/fuselabs/echobot) in order to test deployment to several messaging services. This bot echoes back to the user what they says, preceded by "You said".
+
+A MICROSOFT_APP_ID and MICROSOFT_APP_PASSWORD were obtained by registering the bot with the Microsoft Bot Framework (https://dev.botframework.com).
+
+Deployment was via the instructions given in the README.md for the original sample (see below).
+
+The bot was connected and tested on the following channels following the instructions given in the linked docs:
+
+- Web Chat (https://docs.microsoft.com/en-gb/bot-framework/channel-connect-webchat)
+- Skype 
+- Twilio SMS (https://docs.microsoft.com/en-gb/bot-framework/channel-connect-twilio)
+- Facebook Messenger (https://docs.microsoft.com/en-gb/bot-framework/channel-connect-facebook)
+
+The README.md for the sample from which this was forked is below.
+
 # echobot
 A sample bot for getting started with Bot Framework
 
