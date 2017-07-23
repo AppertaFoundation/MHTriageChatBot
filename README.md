@@ -7,3 +7,5 @@ The following folders are test bots forked from Microsoft samples intended to te
 - core-MultiDialogs
 - echobot
 - myLUISBot
+
+The mhtBot is some preliminary work for the mh triage bot itself.
