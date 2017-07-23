@@ -4,9 +4,9 @@ Forked from the sample bot core-MultiDialogs in Microsft/BotBuilder-Samples (htt
 
 The MICROSOFT_APP_ID and the MICROSOFT_APP_PASSWORD were obtained by registering the bot with the Microsoft Bot Framework (https://dev.botframework.com).
 
-Deployment was via the 'Deploy to Azure' button in the sample bot's README rather than by the method described for the other test bots.
+Deployment was via the 'Deploy to Azure' button (found in the next section) in the sample bot's README rather than by the method described for the other test bots.
 
-The purpose of deploying this bot was to test its capabilities on Twilio SMS. The limitations listed in the sample's README stated that its features are not supported on SMS. Because Twilio does not support MMS outwith the US and Canada, I suspected that only those features requiring MMS would be unsupported and connecting it to Twilio demonstrated this to be true. 
+The purpose of deploying this bot was to test its capabilities on Twilio SMS. The limitations listed in the sample's README stated that its features are not supported on SMS. Because Twilio does not support MMS outwith the US and Canada, I suspected that only those features requiring MMS would be unsupported and connecting it to Twilio demonstrated this to be true. When the bot attempted to send content requiring MMS, an error message appeared on the Bot Framework console stating that "Number +.... has not been enabled for MMS".
 
 The README for the sample bot is below.
 
