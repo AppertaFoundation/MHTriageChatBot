@@ -14,7 +14,7 @@ A Web App was created in the Microsoft Azure portal and the deployment source se
 
 In the Microsoft bot Framework Portal, the bot was connected to a Twilio (SMS) channel. A Twilio account had prevously been set up an configured as per the Microsoft docs provided in order to perform this connection.
 
-## SMS Deployment
+## SMS Test
 
 The notes on channel support listed in the README for the sample (see below) state that some of the features of the sample are not supported for SMS. The intention of deploying this bot to SMS was in order to clarify specifically which features are and are not supported by SMS.
 
