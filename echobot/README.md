@@ -1,5 +1,7 @@
 # echobot - forked from Microft Bot Samples.
 
+Testing changes on branch.
+
 A sample bot forked from fuselabs (https://github.com/fuselabs/echobot). A simple bot that echoes back to the user what they have said, preceded by "You said".
 
 The purpose of using this sample was to test deployment to a variety of major messaging services.
