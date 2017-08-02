@@ -1,5 +1,9 @@
 # echobot - forked from Microft Bot Samples.
 
+# This is a chatbot that echoes back to the user what they have said, preceded by "You said".
+
+![Alt text](/relative/path/to/echoBot_screenshot.png?raw=true "EchoBot")
+
 Testing changes on branch.
 
 A sample bot forked from fuselabs (https://github.com/fuselabs/echobot). A simple bot that echoes back to the user what they have said, preceded by "You said".
