@@ -4,17 +4,15 @@
 var builder = require('botbuilder');
 var restify = require('restify');
 
-// Setup restify Server
-var server = restify.createServer();
-server.listen(process.env.port || process.env.PORT || 3978, function() {
-	console.log('%s listening to %s', server.name, server.url);
-});
-
 // Create connector and listen for messages
 var connector = new builder.ChatConnector({
 	appId: process.env.MICROSOFT_APP_ID,
 	appPassword: process.env.MICROSOFT_APP_PASSWORD
 });
+
+// Setup restify Server
+var server = restify.createServer();
+
 server.post('/api/messages', connector.listen());
 
 // Serve a static web page
@@ -54,6 +52,10 @@ bot.dialog('gad7', require('./gad7.js'));
 // log any bot errors to the console
 bot.on('error', function(e){
 	console.log('An error occured', e);
+});
+
+server.listen(process.env.port || process.env.PORT || 3978, function() {
+	console.log('%s listening to %s', server.name, server.url);
 });
 
 
