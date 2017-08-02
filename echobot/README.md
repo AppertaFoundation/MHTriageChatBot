@@ -2,7 +2,9 @@
 
 # This is a chatbot that echoes back to the user what they have said, preceded by "You said".
 
-![Alt text](echoBot_screenshot.png?raw=true "EchoBot")
+![Alt text](echoBot_screenshot.jpg?raw=true "EchoBot")
+
+<img src = "echoBot_screenshot.jpg" width="48" height="24">
 
 Testing changes on branch.
 
