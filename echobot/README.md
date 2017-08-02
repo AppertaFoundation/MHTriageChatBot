@@ -10,12 +10,12 @@ Above: Echobot as rendered on Facebook Messenger.
 
 # Installing
 
-##Prerequisties
+## Prerequisties
 
 1. Install [node.js and npm](https://nodejs.org/en/)
 2. Install the [Microsoft Bot Framework](https://github.com/Microsoft/BotFramework-Emulator/releases)
 
-##Installation
+## Installation
 
 1. Clone this repository
 2. In terminal, run `npm install` 
@@ -48,12 +48,12 @@ It is also possible to embed the code into a website without revealing the secre
 
 More detailed instructions on connecting a bot to a web chat may be found in the relevant [docs](https://docs.microsoft.com/en-gb/bot-framework/channel-connect-webchat)
 
-###Skype
+### Skype
 
 1. In the [Microsoft Bot Framework](https://dev.botframework.com/), select the bot and navigate to the *Channels* section and click *Edit* beside Skype.
 2. Click *Get Embed Code* and copy and paste this onto your website.
 
-###Facebook Messenger
+### Facebook Messenger
 
 1. Go to [Facebook](https://www.facebook.com) and create a page.
 2. Copy and save the Page ID from the page's *About* page.
@@ -66,7 +66,7 @@ More detailed instructions on connecting a bot to a web chat may be found in the
 
 The above is adapted from the relevant [docs](https://docs.microsoft.com/en-gb/bot-framework/channel-connect-facebook), which contain further details.
 
-###Twilio SMS
+### Twilio SMS
 
 1. Create a [Twilio](https://www.twilio.com) account
 2. Create a Twilio App with the Request URL set to *https://sms.botframework.com/api/sms*. Go to: Console -> All Products and Services -> Programmable SMS -> Tools 
