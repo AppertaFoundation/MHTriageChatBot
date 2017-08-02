@@ -72,7 +72,7 @@ The above is adapted from the relevant [docs](https://docs.microsoft.com/en-gb/b
 2. Create a Twilio App with the Request URL set to *https://sms.botframework.com/api/sms*. Go to: Console -> All Products and Services -> Programmable SMS -> Tools 
 3. Get or add a phone number: Console -> All Products and Services -> Phone Numbers. Note down this **phone number**.
 4. For the relevant Phone Number, configure the *Voice* and *Messaging* to the created Twilio App. 
-4. In the App, leave **Voice* *Request URL* blank and set the *Request URL* for *Messaging* to https://sms.botframework.com/api/sms
+4. In the App, leave *Voice* *Request URL* blank and set the *Request URL* for *Messaging* to https://sms.botframework.com/api/sms
 5. From the Console Dashboard, get the **Account SID** and **Auth Token**
 6. Put the **Phone Number**, **Account SID**, and **Auth Token** to the Twilio Bot Credentials in the [Bot Framework](https://dev.botframework.com/).
 
