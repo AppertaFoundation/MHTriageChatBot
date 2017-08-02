@@ -7,9 +7,9 @@ var often = 'Nearly every day';
 var score = 0;
 
 module.exports = [
-	/*function(session){
+	function(session){
 		builder.Prompts.text(session, 'Welcome to the PHQ-9. We are now going to ask you some questions related to how bothered you\'ve been over the past 2 weeks by the problems described. Is this ok?');
-	}, */
+	},
 	function(session){
 		builder.Prompts.choice(session, 'How often have you had little interest or pleasure in doing things?', [session.gettext(none), session.gettext(several), session.gettext(more), session.gettext(often)]);
 	},

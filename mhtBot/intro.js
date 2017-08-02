@@ -7,7 +7,7 @@ var DialogLabels = {
 };
 
 module.exports = [
-	/*function(session){
+	function(session){
 		session.send('Hello!');
 		builder.Prompts.text(session, 'What has led you to seek an assessment for depression/anxiety?');
 	}, 
@@ -19,7 +19,7 @@ module.exports = [
 	},
 	function(session){
 		builder.Prompts.text(session, 'Do you have a care plan and, if so, is it working for you?');
-	},*/
+	},
 	function(session){
 		builder.Prompts.choice(session, 'Are you struggling more with anxiety or with depression?', [DialogLabels.Anxiety, DialogLabels.Depression],
 		{
