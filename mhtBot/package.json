@@ -10,6 +10,7 @@
   "dependencies": {
     "botbuilder": "^3.8.4",
     "restify": "^5.0.0",
+    "restify": "^4.0.0",
     "serve-static-restify": "^1.0.0"
   },
   "devDependencies": {},
