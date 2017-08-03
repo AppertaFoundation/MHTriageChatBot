@@ -1,5 +1,5 @@
 {
-  "name": "sambot2",
+  "name": "mhtBot",
   "version": "1.0.0",
   "main": "app.js",
   "scripts": {
@@ -9,8 +9,9 @@
   "license": "ISC",
   "dependencies": {
     "botbuilder": "^3.8.4",
-    "restify": "^5.0.0"
+    "restify": "^5.0.0",
+    "serve-static-restify": "^1.0.0"
   },
   "devDependencies": {},
-  "description": ""
+  "description": "This is some preliminary work for the MH triage chatbot."
 }

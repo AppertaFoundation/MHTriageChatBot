@@ -10,6 +10,12 @@ var connector = new builder.ChatConnector({
 	appPassword: process.env.MICROSOFT_APP_PASSWORD
 });
 
+var bot = new builder.UniversalBot(connector, [
+	function(session){
+		session.beginDialog('intro');
+	}
+]);
+
 // Sends greeting message
 bot.on('conversationUpdate', function(message){
 	if(message.membersAdded){
@@ -38,13 +44,6 @@ var DialogLabels = {
 	PHQ9: 'phq9',
 	GAD7: 'gad7'
 };
-
-var bot = new builder.UniversalBot(connector, [
-	function(session){
-		session.beginDialog('intro');
-	}
-]);
-
 
 
 bot.dialog('intro', require('./intro.js'));
