@@ -10,6 +10,18 @@ var connector = new builder.ChatConnector({
 	appPassword: process.env.MICROSOFT_APP_PASSWORD
 });
 
+// Sends greeting message
+bot.on('conversationUpdate', function(message){
+	if(message.membersAdded){
+		message.membersAdded.forEach(function(identity){
+			if(identity.id === message.address.bot.id){
+				var reply = new builder.Message().address(message.address).text('Hi, I\'m MaxBot. I hope we\'ll be able to work together to help you.');
+				bot.send(reply);
+			}
+		});
+	}
+});
+
 // Setup restify Server
 var server = restify.createServer();
 
@@ -33,17 +45,7 @@ var bot = new builder.UniversalBot(connector, [
 	}
 ]);
 
-// Sends greeting message
-bot.on('conversationUpdate', function(message){
-	if(message.membersAdded){
-		message.membersAdded.forEach(function(identity){
-			if(identity.id === message.address.bot.id){
-				var reply = new builder.Message().address(message.address).text('Hi, I\'m SamBot. I hope we\'ll be able to work together to help you.');
-				bot.send(reply);
-			}
-		});
-	}
-});
+
 
 bot.dialog('intro', require('./intro.js'));
 bot.dialog('phq9', require('./phq9.js'));
