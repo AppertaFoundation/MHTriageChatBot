@@ -18,6 +18,7 @@ module.exports = [
 		//session.dialogData.lastResponse = results.response;
 		score += getScore(results.response.entity);
 		session.send('You said \'%s\' and your new score is %i', results.response.entity, score);
+		
 		next();
 	},
 	function(session){
