@@ -123,7 +123,7 @@ bot.dialog('phq9', [
 					var entity = entities[0].type;
 					console.log("Entity recognised is %s", entities[0].type);
 			// END OF SEPARATE FUNCTION
-					session.send(getBotResponse(entity));
+					//session.send(getBotResponse(entity));	// uncomment out when have fixed the problems associated with asychronous function
 
 					console.log("Score for phq0 q2 is %i", getScore(entity));
 					score+=getScore(entity);
@@ -152,7 +152,7 @@ bot.dialog('phq9', [
 					var entity = entities[0].type;
 					console.log("Entity recognised is %s", entities[0].type);
 			// END OF SEPARATE FUNCTION
-					session.send(getBotResponse(entity));
+					//session.send(getBotResponse(entity));	// uncomment out when have fixed the problems associated with asychronous functio
 
 					console.log("Score for phq0 q2 is %i", getScore(entity));
 					score+=getScore(entity);
@@ -181,7 +181,7 @@ bot.dialog('phq9', [
 					var entity = entities[0].type;
 					console.log("Entity recognised is %s", entities[0].type);
 			// END OF SEPARATE FUNCTION
-					session.send(getBotResponse(entity));
+					//session.send(getBotResponse(entity));	// uncomment out when have fixed the problems associated with asychronous functio
 
 					console.log("Score for phq0 q2 is %i", getScore(entity));
 					score+=getScore(entity);
@@ -210,7 +210,7 @@ bot.dialog('phq9', [
 					var entity = entities[0].type;
 					console.log("Entity recognised is %s", entities[0].type);
 			// END OF SEPARATE FUNCTION
-					session.send(getBotResponse(entity));
+					//session.send(getBotResponse(entity));	// uncomment out when have fixed the problems associated with asychronous functio
 
 					console.log("Score for phq0 q2 is %i", getScore(entity));
 					score+=getScore(entity);
@@ -239,7 +239,7 @@ bot.dialog('phq9', [
 					var entity = entities[0].type;
 					console.log("Entity recognised is %s", entities[0].type);
 			// END OF SEPARATE FUNCTION
-					session.send(getBotResponse(entity));
+					//session.send(getBotResponse(entity));	// uncomment out when have fixed the problems associated with asychronous functio
 
 					console.log("Score for phq0 q2 is %i", getScore(entity));
 					score+=getScore(entity);
@@ -268,7 +268,7 @@ bot.dialog('phq9', [
 					var entity = entities[0].type;
 					console.log("Entity recognised is %s", entities[0].type);
 			// END OF SEPARATE FUNCTION
-					session.send(getBotResponse(entity));
+					//session.send(getBotResponse(entity));	// uncomment out when have fixed the problems associated with asychronous functio
 
 					console.log("Score for phq0 q2 is %i", getScore(entity));
 					score+=getScore(entity);
@@ -297,7 +297,7 @@ bot.dialog('phq9', [
 					var entity = entities[0].type;
 					console.log("Entity recognised is %s", entities[0].type);
 			// END OF SEPARATE FUNCTION
-					session.send(getBotResponse(entity));
+					//session.send(getBotResponse(entity));	// uncomment out when have fixed the problems associated with asychronous functio
 
 					console.log("Score for phq0 q2 is %i", getScore(entity));
 					score+=getScore(entity);
@@ -326,7 +326,7 @@ bot.dialog('phq9', [
 					var entity = entities[0].type;
 					console.log("Entity recognised is %s", entities[0].type);
 			// END OF SEPARATE FUNCTION
-					session.send(getBotResponse(entity));
+					//session.send(getBotResponse(entity));	// uncomment out when have fixed the problems associated with asychronous functio
 
 					console.log("Score for phq0 q2 is %i", getScore(entity));
 					score+=getScore(entity);
