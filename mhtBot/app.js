@@ -51,11 +51,6 @@ var score = 0;
 
 bot.dialog('introQs', [
 	function(session, args, next){
-		console.log("Entering introductory questions");
-		session.send('First, I\'m going to ask you a few questions.');
-		next();
-	}, 
-	function(session, args, next){
 		builder.Prompts.text(session, 'What has led you to seek an assessment for depression/anxiety?');
 	}, 
 	function(session){
@@ -71,7 +66,7 @@ bot.dialog('introQs', [
 		session.send("Thank you for answering these questions");
 		next();
 	},
-	function(session, args, next){
+	function(session){
 		session.beginDialog('phq9');
 	}
 ]);
@@ -79,7 +74,7 @@ bot.dialog('introQs', [
 bot.dialog('phq9', [
 	function (session, args, next){
 		console.log('Entering dialog phq9');
-		builder.Prompts.text("I'm now going to ask you some questions about how you've felt over the past two weeks");
+		session.send("I'm now going to ask you some questions about how you've felt over the past two weeks");
 		next();
 	},
 	function(session){
