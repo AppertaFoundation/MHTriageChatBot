@@ -25,7 +25,7 @@ foreach($userID as $userID){
 	$username = getUsernameFromID($conn, $userID);
 ?>
 
-	<form action = "seeUserDetails.php" method="post">
+	<form action = "singleUserDetails.php" method="post">
 	<input type="hidden" name="userID" value="<?php echo $userID;?>">
 	<button type="submit"><?php echo $username?></button>
 	</form>
