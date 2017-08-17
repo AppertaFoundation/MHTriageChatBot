@@ -142,12 +142,26 @@ function getQuestionFromQuestionNo($conn, $questionNo){
 			$userResponse = getResponseFromID($conn, $responseID);
 			$questionNo = getQuestionNoFromResponseID($conn, $responseID);
 			$question = getQuestionFromQuestionNo($conn, $questionNo);
+			$tsql = "SELECT Question FROM AllQuestions WHERE QuestionNo = $questionNo";
+			$getResults = sqlsrv_query($conn, $tsql);
+			if($getResults == False){
+				if(($errors = sqlsrv_errors())!=null){
+					formatErrors($errors);
+				}
+				die("Error in eecuting getQuestionNoFromResponseID() query");
+			}
+			echo "getResponseFromID() query successfully executed";
+			while($row = sqlsrv_fetch_array($getResults, SQLSRV_FETCH_ASSOC)){
+				$result = $row['Question'];
+			}
+			return $result;
+}
 	?>
 		<tr>
 			<td><?php echo $questionNo ?></td>
 			<td><?php echo $question?></td>
 			<td><?php echo $userResponse ?></td>
-			
+
 		</tr>
 	<?php
 		}

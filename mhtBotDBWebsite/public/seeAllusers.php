@@ -1,7 +1,24 @@
 <?php
 // Includes
-include('includes/connect.php');
+//include('includes/connect.php');
 include('includes/functions.php');
+
+?>
+
+<?php
+//https://docs.microsoft.com/en-us/azure/sql-database/sql-database-connect-query-php
+// Connection to Azure Database
+
+$serverName = "mhtbotdb.database.windows.net/public/seeAllUsers";
+$connectionOptions = array(
+	"Database" => "mhtBotDB",
+	"Uid" => "mng17@mhtbotdb",
+	"PWD" => "1PlaneFifth"
+);
+
+
+// Establishes the connection
+$conn = sqlsrv_connect($serverName, $connectionOptions);
 
 ?>
 
