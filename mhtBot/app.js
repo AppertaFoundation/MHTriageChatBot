@@ -295,10 +295,10 @@ function processUserResponse(session, results, questionNo){
 		}
 
 		// Calculating time at which bot messaged
-		var botTimeFormatted = getBotMsgTime(session);
+		var botTimeFormatted = new Date(getBotMsgTime(session));
 
 		// Calculating time at which user responded
-		var userTimeFormatted = getUserMsgTime(session);
+		var userTimeFormatted = new Date(getUserMsgTime(session));
 
 		// Calculating time lapse between question raised and question answered
 		var timeLapseHMS = getTimeLapse(session);
