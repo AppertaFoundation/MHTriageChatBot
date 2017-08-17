@@ -117,7 +117,12 @@ var connector = new builder.ChatConnector({
 	appPassword: process.env.MICROSOFT_APP_PASSWORD
 });
 
-var bot = new builder.UniversalBot(connector);
+var bot = new builder.UniversalBot(connector, [
+	function(session){
+		session.send('Hi, I\'m MaxBot. I hope we\'ll be able to work together to help you');
+		session.beginDialog('greeting');
+	}
+]);
 
 server.post('/api/messages', connector.listen());
 
@@ -142,7 +147,7 @@ var userID = 3;
 //=============
 
 // Sends greeting message
-bot.on('conversationUpdate', function(message){
+/*bot.on('conversationUpdate', function(message){
 	if(message.membersAdded){
 		message.membersAdded.forEach(function(identity){
 			if(identity.id === message.address.bot.id){
@@ -154,7 +159,7 @@ bot.on('conversationUpdate', function(message){
 			}
 		});
 	}
-});
+});*/
 
 bot.dialog('greeting', [
 	function(session, args, next){
