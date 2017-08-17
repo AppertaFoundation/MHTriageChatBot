@@ -1,6 +1,6 @@
 <?php
 // Includes
-include '../includes/includes/connect.php';
+include '../includes/connect.php';
 include '../includes/functions.php';
 
 //$userID = $_POST["userID"];
