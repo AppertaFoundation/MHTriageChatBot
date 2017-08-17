@@ -73,6 +73,7 @@ echo "UserID of $username is " . getUserID($conn, $username);
 
 <button type="button">Change Content</button>
 
+<!--
 <script>
 $('button').on('click', function(e){
 	e.preventDefault();
@@ -86,6 +87,7 @@ $('button').on('click', function(e){
 });
 
 </script>
+-->
 
 </body>
 
