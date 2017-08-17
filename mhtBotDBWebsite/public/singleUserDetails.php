@@ -3,12 +3,12 @@
 include '../includes/connect.php';
 include '../includes/functions.php';
 
-$userID = $_POST["userID"];
+//$userID = $_POST["userID"];
 ?>
 
 <?php
 // Test Values
-//$userID = 3;
+$userID = 3;
 $username = getUsernameFromID($conn, $userID);
 ?>
 
@@ -114,9 +114,9 @@ function getTimeLapseFromQID($conn, $questionID){
 			<td><?php echo $questionNo; ?></td>
 			<td><?php echo $question; ?></td>
 			<td><?php echo $userResponse; ?></td>
-			<td><?php echo $botTime; ?></td>
-			<td><?php echo $userTime; ?></td>
-			<td><?php echo $timeLapse; ?></td>
+			<td><?php echo date_format($botTime, 'Y-m-d H:i:s'); ?></td>
+			<td><?php echo date_format($userTime, 'Y-m-d H:i:s'); ?></td>
+			<td><?php echo date_format($timeLapse, 'H:i:s'); ?></td>
 
 		</tr>
 	<?php
