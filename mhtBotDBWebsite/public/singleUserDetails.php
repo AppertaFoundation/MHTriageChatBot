@@ -142,7 +142,7 @@ function getQuestionFromQuestionNo($conn, $questionNo){
 			$userResponse = getResponseFromID($conn, $responseID);
 			$questionNo = getQuestionNoFromResponseID($conn, $responseID);
 			$question = getQuestionFromQuestionNo($conn, $questionNo);
-			$tsql = "SELECT Question FROM AllQuestions WHERE QuestionNo = $questionNo";
+			$tsql = "SELECT BotMsgTime, UserMsgTime, TimeLapse FROM TimeStamps WHERE QuestionID = $responseID";
 			$getResults = sqlsrv_query($conn, $tsql);
 			if($getResults == False){
 				if(($errors = sqlsrv_errors())!=null){

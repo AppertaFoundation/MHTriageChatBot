@@ -1,25 +1,7 @@
 <?php
 // Includes
-//include('includes/connect.php');
-include('includes/functions.php');
-
-?>
-
-<?php
-//https://docs.microsoft.com/en-us/azure/sql-database/sql-database-connect-query-php
-// Connection to Azure Database
-
-$serverName = "mhtbotdb.database.windows.net/public/seeAllUsers";
-$connectionOptions = array(
-	"Database" => "mhtBotDB",
-	"Uid" => "mng17@mhtbotdb",
-	"PWD" => "1PlaneFifth"
-);
-
-
-// Establishes the connection
-$conn = sqlsrv_connect($serverName, $connectionOptions);
-
+include 'includes/connect.php';
+include 'includes/functions.php';
 ?>
 
 <!DOCTYPE html>
@@ -29,9 +11,12 @@ $conn = sqlsrv_connect($serverName, $connectionOptions);
 	<title>Database Access for Mental Health Triage Chatbot</title>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 	</head>
+<body>
 <header>
 <h1>All Users</h1>
 </header>
+
+<main>
 
 <?php 
 $userID = getAllUserIDs($conn);
@@ -47,4 +32,8 @@ foreach($userID as $userID){
 <?php
 }
 ?>
+
+</main>
+</body>
+</html>
 
