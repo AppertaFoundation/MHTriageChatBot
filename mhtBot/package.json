@@ -9,9 +9,13 @@
   "license": "ISC",
   "dependencies": {
     "botbuilder": "^3.8.4",
+    "dateformat": "^2.0.0",
     "moment": "^2.18.1",
+    "node-fetch": "^1.7.2",
+    "request": "^2.81.0",
     "restify": "^4.0.0",
-    "serve-static-restify": "^1.0.0"
+    "serve-static-restify": "^1.0.0",
+    "tedious": "^2.0.0"
   },
   "devDependencies": {},
   "description": "This is some preliminary work for the MH triage chatbot.",
