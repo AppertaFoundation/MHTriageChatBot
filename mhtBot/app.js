@@ -149,7 +149,7 @@ bot.on('conversationUpdate', function(message){
 				//session.send("Hello");
 				var reply = new builder.Message().address(message.address).text('Hi, I\'m MaxBot. I hope we\'ll be able to work together to help you.');
 				//bot.send(reply);
-				bot.beginDialog(message.address, 'introQs');
+				bot.beginDialog(message.address, 'greeting');
 				//bot.beginDialog(message.address, 'introQs');
 			}
 		});
