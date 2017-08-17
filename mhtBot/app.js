@@ -121,7 +121,7 @@ var bot = new builder.UniversalBot(connector, [
 	function(session){
 		//session.send('Hi, I\'m MaxBot. I hope we\'ll be able to work together to help you');
 		//queryDatabase();
-		session.beginDialog('greeting');
+		//session.beginDialog('greeting');
 	}
 ]);
 
@@ -311,27 +311,6 @@ function processUserResponse(session, results, questionNo){
 
 
 bot.dialog('introQs', [
-	function(session, args, next){
-
-		request = new Request(
-			"INSERT INTO Conversations (UserID) VALUES (" + mysql.escape(session.dialogData.userID) + ");" +
-			"SELECT @@identity",
-			function(err, rowCount, rows){
-				if(!err){
-					console.log("New conversationID successfully created");
-				}else{
-					console.log("Error in creating new conversationID: " + err);
-				}
-		});
-
-		request.on('row', function(column){
-			console.log("ConversationID created is: " + column[0].value);
-			conversationID = column[0].value;
-		});
-
-		connection.execSql(request);
-		next();
-	},
 	function(session, args, next){
 		// https://stackoverflow.com/questions/42069081/get-duration-between-the-bot-sending-the-message-and-user-replying
 		session.userData.lastMessageSent = new Date();
