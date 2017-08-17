@@ -257,7 +257,7 @@ function getBotMsgTime(session){
 	var botTimeFormatted = dateFormat(botTime, "yyyy-mm-dd HH:MM:ss");
 
 	console.log("Bot messaged at: " + botTimeFormatted);
-	return botTimeFormatted
+	return botTimeFormatted;
 }
 
 function getUserMsgTime(session){
@@ -318,7 +318,7 @@ bot.dialog('introQs', [
 
 	function(session, results, next){
 		var questionNo = 1;
-		processUserResponseNew(session, results, questionNo);
+		processUserResponseNew(session, results.response, questionNo);
 		next();
 	},
 	function(session){
@@ -328,7 +328,7 @@ bot.dialog('introQs', [
 	},
 	function(session, results, next){
 		var questionNo = 2;
-		processUserResponseNew(session, results, questionNo);
+		processUserResponseNew(session, results.response, questionNo);
 		next();
 	},
 	function(session){
@@ -337,7 +337,7 @@ bot.dialog('introQs', [
 	},
 	function(session, results, next){
 		var questionNo = 3;
-		processUserResponseNew(session, results, questionNo);
+		processUserResponseNew(session, results.response, questionNo);
 		next();
 	},
 	function(session){
