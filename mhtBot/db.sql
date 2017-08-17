@@ -129,6 +129,7 @@ CREATE TABLE Gad7Totals(
 	DateCompleted DATETIME
 )
 
+<<<<<<< HEAD
 CREATE TABLE AllQuestions(
 	QuestionID INT IDENTITY PRIMARY KEY,
 	QuestionNo INT,
@@ -181,6 +182,10 @@ CREATE TABLE Conversations(
 ALTER TABLE UserResponsesNew(
 	ConversationID INT
 );
+=======
+
+
+>>>>>>> 1ba9b08ea5caa61d7792ebf6a194b6182697b74a
 
 
 
