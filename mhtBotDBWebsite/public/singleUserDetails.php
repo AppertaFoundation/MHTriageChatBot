@@ -3,12 +3,12 @@
 include '../includes/connect.php';
 include '../includes/functions.php';
 
-//$userID = $_POST["userID"];
+$userID = $_POST["userID"];
 ?>
 
 <?php
 // Test Values
-$userID = 3;
+//$userID = 3;
 $username = getUsernameFromID($conn, $userID);
 ?>
 
