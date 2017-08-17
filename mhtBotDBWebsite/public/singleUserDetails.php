@@ -22,105 +22,10 @@ $username = getUsernameFromID($conn, $userID);
 </head>
 <body>
 <header>
-<h1>Details for User<?php echo $username?></h1>
+<h1>Details for User <?php echo $username?></h1>
 </header>
 
 <main>
-
-
-
-<?php
-function getQuestions($conn){
-	$questions = array();
-	$tsql = "SELECT Question FROM AllQuestions;";
-	$getResults = sqlsrv_query($conn, $tsql);
-	if($getResults == FALSE){
-		if(($errors = sqlsrv_errors())!=null){
-			formatErrors($errors);
-		}
-		die("Error in executing getQuestions() query");
-	}
-
-	echo "getQuestions() query successfully executed";
-	while($row = sqlsrv_fetch_array($getResults, SQLSRV_FETCH_ASSOC)){
-		array_push($questions, $row['Question']);
-	}
-	return $questions;
-}
-
-function getUserResponsesIDs($conn, $userID){
-	$result = array();
-	$tsql = "SELECT QuestionID FROM UserQuestionIDs WHERE UserID = $userID";
-	$getResults = sqlsrv_query($conn, $tsql);
-	if($getResults == FALSE){
-		if(($errors = sqlsrv_errors())!=null){
-			formatErrors($errors);
-		}
-		die("Error in executing getUserResponsesIDs() query");
-	}
-
-	echo "getUserResponsesIDs() query successfully executed";
-	while($row = sqlsrv_fetch_array($getResults, SQLSRV_FETCH_ASSOC)){
-		array_push($result, $row['QuestionID']);
-	}
-	return $result;
-}
-
-function getResponseFromID($conn, $responseID){
-	$result = null;
-	$tsql = "SELECT UserResponse FROM UserResponsesNew WHERE QuestionID = $responseID";
-	$getResults = sqlsrv_query($conn, $tsql);
-	if($getResults == False){
-		if(($errors = sqlsrv_errors())!=null){
-			formatErrors($errors);
-		}
-		die("Error in executing getResponseFromID() query");
-	}
-
-	echo "getResponseFromID() query successfully executed";
-	while($row = sqlsrv_fetch_array($getResults, SQLSRV_FETCH_ASSOC)){
-		$result = $row['UserResponse'];
-	}
-	return $result;
-}
-
-function getQuestionNoFromResponseID($conn, $responseID){
-	$result = 0;
-	$tsql = "SELECT QuestionNo FROM QNosAndIDs WHERE QuestionID = $responseID";
-	$getResults = sqlsrv_query($conn, $tsql);
-	if($getResults == False){
-		if(($errors = sqlsrv_errors())!=null){
-			formatErrors($errors);
-		}
-		die("Error in eecuting getQuestionNoFromResponseID() query");
-	}
-	echo "getResponseFromID() query successfully executed";
-	while($row = sqlsrv_fetch_array($getResults, SQLSRV_FETCH_ASSOC)){
-		$result = $row['QuestionNo'];
-	}
-	return $result;
-}
-
-function getQuestionFromQuestionNo($conn, $questionNo){
-	$result = null;
-	$tsql = "SELECT Question FROM AllQuestions WHERE QuestionNo = $questionNo";
-	$getResults = sqlsrv_query($conn, $tsql);
-	if($getResults == False){
-		if(($errors = sqlsrv_errors())!=null){
-			formatErrors($errors);
-		}
-		die("Error in eecuting getQuestionNoFromResponseID() query");
-	}
-	echo "getResponseFromID() query successfully executed";
-	while($row = sqlsrv_fetch_array($getResults, SQLSRV_FETCH_ASSOC)){
-		$result = $row['Question'];
-	}
-	return $result;
-}
-
-
-
-?>
 
 <h2>Conversation History</h2>
 
@@ -142,7 +47,7 @@ function getQuestionFromQuestionNo($conn, $questionNo){
 			$userResponse = getResponseFromID($conn, $responseID);
 			$questionNo = getQuestionNoFromResponseID($conn, $responseID);
 			$question = getQuestionFromQuestionNo($conn, $questionNo);
-			$tsql = "SELECT BotMsgTime, UserMsgTime, TimeLapse FROM TimeStamps WHERE QuestionID = $responseID";
+			/*$tsql = "SELECT BotMsgTime, UserMsgTime, TimeLapse FROM TimeStamps WHERE QuestionID = $responseID";
 			$getResults = sqlsrv_query($conn, $tsql);
 			if($getResults == False){
 				if(($errors = sqlsrv_errors())!=null){
@@ -153,9 +58,7 @@ function getQuestionFromQuestionNo($conn, $questionNo){
 			echo "getResponseFromID() query successfully executed";
 			while($row = sqlsrv_fetch_array($getResults, SQLSRV_FETCH_ASSOC)){
 				$result = $row['Question'];
-			}
-			return $result;
-}
+			}*/
 	?>
 		<tr>
 			<td><?php echo $questionNo ?></td>
