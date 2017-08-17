@@ -1,5 +1,5 @@
 <?php
-function FormatErrors( $errors )
+function formatErrors( $errors )
 {
     //Display errors. 
     echo "Error information: ";
@@ -12,7 +12,7 @@ function FormatErrors( $errors )
     }
 }
 
-function getAllUsers($conn){
+function getAllUsernames($conn){
 	$usernameArr = [];
 	$tsql = "SELECT UserName FROM Users;";
 	$getResults = sqlsrv_query($conn, $tsql);
@@ -24,6 +24,42 @@ function getAllUsers($conn){
 		array_push($usernameArr, $row['UserName']);
 	}
 	return $usernameArr;
+}
+
+function getAllUserIDs($conn){
+	$userIDs = [];
+	$tsql = "SELECT UserID FROM Users;";
+	$getResults = sqlsrv_query($conn, $tsql);
+	if($getResults == False){
+		if( ($errors = sqlsrv_errors())!=null){
+			formatErrors($errors);
+		}
+		die("Error in executing getAllUserIDs() query");
+	}
+
+	echo "getAllUserIDs() successfully executed";
+	while($row = sqlsrv_fetch_array($getResults, SQLSRV_FETCH_ASSOC)){
+		array_push($userIDs, $row['UserID']);
+	}
+	return $userIDs;
+}
+
+function getUsernameFromID($conn, $userID){
+	$result = 0;
+	$tsql = "SELECT UserName FROM Users WHERE UserID = $userID";
+	$getResults = sqlsrv_query($conn, $tsql);
+	if($getResults == False){
+		if( ($errors = sqlsrv_errors())!=null){
+			formatErrors($errors);
+		}
+		die("Error in executing getUsernameFromID() query");
+	}
+
+	echo "getUserNameFromID() query successfully executed";
+	while($row = sqlsrv_fetch_array($getResults, SQLSRV_FETCH_ASSOC)){
+		$result = $row['UserName'];
+	}
+	return $result;
 }
 
 function getUserID($conn, $username){
