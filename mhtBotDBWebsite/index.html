@@ -26,38 +26,52 @@ $connectionOptions = array(
 
 // Establishes the connection
 $conn = sqlsrv_connect($serverName, $connectionOptions);
-
-// Read Query
-$tsql = "SELECT * FROM UserResponsesNew;";
-$getResults = sqlsrv_query($conn, $tsql);
+$tsql = "SEELCT * FROM UserResponsesNew";
+$getResult = sqlsrv_query($conn, $tsql);
 echo("Reading data from table" . PHP_EOL);
-
-if($getResults == FALSE)
-	die(FormatErrors(sqlsrv_errors()));
-	//echo (sqlsrv_errors());
+if($getResults == FALSE) 
+	echo (sqlsrv_errors());
 while($row = sqlsrv_fetch_array($getResults, SQLSRV_FETCH_ASSOC)){
 	echo($row['UserResponse'] . PHP_EOL);
 }
 sqlsrv_free_stmt($getResults);
 
-function FormatErrors( $errors )
-{
-    /* Display errors. */
-    echo "Error information: ";
-
-    foreach ( $errors as $error )
-    {
-        echo "SQLSTATE: ".$error['SQLSTATE']."";
-        echo "Code: ".$error['code']."";
-        echo "Message: ".$error['message']."";
-    }
-}
-?>
-
-<?php
 
 
+/*
 
+	$username = 'mng17@mhtbotdb';
+	$password = '1PlaneFifth';
+	$servername = 'mhtbotdb.database.windows.net';
+	$database = 'mhtBotDB';
+	$port = 1433;
+
+	$conn = mysqli_init();
+	$success = mysqli_real_connect(
+		$conn,
+		$host,
+		$user,
+		$password,
+		$db,
+		$port
+	);
+
+	if(mysqli_connect_errno()){
+		die("Database connection failed: " .
+			mysqli_connect_error() .
+			" (" . mysqli_connect_errno() . ")"
+		);
+	}
+
+	$checkDBConnection = "SELECT * FROM UserResponsesNew";
+
+	$connectResult = mysqli_query($conn, $checkDBConnection);
+
+	if(mysqli_num_rows($connectResult) >0){
+		while($row = mysqli_fetch_assoc($connectResult)){
+			echo $row["Username"];
+		}
+	}*/
 
 ?>
 
