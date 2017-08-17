@@ -15,6 +15,8 @@ var moment = require('moment');
 
 var mysql = require('mysql');
 
+var dateFormatLite = require('date-format-lite');
+
 //============
 // Bot Setup
 //============
@@ -254,7 +256,8 @@ bot.dialog('register', [
 function getBotMsgTime(session){
 	//var botTime = new Date(session.userData.lastMessageSent);
 	var botTime = new Date(session.userData.lastMessageSent);
-	var botTimeFormatted = dateFormat(botTime, "yyyy-mm-dd HH:MM:ss");
+	//var botTimeFormatted = dateFormat(botTime, "yyyy-mm-dd HH:MM:ss");
+	var botTimeFormatted = botTime.format("yyyy-mm-dd HH:MM:ss");
 
 	console.log("Bot messaged at: " + botTimeFormatted);
 	return botTimeFormatted;
@@ -262,7 +265,10 @@ function getBotMsgTime(session){
 
 function getUserMsgTime(session){
 	var userTime = new Date(session.message.localTimestamp);
-	var userTimeFormatted = dateFormat(userTime, "yyyy-mm-dd HH:MM:ss");
+	//var userTimeFormatted = dateFormat(userTime, "yyyy-mm-dd HH:MM:ss");
+	var userTimeFormatted = userTime.format("yyyy-mm-dd HH:MM:ss");
+
+
 	console.log("User responded at: " + userTimeFormatted);
 	return userTimeFormatted;
 }
