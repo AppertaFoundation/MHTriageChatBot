@@ -27,6 +27,20 @@ $username = 'Sam';
 This page provides access to the database supporting the mental health triage chatbot.
 </p>
 
+<h2>What would you like to do?</h2>
+
+<form action = "public/seeAllUsers.php" method="post">
+
+<button type="submit" value="allUsers">See All Users</button>
+
+</form>
+
+<h2> Testing getUsernameFromID()</h2>
+<?php
+echo getUsernameFromID($conn, 3);
+
+?>
+
 <h2> Testing getUserResponses()</h2>
 
 <?php
@@ -38,10 +52,10 @@ print_r($userResponsesArr);
 ?>
 
 
-<h2> Testing php getAllUsers() function</h2>
+<h2> Testing php getAllUsernames() function</h2>
 <?php
 
-$usernameArr= getAllUsers($conn);
+$usernameArr= getAllUsernames($conn);
 
 foreach($usernameArr as $value){
 	echo "$value <br>";
