@@ -147,12 +147,14 @@ function getQuestionFromQuestionNo($conn, $questionNo){
 			<td><?php echo $questionNo ?></td>
 			<td><?php echo $question?></td>
 			<td><?php echo $userResponse ?></td>
+			
 		</tr>
 	<?php
 		}
 	?>
 
 </table>
+
 
 
 
