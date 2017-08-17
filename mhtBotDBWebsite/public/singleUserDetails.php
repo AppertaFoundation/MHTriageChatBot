@@ -3,12 +3,12 @@
 include '../includes/connect.php';
 include '../includes/functions.php';
 
-$userID = $_POST["userID"];
+//$userID = $_POST["userID"];
 ?>
 
 <?php
 // Test Values
-//$userID = 3;
+$userID = 3;
 $username = getUsernameFromID($conn, $userID);
 ?>
 
@@ -31,6 +31,62 @@ $username = getUsernameFromID($conn, $userID);
 
 <h2>Conversation History</h2>
 
+<?php
+function getBotTimeFromQID($conn, $questionID){
+	$result = null;
+	$tsql = "SELECT BotMsgTime FROM TimeStamps WHERE QuestionID = $questionID;";
+	$getResults = sqlsrv_query($conn, $tsql);
+	if($getResults == FALSE){
+		if(($errors = sqlsrv_errors())!=null){
+			formatErrors($errors);
+		}
+		die("Failure in executing getBotTimeFromQID() query");
+	}
+
+	echo "getBotTimeFromQID() query successfully executed";
+	while($row = sqlsrv_fetch_array($getResults, SQLSRV_FETCH_ASSOC)){
+		$result = $row['BotMsgTime'];
+	}
+	return $result;
+}
+
+function getUserTimeFromQID($conn, $questionID){
+	$result = null;
+	$tsql = "SELECT UserMsgTime FROM TimeStamps WHERE QuestionID = $questionID;";
+	$getResults = sqlsrv_query($conn, $tsql);
+	if($getResults == FALSE){
+		if(($errors = sqlsrv_errors())!=null){
+			formatErrors($errors);
+		}
+		die("Failure in executing getBotTimeFromQID() query");
+	}
+
+	echo "getBotTimeFromQID() query successfully executed";
+	while($row = sqlsrv_fetch_array($getResults, SQLSRV_FETCH_ASSOC)){
+		$result = $row['UserMsgTime'];
+	}
+	return $result;
+}
+
+function getTimeLapseFromQID($conn, $questionID){
+	$result = null;
+	$tsql = "SELECT TimeLapse FROM TimeStamps WHERE QuestionID = $questionID;";
+	$getResults = sqlsrv_query($conn, $tsql);
+	if($getResults == FALSE){
+		if(($errors = sqlsrv_errors())!=null){
+			formatErrors($errors);
+		}
+		die("Failure in executing getBotTimeFromQID() query");
+	}
+
+	echo "getBotTimeFromQID() query successfully executed";
+	while($row = sqlsrv_fetch_array($getResults, SQLSRV_FETCH_ASSOC)){
+		$result = $row['TimeLapse'];
+	}
+	return $result;
+}
+?>
+
 <table>
 	<tr>
 		<th>Question Number</th>
@@ -49,23 +105,18 @@ $username = getUsernameFromID($conn, $userID);
 			$userResponse = getResponseFromID($conn, $responseID);
 			$questionNo = getQuestionNoFromResponseID($conn, $responseID);
 			$question = getQuestionFromQuestionNo($conn, $questionNo);
-			/*$tsql = "SELECT BotMsgTime, UserMsgTime, TimeLapse FROM TimeStamps WHERE QuestionID = $responseID";
-			$getResults = sqlsrv_query($conn, $tsql);
-			if($getResults == False){
-				if(($errors = sqlsrv_errors())!=null){
-					formatErrors($errors);
-				}
-				die("Error in eecuting getQuestionNoFromResponseID() query");
-			}
-			echo "getResponseFromID() query successfully executed";
-			while($row = sqlsrv_fetch_array($getResults, SQLSRV_FETCH_ASSOC)){
-				$result = $row['Question'];
-			}*/
-	?>
+			$botTime = getBotTimeFromQID($conn, $responseID);
+			$userTime = getUserTimeFromQID($conn, $responseID);
+			$timeLapse = getTimeLapseFromQID($conn, $responseID);
+
+		?>
 		<tr>
-			<td><?php echo $questionNo ?></td>
-			<td><?php echo $question?></td>
-			<td><?php echo $userResponse ?></td>
+			<td><?php echo $questionNo; ?></td>
+			<td><?php echo $question; ?></td>
+			<td><?php echo $userResponse; ?></td>
+			<td><?php echo $botTime; ?></td>
+			<td><?php echo $userTime; ?></td>
+			<td><?php echo $timeLapse; ?></td>
 
 		</tr>
 	<?php
@@ -73,9 +124,6 @@ $username = getUsernameFromID($conn, $userID);
 	?>
 
 </table>
-
-
-
 
 </main>
 </body>
