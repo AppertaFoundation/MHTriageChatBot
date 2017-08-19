@@ -129,7 +129,6 @@ CREATE TABLE Gad7Totals(
 	DateCompleted DATETIME
 )
 
-<<<<<<< HEAD
 CREATE TABLE AllQuestions(
 	QuestionID INT IDENTITY PRIMARY KEY,
 	QuestionNo INT,
@@ -139,6 +138,28 @@ CREATE TABLE AllQuestions(
 
 CREATE TABLE UserResponses(
 	ResponseID INT IDENTITY PRIMARY KEY,
+);
+
+
+
+INSERT INTO AllQuestions(QuestionNo, QuestionType, Question){
+	(1, 'general', 'How are you feeling today?'),
+	(2, 'general', 'Would you say you''re feeling happy, anxious, or low?'),
+	(3, 'general', 'What has led you to seek an assessment for how you''re feeling?'),
+	(4, 'general', 'Do you know what''s triggered any negative thoughts and feelings?'),
+	(5, 'general', 'What have these thoughts and feelings stopped you doing?'),
+	(6, 'general', 'Do you have a care plan?'),
+	(7, 'general', 'Is it working for you?'),
+	(1, 'phq9', 'How many days have you had little interest or pleasure in doing things?'),
+	(2, 'phq9', 'How many days have you felt down, depressed, or hopeless?'),
+	(3, 'phq9','How many days have you had trouble falling or staying asleep, or sleeping too much?'),
+	(4, 'phq9','How many days have you been bothered by feeling tired or having little energy?'),
+	(12, 'phq9', 'How many days have you had a poor appetite or overeaten?'),
+	(13, 'phq9', 'How many days have you felt bad about yourself - or that you are a failure or have let yourself or your family down?'),
+	(14, 'phq9', 'How many days have you had trouble concentrating on things, such as reading the newspaper or watching television?'),
+	(15, 'phq9', 'How many days have you moved or spoken so slowly that other people could have noticed? Or the opposite - being so fidgety or restless that you''ve been moving around a lot more than usual?'),
+	(16, 'phq9', 'How many days have you had thoughts that you''d be better off dead or of hurting yourself in some way?'),
+
 
 
 INSERT INTO AllQuestions (QuestionNo, QuestionType, Question)
@@ -182,10 +203,13 @@ CREATE TABLE Conversations(
 ALTER TABLE UserResponsesNew(
 	ConversationID INT
 );
-=======
+
+SELECT aq.QuestionID 
+FROM AllQuestions aq JOIN UserQuestionIDs uq ON aq.QuestionID = uq.QuestionID 
+WHERE UserID = 3 AND QuestionType = 'introQs'
 
 
->>>>>>> 1ba9b08ea5caa61d7792ebf6a194b6182697b74a
+
 
 
 
