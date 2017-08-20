@@ -28,10 +28,6 @@ var dateFormatLite = require('date-format-lite');
 // Setup restify Server
 var server = restify.createServer();
 
-/*server.listen(process.env.port || process.env.PORT || 3978, function() {
-	console.log('%s listening to %s', server.name, server.url);
-});*/
-
 server.listen(process.env.port || process.env.PORT || 3978, function() {
 	console.log('%s listening to %s', server.name, server.url);
 });
@@ -85,7 +81,7 @@ var connector = new builder.ChatConnector({
 var bot = new builder.UniversalBot(connector, [
 	function(session){
 		session.send('Hi, I\'m MaxBot. I hope we\'ll be able to work together to help you');
-		session.beginDialog('generalQs');
+		session.beginDialog('greeting');
 	}
 ]);
 
@@ -325,18 +321,41 @@ function recogniseFeeling(text){
 					console.log("Number of entities identified");
 					console.log(entities.length);
 
-					if(intents[0] != null && intents[0].intent == 'Feeling' && entities[0] != null){
-						console.log("Intent is 'Feeling' and a relevant entity has been identified");
-						console.log("Highest confidence entity identified is:");
-						console.log(entities[0]);
+					//if(intents[0] != null && intents[0].intent = 'Feeling' && entities
 
-						var entity = entities[0].type;
-						console.log("Entity recognised is: %s:", entities[0].type);
-						feeling = entity;
+					if(intents[0]!=null && entities[0]!=null){
+						console.log("At least one intent and entity have been identified");
 
-						resolve(entity);
+						for(i=0; i<entities.length; i++){
+							if(entities[i].type == 'Depressed'){
+								depressed = true;
+								console.log("'Depressed' entity recognised");
+							}else if(entities[i].type == 'Anxious'){
+								anxious = true;
+								console.log("'Anxious' entity recognised");
+							}else if(entities[i].type == 'Happy'){
+								happy = true;
+								console.log("'Happy' entity recognised");
+							}
+						}
+
+						if(depressed == true && anxious == true){
+							feeling = 'DepressedAndAnxious';
+							console.log("Global variable 'feeling' set to 'DepressedAndAnxious'");
+						}else if(depressed == true){
+							feeling = 'Depressed';
+							console.log("Global variable 'feeling' set to 'Depressed'");
+						}else if(anxious == true){
+							feeling = 'Anxious';
+							console.log("Global variable 'feeling' set to 'Anxious'");
+						}else if(happy == true){
+							feeling = 'Happy';
+							console.log("Global variable 'feeling' set to 'Happy'");
+						}
+
+						resolve(feeling);
 					}else{
-						console.log("One of the following occured: no intents identified; intent identified was not 'Feeling'; no entities were identified");
+						console.log("One of the following occured: no intents identified; no entities were identified");
 						reject();
 					}
 				}
@@ -346,11 +365,11 @@ function recogniseFeeling(text){
 }
 
 
-function generateBotGeneralQResponse(entity){
+function generateBotGeneralQResponse(feeling){
 	console.log("In generateBotGeneralResponse() dialog");
-	if(entity == 'Depressed' || entity == 'Anxious'){
+	if(feeling == 'Depressed' || feeling == 'Anxious' || feeling == 'DepressedAndAnxious'){
 		return "I'm sorry to hear you're feeling that way.";
-	}else if(entity == 'Happy'){
+	}else if(feeling == 'Happy'){
 		return "That's great to hear! Think about what made you happy and do it again.";
 	}else{
 		return "Thank you.";
@@ -399,10 +418,10 @@ bot.dialog('generalQs', [
 	function(session, results, next){ 
 		session.dialogData.userResponse = results.response;
 		recogniseFeeling(session.message.text)
-			.then(function(entity){ 
-				var botResponse = generateBotGeneralQResponse(entity);
+			.then(function(feeling){ 
+				var botResponse = generateBotGeneralQResponse(feeling);
 				session.send(botResponse);
-				if(entity == 'Happy'){
+				if(feeling == 'Happy'){
 					session.endDialog("I'll say goodbye for now " + username + " but just say hello when you'd like to speak again :)");
 				}else{
 					next();
@@ -422,7 +441,7 @@ bot.dialog('generalQs', [
 		processGeneralQResponse(session, session.dialogData.userResponse, questionID);
 		//processUserResponseNew(session, results.response, questionNo);
 		next();
-	},
+	},/*
 	function(session, args, next){
 		// https://stackoverflow.com/questions/42069081/get-duration-between-the-bot-sending-the-message-and-user-replying
 		session.userData.lastMessageSent = new Date();
@@ -479,17 +498,15 @@ bot.dialog('generalQs', [
 		//processUserResponse(session, results, 5);
 		session.send("Thank you for answering these questions " + username + ".");
 		next();
-	},
+	},*/
 	function(session){
-		if(feeling == 'Depressed'){
+		if(feeling == 'Depressed' || feeling == 'DepressedAndAnxious'){
 			session.beginDialog('phq9');
 		}else{
 			session.beginDialog('gad7');
 		}
 	}
 ]);
-
-
 
 
 //--------------------//
@@ -547,9 +564,13 @@ bot.dialog('clarifyDifficulty', [
 //------------------//
 bot.dialog('gad7', [
 	function (session, args, next){
-		console.log('Entering dialog gad7');
-		builder.Prompts.confirm(session, "I'm now going to take you through a clinical process that will help you to explain how you feel to a clinician. Is that ok?");
-		//session.send("I'm now going to ask you some questions about how you've felt over the past two weeks");
+		console.log('Beginning gad7 dialog');
+		totalScore = 0;
+		if(feeling == 'Anxious'){
+			builder.Prompts.confirm(session, "I'm now going to take you through a clinical process that will help you to explain how you feel to a clinician. Is that ok?");
+		}else{
+			builder.Prompts.confirm(session, "There's another clinical process that could also help you. Would you like to do this one as well?");
+		}
 	},
 	function(session, results, next){
 		var userResponse = results.response;
@@ -557,7 +578,7 @@ bot.dialog('gad7', [
 			session.send("Great!");
 			next();
 		}else{
-			session.endDialog("No problem! Come back when you feel ready to try this.");
+			session.endDialog("No problem, just come back and say hello when you feel ready to try this. Hope to speak to you again soon " + username + "!");
 		}
 	},
 	function(session){
@@ -600,7 +621,8 @@ bot.dialog('gad7', [
 //------------------//
 bot.dialog('phq9', [
 	function (session, args, next){
-		console.log('Entering dialog phq9');
+		console.log('Beginning phq9 dialog');
+		totalScore = 0;
 		builder.Prompts.confirm(session, "I'm now going to take you through a clinical process that will help you to explain how you feel to a clinician. Is that ok?");
 		//session.send("I'm now going to ask you some questions about how you've felt over the past two weeks");
 	},
@@ -630,7 +652,7 @@ bot.dialog('phq9', [
 				console.log("No entities identified" + error);
 				session.beginDialog('clarifyDays');
 			});
-	},
+	},/*
 	function(session, results, next){
 		var questionID = 7;
 		console.log("in question 7 storage area");
@@ -834,7 +856,7 @@ bot.dialog('phq9', [
 		var questionID = 16;
 		processDifficultyResponse(session, session.dialogData.userResponse, 'phq9', questionID);
 		next();
-	},
+	},*/
 	function(session, results, next){
 		var severity = getSeverity(totalScore);
 		console.log("The user's score of %i indicates that the user has %s depression", totalScore, severity);
@@ -846,7 +868,11 @@ bot.dialog('phq9', [
 		next();
 	},
 	function(session){
-		session.endDialog('Speak to you again soon!');
+		if(feeling == 'Depressed'){
+			session.endDialog('Speak to you again soon!');
+		}else if(feeling == 'DepressedAndAnxious'){
+			session.beginDialog('gad7');
+		}
 	}
 
 ]);
