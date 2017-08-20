@@ -85,7 +85,7 @@ var connector = new builder.ChatConnector({
 var bot = new builder.UniversalBot(connector, [
 	function(session){
 		session.send('Hi, I\'m MaxBot. I hope we\'ll be able to work together to help you');
-		session.beginDialog('phq9');
+		session.beginDialog('generalQs');
 	}
 ]);
 
@@ -100,11 +100,14 @@ var username = null;
 
 var questionID = 0;
 
+var feeling = null;
+
 //=============
 // Test Values
 //=============
 
-var userID = 3;
+var userID = 1;
+var username = 'Sam';
 
 //=============
 // Bot Dialogs
@@ -301,6 +304,90 @@ function insertGeneralQResponseData(interactionID, botTime, userTime, timeLapse,
 		connection.execSql(request);
 }
 
+function recogniseFeeling(text){
+	return new Promise(
+		function(resolve, reject){
+			builder.LuisRecognizer.recognize(text, process.env.LUIS_MODEL_URL,
+				function(err, intents, entities, compositeEntities){
+					console.log("Now in recogniseFeeling() function");
+
+					console.log("Intents and confidence scores identified are:");
+					console.log(intents);
+					console.log("Intent with highest confidence score is:");
+					console.log(intents[0]);
+					console.log("Entities identified are:");
+					console.log(entities);
+
+					var depressed = false;
+					var anxious = false;
+					var happy = false;
+
+					console.log("Number of entities identified");
+					console.log(entities.length);
+
+					if(intents[0] != null && intents[0].intent == 'Feeling' && entities[0] != null){
+						console.log("Intent is 'Feeling' and a relevant entity has been identified");
+						console.log("Highest confidence entity identified is:");
+						console.log(entities[0]);
+
+						var entity = entities[0].type;
+						console.log("Entity recognised is: %s:", entities[0].type);
+						feeling = entity;
+
+						resolve(entity);
+					}else{
+						console.log("One of the following occured: no intents identified; intent identified was not 'Feeling'; no entities were identified");
+						reject();
+					}
+				}
+			);
+		}
+	);
+}
+
+
+function generateBotGeneralQResponse(entity){
+	console.log("In generateBotGeneralResponse() dialog");
+	if(entity == 'Depressed' || entity == 'Anxious'){
+		return "I'm sorry to hear you're feeling that way.";
+	}else if(entity == 'Happy'){
+		return "That's great to hear! Think about what made you happy and do it again.";
+	}else{
+		return "Thank you.";
+	}
+}
+
+//-----------------------//
+// clarifyFeeling Dialog
+//----------------------//
+bot.dialog('clarifyFeeling', [
+	function(session){
+		console.log("Beginning 'clarifyFeeling' dialog");
+		session.userData.lastMessageSent = new Date();
+		builder.Prompts.text(session, "To work out how to best help you, would you be able to be able to tell me what the bigger problem is for you right now? Is it feeling low, or anxiety, or a combination of both? Or, if you're happy, I'd like to know about that too.");
+	},
+	function(session, results, next){
+		recogniseFeeling(session.message.text)
+			.then(function(entity){ 
+				var botResponse = generateBotQuestionnaireResponse(entity);
+				session.send("Thank you");
+				next();
+			})
+			.catch(function(error){ 
+				console.log("No entities identified" + error);
+				session.beginDialog('clarifyFeeling');
+			});
+	},
+	function(session, results, next){
+		var questionID = 2;
+		processGeneralQResponse(session, results.response, questionID);
+		next();
+	},
+	function(session){
+		session.endDialog();
+	}
+]);
+
 //------------------//
 //GeneralQs Dialog
 //------------------//
@@ -309,19 +396,31 @@ bot.dialog('generalQs', [
 		session.userData.lastMessageSent = new Date();
 		builder.Prompts.text(session, 'How are you feeling today?');
 	},
+	function(session, results, next){ 
+		session.dialogData.userResponse = results.response;
+		recogniseFeeling(session.message.text)
+			.then(function(entity){ 
+				var botResponse = generateBotGeneralQResponse(entity);
+				session.send(botResponse);
+				if(entity == 'Happy'){
+					session.endDialog("I'll say goodbye for now " + username + " but just say hello when you'd like to speak again :)");
+				}else{
+					next();
+				}
+			})
+			.catch(function(error){
+				var botResponse = generateBotGeneralQResponse('no entity'); 
+				session.send(botResponse);
+				console.log("No entities identified" + error);
+				session.beginDialog('clarifyFeeling');
+			});
+	},
 	function(session, results, next){
 		var questionID = 1;
-		processGeneralQResponse(session, results.response, questionID);
+		console.log("Feeling is:");
+		console.log(feeling);
+		processGeneralQResponse(session, session.dialogData.userResponse, questionID);
 		//processUserResponseNew(session, results.response, questionNo);
-		next();
-	},
-	function(session){
-		session.userData.lastMessageSent = new Date();
-		builder.Prompts.text(session, 'Would you say you\'re feeling happy, anxious, or low?');
-	},
-	function(session, results, next){
-		var questionID = 2;
-		processGeneralQResponse(session, results.response, questionID);
 		next();
 	},
 	function(session, args, next){
@@ -338,7 +437,7 @@ bot.dialog('generalQs', [
 	function(session){
 		session.userData.lastMessageSent = new Date();
 		session.sendTyping();
-		builder.Prompts.text(session, 'What has triggered any negative thoughts and feelings?');
+		builder.Prompts.text(session, 'Can you identify anything in particular that might have triggered any negative thoughts and feelings?');
 	},
 	function(session, results, next){
 		var questionID = 4;
@@ -378,187 +477,27 @@ bot.dialog('generalQs', [
 		processGeneralQResponse(session, session.message.text, questionID);
 		//processUserResponseNew(session, session.message.text, questionNo);
 		//processUserResponse(session, results, 5);
-		session.send("Thank you for answering these questions");
+		session.send("Thank you for answering these questions " + username + ".");
 		next();
 	},
 	function(session){
-		session.beginDialog('phq9');
+		if(feeling == 'Depressed'){
+			session.beginDialog('phq9');
+		}else{
+			session.beginDialog('gad7');
+		}
 	}
 ]);
 
 
-function insertQuestionnaireResponseData(interactionID, botTime, userTime, timeLapse, questionID, userID, userResponse, questionnaireType, qScore, totalScore){
-	if(questionID == 14){
-		request = new Request(
-		"INSERT INTO Timestamps (InteractionID, BotMsgTime, UserMsgTime, TimeLapse) " 
-			+ "VALUES (" + mysql.escape(interactionID) + "," + mysql.escape(botTime) + "," + mysql.escape(userTime) + "," + mysql.escape(timeLapse) + "); " 
-		+ "INSERT INTO InteractionQuestionIDs (InteractionID, QuestionID) "
-			+ "VALUES (" + mysql.escape(interactionID) + "," + mysql.escape(questionID) + ");"
-		+ "INSERT INTO UserInteractions (InteractionID, UserID) "
-			+ "VALUES (" + mysql.escape(interactionID) + "," + mysql.escape(userID) + "); "
-		+ "INSERT INTO QuestionScores(InteractionID, QuestionnaireType, Score) "
-			+ "VALUES (" + mysql.escape(interactionID) + "," + mysql.escape(questionnaireType) + "," + mysql.escape(qScore) + ");"
-		+ "INSERT INTO TotalScores (UserID, TotalScore, DateCompleted) "
-			+ "VALUES (" + mysql.escape(userID) + "," + mysql.escape(totalScore) + "," + mysql.escape(userTime) + ");",
-				function(err, rowCount, rows){
-					if(!err){
-						console.log("Questionnaire user response data successfully inserted into tables: Timestamps, InteractionQuestionIDs, UserInteractions, QuestionScores, TotalScores");
-					}else{
-						console.log("Error in inserting data" + err);
-					}
-				}
-		);
-		connection.execSql(request);
-	}else{
-	request = new Request(
-		"INSERT INTO Timestamps (InteractionID, BotMsgTime, UserMsgTime, TimeLapse) " 
-			+ "VALUES (" + mysql.escape(interactionID) + "," + mysql.escape(botTime) + "," + mysql.escape(userTime) + "," + mysql.escape(timeLapse) + "); " 
-		+ "INSERT INTO InteractionQuestionIDs (InteractionID, QuestionID) "
-			+ "VALUES (" + mysql.escape(interactionID) + "," + mysql.escape(questionID) + ");"
-		+ "INSERT INTO UserInteractions (InteractionID, UserID) "
-			+ "VALUES (" + mysql.escape(interactionID) + "," + mysql.escape(userID) + "); "
-		+ "INSERT INTO QuestionScores(InteractionID, QuestionnaireType, Score) "
-			+ "VALUES (" + mysql.escape(interactionID) + "," + mysql.escape(questionnaireType) + "," + mysql.escape(qScore) + ");",
-				function(err, rowCount, rows){
-					if(!err){
-						console.log("Questionnaire user response data successfully inserted into tables: Timestamps, InteractionQuestionIDs, UserInteractions, QuestionScores, TotalScores");
-					}else{
-						console.log("Error in inserting data" + err);
-					}
-				}
-		);
-		connection.execSql(request);
-	}
-}
 
-function recogniseDayEntity(text){
-	return new Promise(
-		function(resolve, reject){
-			builder.LuisRecognizer.recognize(text, process.env.LUIS_MODEL_URL,
-				function(err, intents, entities, compositeEntities){
-					console.log("Now in LUIS Recogniser in recogniseDayEntity() function");
-					var qScore = 0;
-
-					console.log("Intents and confidence scores identified are:");
-					console.log(intents);
-					console.log("Intent with highest confidence score is:");
-					console.log(intents[0]);
-					console.log("Entities identified are:");
-					console.log(entities);
-
-					if(intents[0] != null && intents[0].intent == 'Days' && entities[0] !=null){
-						console.log("Intent is 'Days' and a relevant entity has been identified");
-						console.log("Highest confidence entity identified is:"); 
-						console.log(entities[0]);
-
-						var entity = entities[0].type;
-						console.log("Entity recognised is: %s", entities[0].type);
-
-						qScore = getScore(entity);
-						console.log("individual question score is: " + qScore);
-
-						totalScore+=getScore(entity);
-						console.log("Total score after this question is %i", totalScore);
-						resolve(entity);
-					}else{
-						console.log("One of the following occured: no intents identified; intent identified was not 'Days'; no entities were identified");
-						qScore = 0;
-						reject();
-					}
-				});
-		});
-}
-
-function recogniseDifficultyEntity(text){
-	return new Promise(
-		function(resolve, reject){
-			builder.LuisRecognizer.recognize(text, process.env.LUIS_MODEL_URL,
-				function(err, intents, entities, compositeEntities){
-					console.log("Now in recogniseDifficultyEntity() function");
-					var qScore = 0;
-
-					console.log("Intents and confidence scores identified are:");
-					console.log(intents);
-					console.log("Intent with highest confidence score is:");
-					console.log(intents[0]);
-					console.log("Entities identified are:");
-					console.log(entities);
-
-					if(intents[0] != null && intents[0].intent == 'Difficulty' && entities[0] != null){
-						console.log("Intent is 'Difficulty' and a relevant entity has been identified");
-
-					}
-				}
-			);
-		}
-	);
-}
-
-
-function processQuestionnaireResponse(session, results, questionnaireType, questionID){
-	var userResponse = results;
-	var botTimeFormatted = new Date(getBotMsgTime(session));
-	var userTimeFormatted = new Date(getUserMsgTime(session));
-	var timeLapseHMS = getTimeLapse(session);
-
-	builder.LuisRecognizer.recognize(session.message.text, process.env.LUIS_MODEL_URL,
-		function(err, intents, entities, compositeEntities){
-			console.log("Now in LUIS Recognizer in processQuestionnaireResponse() function");
-			var qScore = 0;
-
-			console.log("Intents and confidence scores identified are:");
-			console.log(intents);
-			console.log("Intent with highest certainty is:");
-			console.log(intents[0]);
-			console.log("Entities identified are:");
-			console.log(entities);
-
-			if(intents[0] != null && intents[0].intent == 'Days' && entities[0] !=null){
-				console.log("Intent is \'Days\' and a relevant entity has been identified");
-				console.log("Highest confidence entity identified is:"); 
-				console.log(entities[0]);
-
-				var entity = entities[0].type;
-				console.log("Entity recognised is: %s", entities[0].type);
-
-				qScore = getScore(entity);
-				console.log("individual question score is: " + qScore);
-
-				totalScore+=getScore(entity);
-				console.log("Total score after this question is %i", totalScore);
-			}else{
-				console.log("One of the following occured: no intents identified; intent identified was not 'Days'; no entities were identified");
-				qScore = 0;
-			}
-
-			insertIntoUserResponses(userResponse)
-				.then(function(interactionID){ 
-					insertQuestionnaireResponseData(interactionID, botTimeFormatted, userTimeFormatted, timeLapseHMS, questionID, userID, userResponse, questionnaireType, qScore, totalScore)
-					
-				})
-				.catch(function(error){console.log("error in promise function catch statement" + error)});
-		}
-	);
-}
-
-function generateBotQuestionnaireResponse(entity){
-	if(entity == 'NotAtAll'){
-		return "That's great! I'm so glad to hear that.";
-	}else{
-		return "Thank you.";
-	}
-}
-
-function clarifyUserResponseQuestionnaire(){
-
-}
 
 //--------------------//
 // clarifyDays Dialog
 //--------------------//
 bot.dialog('clarifyDays', [
 	function(session){
-		console.log("Begin 'clarifyDays' dialog");
+		console.log("Beginning 'clarifyDays' dialog");
 		builder.Prompts.text(session, "I'm sorry, I didn't quite get that. Please try and give a specific number of days.");
 	},
 	function(session, results, next){
@@ -578,12 +517,89 @@ bot.dialog('clarifyDays', [
 	}
 ]);
 
+//---------------------------//
+// clarifyDifficulty Dialog
+//---------------------------//
+bot.dialog('clarifyDifficulty', [
+	function(session){
+		console.log("Beginning 'clarifyDifficult' dialog");
+		builder.Prompts.text(session, "I'm sorry, I didn't quite get that. Would you say you these problems have not caused any difficult in doing your work, taking care of things at home, or getting along with other people? Or would say you they have made these things extremely difficult, very difficult, or somewhat difficult?.");
+	},
+	function(session, results, next){
+		recogniseDayEntity(session.message.text)
+			.then(function(entity){ 
+				var botResponse = generateBotQuestionnaireResponse(entity);
+				session.send("Thank you");
+				next();
+			})
+			.catch(function(error){ 
+				console.log("No entities identified" + error);
+				session.beginDialog('clarifyDays');
+			});
+	},
+	function(session){
+		session.endDialog();
+	}
+]);
+
+//------------------//
+// gad7 Dialog
+//------------------//
+bot.dialog('gad7', [
+	function (session, args, next){
+		console.log('Entering dialog gad7');
+		builder.Prompts.confirm(session, "I'm now going to take you through a clinical process that will help you to explain how you feel to a clinician. Is that ok?");
+		//session.send("I'm now going to ask you some questions about how you've felt over the past two weeks");
+	},
+	function(session, results, next){
+		var userResponse = results.response;
+		if(userResponse == true){
+			session.send("Great!");
+			next();
+		}else{
+			session.endDialog("No problem! Come back when you feel ready to try this.");
+		}
+	},
+	function(session){
+		console.log("Asking phq9 q1");
+		session.userData.lastMessageSent = new Date();
+		builder.Prompts.text(session, "In the past two weeks, how many days have you felt nervous, anxious, or on edge?");
+	}, /*
+	function(session, results, next){ 
+		session.dialogData.userResponse = results.response;
+		recogniseDayEntity(session.message.text)
+			.then(function(entity){ 
+				var botResponse = generateBotQuestionnaireResponse(entity);
+				session.send(botResponse);
+				next();
+			})
+			.catch(function(error){ 
+				console.log("No entities identified" + error);
+				session.beginDialog('clarifyDays');
+			});
+	},*/
+		function(session, results, next){
+		var severity = getSeverity(totalScore);
+		console.log("The user's score of %i indicates that the user has %s depression", totalScore, severity);
+		session.send('Thanks for answering these questions ' + username + '.');
+		next();
+	},
+	function(session, results, next){
+		session.send('You\'ve just been through the GAD-7 questionnaire. Your score is %i, which will be useful for a clinician. Please do this questionnaire regularly over the next two weeks and, if you don\'t feel you\'ve improved, share your score and your responses with a clinician', totalScore);
+		next();
+	},
+	function(session){
+		session.endDialog('I\'ll say goodbye for now but just say hello when you\'d like to talk again!');
+	}
+
+]);
+
 
 //------------------//
 // phq9 Dialog
 //------------------//
 bot.dialog('phq9', [
-	/*function (session, args, next){
+	function (session, args, next){
 		console.log('Entering dialog phq9');
 		builder.Prompts.confirm(session, "I'm now going to take you through a clinical process that will help you to explain how you feel to a clinician. Is that ok?");
 		//session.send("I'm now going to ask you some questions about how you've felt over the past two weeks");
@@ -596,7 +612,7 @@ bot.dialog('phq9', [
 		}else{
 			session.endDialog("No problem! Come back when you feel ready to try this.");
 		}
-	},*/
+	},
 	function(session){
 		console.log("Asking phq9 q1");
 		session.userData.lastMessageSent = new Date();
@@ -805,26 +821,24 @@ bot.dialog('phq9', [
 	},
 	function(session, results, next){ 
 		session.dialogData.userResponse = results.response;
-		recogniseDayEntity(session.message.text)
+		recogniseDifficultyEntity(session.message.text)
 			.then(function(entity){ 
-				var botResponse = generateBotQuestionnaireResponse(entity);
-				session.send(botResponse);
 				next();
 			})
 			.catch(function(error){ 
 				console.log("No entities identified" + error);
-				session.beginDialog('clarifyDays');
+				session.beginDialog('clarifyDifficulty');
 			});
 	},
 	function(session, results, next){
 		var questionID = 16;
-		processQuestionnaireResponse(session, session.dialogData.userResponse, 'phq9', questionID);
+		processDifficultyResponse(session, session.dialogData.userResponse, 'phq9', questionID);
 		next();
 	},
 	function(session, results, next){
 		var severity = getSeverity(totalScore);
 		console.log("The user's score of %i indicates that the user has %s depression", totalScore, severity);
-		session.send('Thank you for answering these questions. You\'ve just been through the phq9/gad7 questionnaire. Your score is %i, which will be useful for a clinician.', totalScore);
+		session.send('Thank you for answering these questions. You\'ve just been through the PHQ-9 questionnaire. Your score is %i, which will be useful for a clinician.', totalScore);
 		next();
 	},
 	function(session, results, next){
@@ -836,6 +850,223 @@ bot.dialog('phq9', [
 	}
 
 ]);
+
+//============
+// Functions
+//============
+
+function insertQuestionnaireResponseData(interactionID, botTime, userTime, timeLapse, questionID, userID, userResponse, questionnaireType, qScore){
+	request = new Request(
+		"INSERT INTO Timestamps (InteractionID, BotMsgTime, UserMsgTime, TimeLapse) " 
+			+ "VALUES (" + mysql.escape(interactionID) + "," + mysql.escape(botTime) + "," + mysql.escape(userTime) + "," + mysql.escape(timeLapse) + "); " 
+		+ "INSERT INTO InteractionQuestionIDs (InteractionID, QuestionID) "
+			+ "VALUES (" + mysql.escape(interactionID) + "," + mysql.escape(questionID) + ");"
+		+ "INSERT INTO UserInteractions (InteractionID, UserID) "
+			+ "VALUES (" + mysql.escape(interactionID) + "," + mysql.escape(userID) + "); "
+		+ "INSERT INTO QuestionScores(InteractionID, QuestionnaireType, Score) "
+			+ "VALUES (" + mysql.escape(interactionID) + "," + mysql.escape(questionnaireType) + "," + mysql.escape(qScore) + ");",
+				function(err, rowCount, rows){
+					if(!err){
+						console.log("Questionnaire user response data successfully inserted into tables: Timestamps, InteractionQuestionIDs, UserInteractions, QuestionScores, TotalScores");
+					}else{
+						console.log("Error in inserting data" + err);
+					}
+				}
+	);
+	connection.execSql(request);
+}
+
+function insertQuestionnaireEndData(interactionID, botTime, userTime, timeLapse, questionID, userID, userResponse, questionnaireType, totalScore, difficultyEntity){
+	request = new Request(
+		"INSERT INTO Timestamps (InteractionID, BotMsgTime, UserMsgTime, TimeLapse) " 
+			+ "VALUES (" + mysql.escape(interactionID) + "," + mysql.escape(botTime) + "," + mysql.escape(userTime) + "," + mysql.escape(timeLapse) + "); " 
+		+ "INSERT INTO InteractionQuestionIDs (InteractionID, QuestionID) "
+			+ "VALUES (" + mysql.escape(interactionID) + "," + mysql.escape(questionID) + ");"
+		+ "INSERT INTO UserInteractions (InteractionID, UserID) "
+			+ "VALUES (" + mysql.escape(interactionID) + "," + mysql.escape(userID) + "); "
+		+ "INSERT INTO TotalScores (UserID, TotalScore, DateCompleted, Difficulty) "
+			+ "VALUES (" + mysql.escape(userID) + "," + mysql.escape(totalScore) + "," + mysql.escape(userTime) + "," + mysql.escape(difficultyEntity) + ");",
+				function(err, rowCount, rows){
+					if(!err){
+						console.log("Completed questionnaire user response data successfully inserted into tables: Timestamps, InteractionQuestionIDs, UserInteractions, TotalScores");
+					}else{
+						console.log("Error in inserting data" + err);
+					}
+				}
+	);
+	connection.execSql(request);
+}
+
+
+function recogniseDayEntity(text){
+	return new Promise(
+		function(resolve, reject){
+			builder.LuisRecognizer.recognize(text, process.env.LUIS_MODEL_URL,
+				function(err, intents, entities, compositeEntities){
+					console.log("Now in LUIS Recogniser in recogniseDayEntity() function");
+					var qScore = 0;
+
+					console.log("Intents and confidence scores identified are:");
+					console.log(intents);
+					console.log("Intent with highest confidence score is:");
+					console.log(intents[0]);
+					console.log("Entities identified are:");
+					console.log(entities);
+
+					if(intents[0] != null && intents[0].intent == 'Days' && entities[0] !=null){
+						console.log("Intent is 'Days' and a relevant entity has been identified");
+						console.log("Highest confidence entity identified is:"); 
+						console.log(entities[0]);
+
+						var entity = entities[0].type;
+						console.log("Entity recognised is: %s", entities[0].type);
+
+						resolve(entity);
+					}else{
+						console.log("One of the following occured: no intents identified; intent identified was not 'Days'; no entities were identified");
+						qScore = 0;
+						reject();
+					}
+				});
+		});
+}
+
+function recogniseDifficultyEntity(text){
+	return new Promise(
+		function(resolve, reject){
+			builder.LuisRecognizer.recognize(text, process.env.LUIS_MODEL_URL,
+				function(err, intents, entities, compositeEntities){
+					console.log("Now in recogniseDifficultyEntity() function");
+					var qScore = 0;
+
+					console.log("Intents and confidence scores identified are:");
+					console.log(intents);
+					console.log("Intent with highest confidence score is:");
+					console.log(intents[0]);
+					console.log("Entities identified are:");
+					console.log(entities);
+
+					if(intents[0] != null && intents[0].intent == 'Difficulty' && entities[0] != null){
+						console.log("Intent is 'Difficulty' and a relevant entity has been identified");
+						console.log("Highest confidence entity identified is:");
+						console.log(entities[0]);
+
+						var entity = entities[0].type;
+						console.log("Entity recognised is: %s:", entities[0].type);
+
+						resolve(entity);
+					}else{
+						console.log("One of the following occured: no intents identified; intentt identified was not 'Difficulty'; no entities were identified");
+						qScore = 0;
+						reject();
+					}
+				}
+			);
+		}
+	);
+}
+
+
+function processQuestionnaireResponse(session, results, questionnaireType, questionID){
+	var userResponse = results;
+	var botTimeFormatted = new Date(getBotMsgTime(session));
+	var userTimeFormatted = new Date(getUserMsgTime(session));
+	var timeLapseHMS = getTimeLapse(session);
+
+	builder.LuisRecognizer.recognize(session.message.text, process.env.LUIS_MODEL_URL,
+		function(err, intents, entities, compositeEntities){
+			console.log("Now in LUIS Recognizer in processQuestionnaireResponse() function");
+			var qScore = 0;
+
+			console.log("Intents and confidence scores identified are:");
+			console.log(intents);
+			console.log("Intent with highest certainty is:");
+			console.log(intents[0]);
+			console.log("Entities identified are:");
+			console.log(entities);
+
+			if(intents[0] != null && intents[0].intent == 'Days' && entities[0] !=null){
+				console.log("Intent is \'Days\' and a relevant entity has been identified");
+				console.log("Highest confidence entity identified is:"); 
+				console.log(entities[0]);
+
+				var entity = entities[0].type;
+				console.log("Entity recognised is: %s", entities[0].type);
+
+				qScore = getScore(entity);
+				console.log("individual question score is: " + qScore);
+
+				totalScore+=getScore(entity);
+				console.log("Total score after this question is %i", totalScore);
+			}else{
+				console.log("One of the following occured: no intents identified; intent identified was not 'Days'; no entities were identified");
+				qScore = 0;
+			}
+
+			insertIntoUserResponses(userResponse)
+				.then(function(interactionID){ 
+					insertQuestionnaireResponseData(interactionID, botTimeFormatted, userTimeFormatted, timeLapseHMS, questionID, userID, userResponse, questionnaireType, qScore)
+					
+				})
+				.catch(function(error){console.log("error in promise function catch statement" + error)});
+		}
+	);
+}
+
+function processDifficultyResponse(session, results, questionnaireType, questionID){
+	var userResponse = results;
+	var botTimeFormatted = new Date(getBotMsgTime(session));
+	var userTimeFormatted = new Date(getUserMsgTime(session));
+	var timeLapseHMS = getTimeLapse(session);
+
+	builder.LuisRecognizer.recognize(session.message.text, process.env.LUIS_MODEL_URL,
+		function(err, intents, entities, compositeEntities){
+			console.log("Now in recogniseDifficultyEntity() function");
+
+			console.log("Intents and confidence scores identified are:");
+			console.log(intents);
+			console.log("Intent with highest confidence score is:");
+			console.log(intents[0]);
+			console.log("Entities identified are:");
+			console.log(entities);
+
+			if(intents[0] != null && intents[0].intent == 'Difficulty' && entities[0] != null){
+				console.log("Intent is 'Difficulty' and a relevant entity has been identified");
+				console.log("Highest confidence entity identified is:");
+				console.log(entities[0]);
+
+				var difficultyEntity = entities[0].type;
+				console.log("Entity recognised is: %s:", entities[0].type);
+
+				console.log("Final total score is after this question is %i", totalScore);
+			}else{
+				console.log("One of the following occured: no intents identified; intentt identified was not 'Difficulty'; no entities were identified");
+			}
+
+			insertIntoUserResponses(userResponse)
+			.then(function(interactionID){ 
+				insertQuestionnaireEndData(interactionID, botTimeFormatted, userTimeFormatted, timeLapseHMS, questionID, userID, userResponse, questionnaireType, totalScore, difficultyEntity);
+				
+			})
+			.catch(function(error){
+				console.log("In processDifficultyResponse() catch statement. Error: " + error)
+			});
+		}
+	);
+}
+
+
+function generateBotQuestionnaireResponse(entity){
+	if(entity == 'NotAtAll'){
+		return "That's great! I'm so glad to hear that.";
+	}else{
+		return "Thank you.";
+	}
+}
+
+function clarifyUserResponseQuestionnaire(){
+
+}
 
 function getBotResponse(entity){
 	var response = null;
