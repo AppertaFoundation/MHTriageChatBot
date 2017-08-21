@@ -500,7 +500,7 @@ bot.dialog('clarifyFeeling', [
 	function(session){
 		console.log("Beginning 'clarifyFeeling' dialog");
 		session.userData.lastMessageSent = new Date();
-		builder.Prompts.text(session, "To work out how to best help you, would you be able to be able to tell me what the bigger problem is for you right now? Is it feeling low, or anxiety, or a combination of both? Or, if you're happy, I'd like to know about that too.");
+		builder.Prompts.text(session, "To work out how to best help you, would you be able to be able to tell me if you're mostly feeling low, or anxious, or happy?");
 	},
 	function(session, results, next){
 		session.conversationData.userResponse = results.response;
@@ -635,18 +635,18 @@ bot.dialog('generalQs', [
 bot.dialog('clarifyDifficulty', [
 	function(session){
 		console.log("Beginning 'clarifyDifficult' dialog");
-		builder.Prompts.text(session, "I'm sorry, I didn't quite get that. Would you say you these problems have not caused any difficult in doing your work, taking care of things at home, or getting along with other people? Or would say you they have made these things extremely difficult, very difficult, or somewhat difficult?.");
+		builder.Prompts.text(session, "I'm sorry, I didn't quite get that. Would you say these problems have made these areas of your life somewhat difficult, very difficult, extremely difficult, or not difficult at all?");
 	},
 	function(session, results, next){
-		recogniseDayEntity(session.message.text)
+		recogniseDifficultyEntity(session.message.text)
 			.then(function(entity){ 
 				var botResponse = generateBotQuestionnaireResponse(entity);
 				session.conversationData.userResponse = results.response;
-				session.send("Thank you");
+				session.send("Thank you.");
 				next();
 			})
 			.catch(function(error){ 
-				console.log("No entities identified" + error);
+				console.log("No entities identified " + error);
 				session.beginDialog('clarifyDifficulty');
 			});
 	},
@@ -818,7 +818,7 @@ bot.dialog('gad7', [
 				next();
 			})
 			.catch(function(error){ 
-				console.log("No entities identified" + error);
+				console.log("No entities identified " + error);
 				session.beginDialog('clarifyDifficulty');
 			});
 	},
@@ -962,7 +962,7 @@ bot.dialog('phq9', [
 	},
 	function(session, next){
 		session.userData.lastMessageSent = new Date();
-		builder.Prompts.text(session, "In the past two weeks, how many days, how many days were you bothered by feeling tired or having little energy?");
+		builder.Prompts.text(session, "In the past two weeks, how many days were you bothered by feeling tired or having little energy?");
 	},
 	function(session, results, next){ 
 		session.dialogData.userResponse = results.response;
@@ -1123,7 +1123,7 @@ bot.dialog('phq9', [
 	function(session, results, next){
 		var severity = getSeverity(totalScore);
 		console.log("The user's score of %i indicates that the user has %s depression", totalScore, severity);
-		session.send('Thank you for answering these questions' + session.userData.username + '. You\'ve just been through the PHQ-9 questionnaire. Your score is %i, which will be useful for a clinician. Please do this questionnaire regularly over the next two weeks and, if you don\'t feel you\'ve improved, share your score and your responses with a clinician', totalScore);
+		session.send('Thank you for answering these questions ' + session.userData.username + '. You\'ve just been through the PHQ-9 questionnaire. Your score is %i, which will be useful for a clinician. Please do this questionnaire regularly over the next two weeks and, if you don\'t feel you\'ve improved, share your score and your responses with a clinician', totalScore);
 		next();
 	},
 	function(session){
