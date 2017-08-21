@@ -21,6 +21,14 @@ var mysql = require('mysql');
 
 var dateFormatLite = require('date-format-lite');
 
+var bcrypt = require('bcrypt');
+
+//============
+// Constants
+//============
+
+const saltRounds = 10;
+
 //============
 // Bot Setup
 //============
@@ -80,8 +88,14 @@ var connector = new builder.ChatConnector({
 
 var bot = new builder.UniversalBot(connector, [
 	function(session){
-		session.send('Hi, I\'m MaxBot. I hope we\'ll be able to work together to help you');
-		session.beginDialog('greeting');
+		console.log(session.userData.username);
+		if(session.userData.username == null){
+			session.send('Hi, I\'m MaxBot. I hope we\'ll be able to work together to help you');
+			session.beginDialog('greeting');
+		}else{
+			session.send("Hello " + session.userData.username + ". Welcome back!");
+			session.beginDialog('generalQs');
+		}
 	}
 ]);
 
@@ -92,7 +106,7 @@ server.post('/api/messages', connector.listen());
 //===================
 var totalScore = 0;
 
-var username = null;
+//var username = null;
 
 var questionID = 0;
 
@@ -102,13 +116,16 @@ var feeling = null;
 // Test Values
 //=============
 
-var userID = 1;
-var username = 'Sam';
+//var userID = 1;
+//var username = 'Jack';
 
 //=============
 // Bot Dialogs
 //=============
 
+//------------------//
+// greeting Dialog
+//------------------//
 
 bot.dialog('greeting', [
 	function(session, args, next){
@@ -122,83 +139,183 @@ bot.dialog('greeting', [
 			session.beginDialog('login');
 		}else{
 			session.send('No problem. Registering is quick and easy');
+			session.userData.usernameValid = true;
 			session.beginDialog('register');
 		}
 	}
 ]);
 
-
-bot.dialog('login', [
-	function(session, args, next){
-		builder.Prompts.text(session, "Please enter your username:");
-
-	},
-	function(session,results, next){
-		session.dialogData.username = results.response;
-		builder.Prompts.text(session, "Please enter your password:");
-	},
-	function(session, result){
-		session.dialogData.password = result.response;
-
-		request = new Request(
-			"SELECT UserID FROM Users WHERE Username =" +  mysql.escape(session.dialogData.username) + "AND Password = " + mysql.escape(session.dialogData.password),
-			function(err, rowCount, rows){
-				if(!err){
-					console.log("no error");
-					if(rowCount>0){
-						console.log("User %s logged in.", session.dialogData.username);
-						session.endDialog("Welcome back %s!", session.dialogData.username);
-						session.beginDialog('generalQs');
-					}else{
-						session.endDialog("Your username or password is incorrect");
-					}
-				}else{
-					console.log("error" + err);
-				}
-			}
-		);
-		request.on('row', function(columns){
-			console.log("Logged in user userID is: " + columns[0].value);
-			session.userData.userID = columns[0].value;
-			userID = session.userData.userID;
-		});
-		connection.execSql(request);
-	}
-]);
-
+//------------------//
+// register Dialog
+//------------------//
 
 bot.dialog('register', [
 	function(session, args, next){
-		builder.Prompts.text(session, "Please enter a username of your choice:");
+		if(session.userData.usernameValid == true){
+			builder.Prompts.text(session, "Please enter a username of your choice.");
+		}else{
+			builder.Prompts.text(session, "Please pick another username.");
+		}
+	},
+	function(session, result, next){
+		session.userData.username = result.response;
+		console.log("Username entered was: " + session.userData.username);
+
+		// Checks for illegal characters in entered username
+		var checkSpaces = session.userData.username.includes(" ");
+		console.log("Username entered included spaces: " + checkSpaces);
+
+		var checkSingleQuotationMarks = session.userData.username.includes("'");
+		console.log("Username entered included inverted commas: " + checkSingleQuotationMarks);
+
+		// Handles username with illegal characters
+		if(checkSpaces == true || checkSingleQuotationMarks == true){
+			session.send("I'm sorry, usernames cannot have spaces or single quotation marks (') in them.");
+			session.userData.usernameValid = false;
+			session.beginDialog('register');
+		}
+
+		// Checks whether username already exists
+		request = new Request(
+			"SELECT UserID FROM Users WHERE Username = " + mysql.escape(session.userData.username), function(err, rowCount, rows){
+				console.log("In query for Username");
+				if(!err){
+					console.log("Query on user table successfully executed");
+					console.log(rowCount + " rows returned");
+					if(rowCount>0){
+						console.log("Username " + session.userData.username + " already exists in database");
+						session.send("I'm sorry, that username is unavailable");
+						session.userData.usernameValid = false;
+						session.beginDialog('register');
+					}else{
+						console.log("Username " + session.userData.username + " does not already exist");
+						next();
+					}
+				}else{
+					console.log("An error occurred in checking whether the user exists in the database." + err);
+				}
+			}
+		);
+		connection.execSql(request);
+	}, 
+	function(session, result){
+		builder.Prompts.text(session, "Thanks. Please enter a password of your choice.");
 	},
 	function(session, result){
-		session.dialogData.username = result.response;
-		builder.Prompts.text(session, "Please enter a password of your choice:");
+		var plainTextPassword = result.response;
+
+		bcrypt.genSalt(saltRounds, function(err, salt){
+			bcrypt.hash(plainTextPassword, salt, function(err, hash){
+				console.log(hash);
+				request = new Request(
+					"INSERT INTO Users (Username, Password) VALUES (" + mysql.escape(session.userData.username) + "," + mysql.escape(hash) + "); SELECT @@identity" + "",
+						function(err, rowCount, rows){
+							if(!err){
+								console.log("User successfully inserted into table");
+								session.send("Welcome " + session.userData.username + "! You've succesfully registered");
+								session.beginDialog('generalQs');
+							}else{
+								console.log("Error" + err);
+							}
+
+						}
+				);
+				request.on('row', function(columns){
+					console.log('Newly registered user id is: %d', columns[0].value);
+					session.userData.userID = columns[0].value;
+					userID = session.userData.userID;
+				});
+				connection.execSql(request);
+			});
+		});
+	}, 
+]);
+
+
+//------------------//
+// login Dialog
+//------------------//
+
+bot.dialog('login', [
+	function(session){
+			builder.Prompts.text(session, "Please enter your username:");
 	},
-	function(session, result){
-		session.dialogData.password = result.response;
+	function(session,results, next){
+		session.userData.username = results.response;
+		console.log("Username entered was " + session.userData.username);
 
 		request = new Request(
-			"INSERT INTO Users (Username, Password) VALUES (" + mysql.escape(session.dialogData.username) + "," + mysql.escape(session.dialogData.password) + "); SELECT @@identity" + "",
+			"SELECT UserID FROM Users WHERE Username = " + mysql.escape(session.userData.username), function(err, rowCount, rows){
+				console.log("In query for Username");
+				if(!err){
+					console.log("Query to check if username exists successfully executed");
+					console.log(rowCount + " rows returned");
+					if(rowCount>0){
+						console.log("Username " + session.userData.username + " exists.");
+						next();
+					}else{
+						console.log("Username " + session.userData.username + " does not exist");
+						session.send("I'm sorry, I don't recognise that username. Please try logging in again.");
+						session.beginDialog('login');
+					}
+				}else{
+					console.log("An error occurred in checking whether this username exists." + err);
+					//session.endDialog("User does not exist on system");
+				}
+			}
+		);
+		connection.execSql(request);
+	},
+	function(session){
+		builder.Prompts.text(session, "Thanks. Now please enter your password.");
+	},
+	function(session, result){
+		session.userData.password = result.response;
+		var plainTextPassword = session.userData.password;
+
+		request = new Request(
+			"SELECT UserID, Password FROM Users WHERE Username =" +  mysql.escape(session.userData.username),
 				function(err, rowCount, rows){
 					if(!err){
-						console.log("User successfully inserted into table");
-						session.send("You've succesfully registered");
-						session.beginDialog('generalQs');
+						console.log("Query to retrieve UserID and Password from db successful.");
+						console.log(rowCount + " rows returned.");
+						if(rowCount>0){
+							console.log("UserID and Password successfully retrieved from database");
+						}else{
+							console.log("No userID and password retrieved. This should not happen.");
+						}
 					}else{
-						console.log("Error" + err);
-					}
-
+						console.log("Error in retrieving UserID and Password from database: " + err);
 				}
+			}
 		);
+
 		request.on('row', function(columns){
-			console.log('Newly registered user id is: %d', columns[0].value);
-			session.userData.userID = columns[0].value;
-			userID = session.userData.userID;
+			console.log("Logged in user userID is: " + columns[0].value);
+			console.log("Password from db is: " + columns[1].value);
+
+			var hash = columns[1].value;
+			bcrypt.compare(plainTextPassword, hash, function(err, res){
+				if(res === true){
+					console.log("Password entered matches password stored in database");
+
+					session.userData.password = columns[1].value;
+					session.userData.userID = columns[0].value;
+
+					console.log("User %s logged in.", session.userData.username);
+					session.endDialog("Welcome back %s!", session.userData.username);
+					session.beginDialog('phq9');
+				}else{
+					console.log("Passwords do not match");
+					session.send("I'm sorry, your password is incorrect. Please try logging in again");
+					session.beginDialog('login');
+				}
+			});
 		});
 		connection.execSql(request);
 	}
 ]);
+
 
 //============
 // Functions
@@ -856,7 +973,7 @@ bot.dialog('phq9', [
 		var questionID = 16;
 		processDifficultyResponse(session, session.dialogData.userResponse, 'phq9', questionID);
 		next();
-	},*/
+	},
 	function(session, results, next){
 		var severity = getSeverity(totalScore);
 		console.log("The user's score of %i indicates that the user has %s depression", totalScore, severity);
@@ -866,20 +983,20 @@ bot.dialog('phq9', [
 	function(session, results, next){
 		session.send('Please do this questionnaire regularly over the next two weeks and, if you don\'t feel you\'ve improved, share your score and your responses with a clinician');
 		next();
-	},
+	},*/
 	function(session){
 		if(feeling == 'Depressed'){
-			session.endDialog('Speak to you again soon!');
+			session.endConversation("Great! Thanks for chatting " + username + ". Just come back and say hello when you'd like to chat again :)");
 		}else if(feeling == 'DepressedAndAnxious'){
 			session.beginDialog('gad7');
 		}
-	}
-
+	},
 ]);
 
 //============
 // Functions
 //============
+
 
 function insertQuestionnaireResponseData(interactionID, botTime, userTime, timeLapse, questionID, userID, userResponse, questionnaireType, qScore){
 	request = new Request(
