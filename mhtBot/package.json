@@ -8,6 +8,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "bcrypt": "^1.0.2",
     "botbuilder": "^3.9.1",
     "date-format-lite": "^17.7.0",
     "dateformat": "^2.0.0",

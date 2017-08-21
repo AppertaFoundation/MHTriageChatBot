@@ -180,13 +180,15 @@ VALUES
 	(14, 'phq9', 'How many days have you had trouble concentrating on things, such as reading the newspaper or watching television?'),
 	(15, 'phq9', 'How many days have you moved or spoken so slowly that other people could have noticed? Or the opposite - being so fidgety or restless that you''ve been moving around a lot more than usual?'),
 	(16, 'phq9', 'How many days have you had thoughts that you''d be better off dead or of hurting yourself in some way?'),
-	(17, 'gad7', 'How many days have you felt nervous, anxious, or on edge?'),
-	(18, 'gad7', 'How many days have you not been able to stop or control worrying'),
-	(19, 'gad7', 'How many days have you worried too much about different things?'),
-	(20, 'gad7', 'How many days have you had trouble relaxing?'),
-	(21, 'gad7', 'How many days have you been so restless that it''s hard to sit still?'),
-	(22, 'gad7', 'How many days have you become easily annoyed or irritable?'),
-	(23, 'gad7', 'How many days have you felt afraid, as if something awful might happen?')
+	(17, 'phq9', 'How difficult have any of these problems made it for you to do your work, take care of things at home, or get along with other people?');
+	(18, 'gad7', 'How many days have you felt nervous, anxious, or on edge?'),
+	(19, 'gad7', 'How many days have you not been able to stop or control worrying'),
+	(20, 'gad7', 'How many days have you worried too much about different things?'),
+	(21, 'gad7', 'How many days have you had trouble relaxing?'),
+	(22, 'gad7', 'How many days have you been so restless that it''s hard to sit still?'),
+	(23, 'gad7', 'How many days have you become easily annoyed or irritable?'),
+	(24, 'gad7', 'How many days have you felt afraid, as if something awful might happen?')
+	(25, 'phq9', 'How difficult have any of these problems made it for you to do your work, take care of things at home, or get along with other people?');
 
 INSERT INTO AllQuestions (QuestionNo, QuestionType, Question) 
 VALUES (1, 'introQs', 'How are you feeling today?'), (2, 'introQs', 'Would you say you''re feeling happy, anxious, or low?');
@@ -208,6 +210,18 @@ SELECT aq.QuestionID
 FROM AllQuestions aq JOIN UserQuestionIDs uq ON aq.QuestionID = uq.QuestionID 
 WHERE UserID = 3 AND QuestionType = 'introQs'
 
+ALTER TABLE TotalScores
+ADD QuestionnaireID INT IDENTITY;
+
+ALTER TABLE TotalScores
+ADD Difficulty  VARCHAR(128);
+
+ALTER TABLE TotalScores
+DROP CONSTRAINT PK__TotalSco__022F7C96479902BB;DELETE FROM Users
+WHERE UserID = 4;
+
+DELETE FROM Users
+WHERE UserID = 4;
 
 
 

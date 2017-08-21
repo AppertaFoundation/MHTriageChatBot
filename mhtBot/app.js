@@ -94,7 +94,7 @@ var bot = new builder.UniversalBot(connector, [
 			session.beginDialog('greeting');
 		}else{
 			session.send("Hello " + session.userData.username + ". Welcome back!");
-			session.beginDialog('phq9');
+			session.beginDialog('generalQs');
 		}
 	}
 ]);
@@ -110,7 +110,7 @@ var totalScore = 0;
 
 var questionID = 0;
 
-var feeling = 'Depressed';
+var feeling = null;
 
 //=============
 // Test Values
@@ -212,8 +212,8 @@ bot.dialog('register', [
 						function(err, rowCount, rows){
 							if(!err){
 								console.log("User successfully inserted into table");
-								session.send("Welcome " + session.userData.username + "! You've succesfully registered");
-								session.beginDialog('phq9');
+								session.send("Welcome " + session.userData.username + "! You've successfully registered.");
+								session.beginDialog('generalQs');
 							}else{
 								console.log("Error" + err);
 							}
@@ -302,8 +302,8 @@ bot.dialog('login', [
 					session.userData.userID = columns[0].value;
 
 					console.log("User %s logged in.", session.userData.username);
-					session.endDialog("Welcome back %s!", session.userData.username);
-					session.beginDialog('phq9');
+					session.endDialog("Wecome back %s!", session.userData.username);
+					session.beginDialog('generalQs');
 				}else{
 					console.log("Passwords do not match");
 					session.send("I'm sorry, your password is incorrect. Please try logging in again");
@@ -484,7 +484,7 @@ function recogniseFeeling(text){
 function generateBotGeneralQResponse(feeling){
 	console.log("In generateBotGeneralResponse() dialog");
 	if(feeling == 'Depressed' || feeling == 'Anxious' || feeling == 'DepressedAndAnxious'){
-		return "I'm sorry to hear you're feeling that way.";
+		return "I'm sorry to hear you're feeling that way";
 	}else if(feeling == 'Happy'){
 		return "That's great to hear! Think about what made you happy and do it again.";
 	}else{
@@ -495,6 +495,7 @@ function generateBotGeneralQResponse(feeling){
 //-----------------------//
 // clarifyFeeling Dialog
 //----------------------//
+
 bot.dialog('clarifyFeeling', [
 	function(session){
 		console.log("Beginning 'clarifyFeeling' dialog");
@@ -502,10 +503,16 @@ bot.dialog('clarifyFeeling', [
 		builder.Prompts.text(session, "To work out how to best help you, would you be able to be able to tell me what the bigger problem is for you right now? Is it feeling low, or anxiety, or a combination of both? Or, if you're happy, I'd like to know about that too.");
 	},
 	function(session, results, next){
+		session.conversationData.userResponse = results.response;
+
 		recogniseFeeling(session.message.text)
-			.then(function(entity){ 
-				var botResponse = generateBotQuestionnaireResponse(entity);
-				session.send("Thank you");
+			.then(function(feelingEntity){ 
+				var botResponse = generateBotGeneralQResponse(feelingEntity);
+				console.log(feeling);
+				console.log("Bot response is:");
+				console.log(botResponse);
+				
+				session.send("Thank you for telling me this. " + botResponse + " though.");
 				next();
 			})
 			.catch(function(error){ 
@@ -514,7 +521,7 @@ bot.dialog('clarifyFeeling', [
 			});
 	},
 	function(session, results, next){
-		var questionID = 2;
+		questionID = 2;
 		processGeneralQResponse(session, results.response, questionID);
 		next();
 	},
@@ -526,38 +533,39 @@ bot.dialog('clarifyFeeling', [
 //------------------//
 //GeneralQs Dialog
 //------------------//
+
 bot.dialog('generalQs', [
 	function(session, args, next){
 		session.userData.lastMessageSent = new Date();
 		builder.Prompts.text(session, 'How are you feeling today?');
 	},
 	function(session, results, next){ 
-		session.dialogData.userResponse = results.response;
+		session.conversationData.userResponse = results.response;
+
 		recogniseFeeling(session.message.text)
-			.then(function(feeling){ 
-				var botResponse = generateBotGeneralQResponse(feeling);
-				session.send(botResponse);
-				if(feeling == 'Happy'){
-					session.endDialog("I'll say goodbye for now " + username + " but just say hello when you'd like to speak again :)");
-				}else{
-					next();
-				}
+			.then(function(feelingEntity){ 
+				var botResponse = generateBotGeneralQResponse(feelingEntity);
+				session.send(botResponse + ".");
+				next();
 			})
 			.catch(function(error){
-				var botResponse = generateBotGeneralQResponse('no entity'); 
-				session.send(botResponse);
-				console.log("No entities identified" + error);
+				//var botResponse = generateBotGeneralQResponse('no entity'); 
+				//session.send(botResponse);
+				console.log("No feeling identified" + error);
 				session.beginDialog('clarifyFeeling');
 			});
 	},
 	function(session, results, next){
-		var questionID = 1;
+		questionID = 1;
 		console.log("Feeling is:");
 		console.log(feeling);
-		processGeneralQResponse(session, session.dialogData.userResponse, questionID);
-		//processUserResponseNew(session, results.response, questionNo);
-		next();
-	},/*
+		processGeneralQResponse(session, session.conversationData.userResponse, questionID);
+		if(feeling == 'Happy'){
+			session.endConversation("I'll say goodbye for now " + session.userData.username + " but just say hello when you'd like to speak again :)");
+		}else{
+			next();
+		}
+	},
 	function(session, args, next){
 		// https://stackoverflow.com/questions/42069081/get-duration-between-the-bot-sending-the-message-and-user-replying
 		session.userData.lastMessageSent = new Date();
@@ -565,7 +573,7 @@ bot.dialog('generalQs', [
 	}, 
 
 	function(session, results, next){
-		var questionID = 3;
+		questionID = 3;
 		processGeneralQResponse(session, results.response, questionID);
 		next();
 	},
@@ -575,7 +583,7 @@ bot.dialog('generalQs', [
 		builder.Prompts.text(session, 'Can you identify anything in particular that might have triggered any negative thoughts and feelings?');
 	},
 	function(session, results, next){
-		var questionID = 4;
+		questionID = 4;
 		processGeneralQResponse(session, results.response, questionID);
 		next();
 	},
@@ -584,7 +592,7 @@ bot.dialog('generalQs', [
 		builder.Prompts.text(session, 'What have these thoughts and feelings stopped you doing?');
 	},
 	function(session, results, next){
-		var questionID = 5;
+		questionID = 5;
 		processGeneralQResponse(session, results.response, questionID);
 		next();
 	},
@@ -593,13 +601,9 @@ bot.dialog('generalQs', [
 		builder.Prompts.confirm(session, 'Do you have a care plan?');
 	},
 	function(session, results, next){
-		var questionNo = 4;
-	var userResponse = results.response;
-		var questionID = 6;
+		var userResponse = results.response;
+		questionID = 6;
 		processGeneralQResponse(session, session.message.text, questionID);
-	//processUserResponseNew(session, session.message.text, questionNo);
-
-	//processUserResponse(session, session.message.text, 4);
 		if(userResponse == true){
 			session.userData.lastMessageSent = new Date();
 			builder.Prompts.text(session, 'Is it working for you?');
@@ -608,13 +612,13 @@ bot.dialog('generalQs', [
 		}
 	},
 	function(session, results, next){
-		var questionID = 7;
+		questionID = 7;
 		processGeneralQResponse(session, session.message.text, questionID);
 		//processUserResponseNew(session, session.message.text, questionNo);
 		//processUserResponse(session, results, 5);
-		session.send("Thank you for answering these questions " + username + ".");
+		session.send("Thank you for answering these questions " + session.userData.username + ".");
 		next();
-	},*/
+	},
 	function(session){
 		if(feeling == 'Depressed' || feeling == 'DepressedAndAnxious'){
 			session.beginDialog('phq9');
@@ -624,31 +628,6 @@ bot.dialog('generalQs', [
 	}
 ]);
 
-
-//--------------------//
-// clarifyDays Dialog
-//--------------------//
-bot.dialog('clarifyDays', [
-	function(session){
-		console.log("Beginning 'clarifyDays' dialog");
-		builder.Prompts.text(session, "I'm sorry, I didn't quite get that. Please try and give a specific number of days.");
-	},
-	function(session, results, next){
-		recogniseDayEntity(session.message.text)
-			.then(function(entity){ 
-				var botResponse = generateBotQuestionnaireResponse(entity);
-				session.send("Thank you");
-				next();
-			})
-			.catch(function(error){ 
-				console.log("No entities identified" + error);
-				session.beginDialog('clarifyDays');
-			});
-	},
-	function(session){
-		session.endDialog();
-	}
-]);
 
 //---------------------------//
 // clarifyDifficulty Dialog
@@ -662,12 +641,13 @@ bot.dialog('clarifyDifficulty', [
 		recogniseDayEntity(session.message.text)
 			.then(function(entity){ 
 				var botResponse = generateBotQuestionnaireResponse(entity);
+				session.conversationData.userResponse = results.response;
 				session.send("Thank you");
 				next();
 			})
 			.catch(function(error){ 
 				console.log("No entities identified" + error);
-				session.beginDialog('clarifyDays');
+				session.beginDialog('clarifyDifficulty');
 			});
 	},
 	function(session){
@@ -691,17 +671,16 @@ bot.dialog('gad7', [
 	function(session, results, next){
 		var userResponse = results.response;
 		if(userResponse == true){
-			session.send("Great!");
+			session.send("That's great!");
 			next();
 		}else{
-			session.endDialog("No problem, just come back and say hello when you feel ready to try this. Hope to speak to you again soon " + username + "!");
+			session.endConversation("No problem, just come back and say hello when you feel ready to try this. Hope to speak to you again soon " + session.userData.username + "!");
 		}
 	},
 	function(session){
-		console.log("Asking phq9 q1");
 		session.userData.lastMessageSent = new Date();
 		builder.Prompts.text(session, "In the past two weeks, how many days have you felt nervous, anxious, or on edge?");
-	}, /*
+	}, 
 	function(session, results, next){ 
 		session.dialogData.userResponse = results.response;
 		recogniseDayEntity(session.message.text)
@@ -714,245 +693,120 @@ bot.dialog('gad7', [
 				console.log("No entities identified" + error);
 				session.beginDialog('clarifyDays');
 			});
-	},*/
-		function(session, results, next){
-		var severity = getSeverity(totalScore);
-		console.log("The user's score of %i indicates that the user has %s depression", totalScore, severity);
-		session.send('Thanks for answering these questions ' + username + '.');
-		next();
 	},
-	function(session, results, next){
-		session.send('You\'ve just been through the GAD-7 questionnaire. Your score is %i, which will be useful for a clinician. Please do this questionnaire regularly over the next two weeks and, if you don\'t feel you\'ve improved, share your score and your responses with a clinician', totalScore);
+	function(session, results, next){ 
+		questionID = 17;
+		processQuestionnaireResponse(session, session.conversationData.userResponse, 'gad7', questionID);
 		next();
 	},
 	function(session){
-		session.endDialog('I\'ll say goodbye for now but just say hello when you\'d like to talk again!');
-	}
-
-]);
-
-
-//------------------//
-// phq9 Dialog
-//------------------//
-bot.dialog('phq9', [
-	/*function (session, args, next){
-		console.log('Beginning phq9 dialog');
-		totalScore = 0;
-		builder.Prompts.confirm(session, "I'm now going to take you through a clinical process that will help you to explain how you feel to a clinician. Is that ok?");
-		//session.send("I'm now going to ask you some questions about how you've felt over the past two weeks");
+		session.userData.lastMessageSent = new Date();
+		builder.Prompts.text(session, "In the past two weeks, how many days have you not been able to stop or control worrying?");
+	}, 
+	function(session, results, next){ 
+		session.dialogData.userResponse = results.response;
+		recogniseDayEntity(session.message.text)
+			.then(function(entity){ var botResponse = generateBotQuestionnaireResponse(entity);
+				session.send(botResponse);
+				next(); })
+			.catch(function(error){ console.log("No entities identified" + error);
+				session.beginDialog('clarifyDays'); });
 	},
-	function(session, results, next){
-		var userResponse = results.response;
-		if(userResponse == true){
-			session.send("Great!");
-			next();
-		}else{
-			session.endDialog("No problem! Come back when you feel ready to try this.");
-		}
+	function(session, results, next){ 
+		questionID += 1;
+		processQuestionnaireResponse(session, session.conversationData.userResponse, 'gad7', questionID);
+		next();
 	},
 	function(session){
-		console.log("Asking phq9 q1");
 		session.userData.lastMessageSent = new Date();
-		builder.Prompts.text(session, "In the past two weeks, how many days have you had little interest or pleasure in doing things?");
+		builder.Prompts.text(session, "In the past two weeks, how many days have you worried too much about different things?");
 	}, 
 	function(session, results, next){ 
 		session.dialogData.userResponse = results.response;
 		recogniseDayEntity(session.message.text)
-			.then(function(entity){ 
-				var botResponse = generateBotQuestionnaireResponse(entity);
+			.then(function(entity){ var botResponse = generateBotQuestionnaireResponse(entity);
 				session.send(botResponse);
-				next();
-			})
-			.catch(function(error){ 
-				console.log("No entities identified" + error);
-				session.beginDialog('clarifyDays');
-			});
-	},/*
-	function(session, results, next){
-		var questionID = 7;
-		console.log("in question 7 storage area");
-		processQuestionnaireResponse(session, session.dialogData.userResponse, 'phq9', questionID);
+				next(); })
+			.catch(function(error){ console.log("No entities identified" + error);
+				session.beginDialog('clarifyDays'); });
+	},
+	function(session, results, next){ 
+		questionID += 1;
+		processQuestionnaireResponse(session, session.conversationData.userResponse, 'gad7', questionID);
 		next();
 	},
-	function(session, next){
-		console.log("phq9 q2");
+	function(session){
 		session.userData.lastMessageSent = new Date();
-		builder.Prompts.text(session, "In the past two weeks, how many days have you felt down, depressed, or hopeless?");
-	},
-	function(session, results, next){ 
-		session.dialogData.userResponse = results.response;
-		recogniseDayEntity(session.message.text)
-			.then(function(entity){ 
-				var botResponse = generateBotQuestionnaireResponse(entity);
-				session.send(botResponse);
-				next();
-			})
-			.catch(function(error){ 
-				console.log("No entities identified" + error);
-				session.beginDialog('clarifyDays');
-			});
-	},
-	function(session, results, next){ 
-		var questionID = 8;
-		processQuestionnaireResponse(session, session.dialogData.userResponse, 'phq9', questionID);
-		next();
-	},
-	function(session, next){
-		session.userData.lastMessageSent = new Date();
-		builder.Prompts.text(session, 'In the past two weeks, how many days have you had trouble falling or staying asleep, or sleeping too much?');
-	},
-	function(session, results, next){ 
-		session.dialogData.userResponse = results.response;
-		recogniseDayEntity(session.message.text)
-			.then(function(entity){ 
-				var botResponse = generateBotQuestionnaireResponse(entity);
-				session.send(botResponse);
-				next();
-			})
-			.catch(function(error){ 
-				console.log("No entities identified" + error);
-				session.beginDialog('clarifyDays');
-			});
-	},
-	function(session, results, next){ 
-		var questionID = 9;
-		processQuestionnaireResponse(session, session.dialogData.userResponse, 'phq9', questionID);
-		next();
-	},
-	function(session, next){
-		session.userData.lastMessageSent = new Date();
-		builder.Prompts.text(session, "In the past two weeks, how many days, how many days were you bothered by feeling tired or having little energy?");
-	},
-	function(session, results, next){ 
-		session.dialogData.userResponse = results.response;
-		recogniseDayEntity(session.message.text)
-			.then(function(entity){ 
-				var botResponse = generateBotQuestionnaireResponse(entity);
-				session.send(botResponse);
-				next();
-			})
-			.catch(function(error){ 
-				console.log("No entities identified" + error);
-				session.beginDialog('clarifyDays');
-			});
-	},
-	function(session, results, next){ 
-		var questionID = 10;
-		processQuestionnaireResponse(session, session.dialogData.userResponse, 'phq9', questionID);
-		next();
-	},
-	function(session, next){
-		session.userData.lastMessageSent = new Date();
-		builder.Prompts.text(session, "In the past two weeks, how many days have you had a poor appetite or overeaten?");
+		builder.Prompts.text(session, "In the past two weeks, how many days have you had trouble relaxing?");
 	}, 
 	function(session, results, next){ 
 		session.dialogData.userResponse = results.response;
 		recogniseDayEntity(session.message.text)
-			.then(function(entity){ 
-				var botResponse = generateBotQuestionnaireResponse(entity);
+			.then(function(entity){ var botResponse = generateBotQuestionnaireResponse(entity);
 				session.send(botResponse);
-				next();
-			})
-			.catch(function(error){ 
-				console.log("No entities identified" + error);
-				session.beginDialog('clarifyDays');
-			});
+				next(); })
+			.catch(function(error){ console.log("No entities identified" + error);
+				session.beginDialog('clarifyDays'); });
 	},
 	function(session, results, next){ 
-		var questionID = 11;
-		processQuestionnaireResponse(session, session.dialogData.userResponse, 'phq9', questionID);
+		questionID += 1;
+		processQuestionnaireResponse(session, session.conversationData.userResponse, 'gad7', questionID);
 		next();
 	},
-	function(session, next){
+	function(session){
 		session.userData.lastMessageSent = new Date();
-		builder.Prompts.text(session, "In the past two weeks, how many days have you felt bad about yourself - or that you are a failure or have let yourself or your family down?");
+		builder.Prompts.text(session, "In the past two weeks, how many days have you been so restless that it's been hard to sit still?");
 	}, 
 	function(session, results, next){ 
 		session.dialogData.userResponse = results.response;
 		recogniseDayEntity(session.message.text)
-			.then(function(entity){ 
-				var botResponse = generateBotQuestionnaireResponse(entity);
+			.then(function(entity){ var botResponse = generateBotQuestionnaireResponse(entity);
 				session.send(botResponse);
-				next();
-			})
-			.catch(function(error){ 
-				console.log("No entities identified" + error);
-				session.beginDialog('clarifyDays');
-			});
+				next(); })
+			.catch(function(error){ console.log("No entities identified" + error);
+				session.beginDialog('clarifyDays'); });
 	},
 	function(session, results, next){ 
-		var questionID = 12;
-		processQuestionnaireResponse(session, session.dialogData.userResponse, 'phq9', questionID);
+		questionID += 1;
+		processQuestionnaireResponse(session, session.conversationData.userResponse, 'gad7', questionID);
 		next();
 	},
-	function(session, next){
+	function(session){
 		session.userData.lastMessageSent = new Date();
-		builder.Prompts.text(session, "In the past two weeks, how many days have you had trouble concentrating on things, such as reading the newspaper or watching television?");
+		builder.Prompts.text(session, "In the past two weeks, how many days have you become easily annoyed or irritable?");
 	}, 
 	function(session, results, next){ 
 		session.dialogData.userResponse = results.response;
 		recogniseDayEntity(session.message.text)
-			.then(function(entity){ 
-				var botResponse = generateBotQuestionnaireResponse(entity);
+			.then(function(entity){ var botResponse = generateBotQuestionnaireResponse(entity);
 				session.send(botResponse);
-				next();
-			})
-			.catch(function(error){ 
-				console.log("No entities identified" + error);
-				session.beginDialog('clarifyDays');
-			});
+				next(); })
+			.catch(function(error){ console.log("No entities identified" + error);
+				session.beginDialog('clarifyDays'); });
 	},
 	function(session, results, next){ 
-		var questionID = 13;
-		processQuestionnaireResponse(session, session.dialogData.userResponse, 'phq9', questionID);
+		questionID += 1;
+		processQuestionnaireResponse(session, session.conversationData.userResponse, 'gad7', questionID);
 		next();
 	},
-	function(session, next){
+	function(session){
 		session.userData.lastMessageSent = new Date();
-		builder.Prompts.text(session, "In the past two weeks, how many days have you moved or spoken so slowly that other people could have noticed? Or the opposite - been so fidgety or restless that you've been moving around a lot more than usual?");
+		builder.Prompts.text(session, "In the past two weeks, how many days have you felt afraid, as if something awful might happen?");
 	}, 
 	function(session, results, next){ 
-		session.dialogData.userResponse = results.response;
-		recogniseDayEntity(session.message.text)
-			.then(function(entity){ 
-				var botResponse = generateBotQuestionnaireResponse(entity);
-				session.send(botResponse);
-				next();
-			})
-			.catch(function(error){ 
-				console.log("No entities identified" + error);
-				session.beginDialog('clarifyDays');
-			});
-	},
-	function(session, results, next){ 
-		var questionID = 14;
-		processQuestionnaireResponse(session, session.dialogData.userResponse, 'phq9', questionID);
+		questionID += 1;
+		processQuestionnaireResponse(session, session.conversationData.userResponse, 'gad7', questionID);
 		next();
-	},
-
-	function(session, next){
-		session.userData.lastMessageSent = new Date();
-		builder.Prompts.text(session, "In the past two weeks, how many days, how often have you had thoughts that you'd be better off dead or of hurting yourself in some way?");
 	},
 	function(session, results, next){ 
 		session.dialogData.userResponse = results.response;
 		recogniseDayEntity(session.message.text)
-			.then(function(entity){ 
-				var botResponse = generateBotQuestionnaireResponse(entity);
+			.then(function(entity){ var botResponse = generateBotQuestionnaireResponse(entity);
 				session.send(botResponse);
-				next();
-			})
-			.catch(function(error){ 
-				console.log("No entities identified" + error);
-				session.beginDialog('clarifyDays');
-			});
+				next(); })
+			.catch(function(error){ console.log("No entities identified" + error);
+				session.beginDialog('clarifyDays'); });
 	},
-	function(session, results, next){ 
-		var questionID = 15;
-		processQuestionnaireResponse(session, session.dialogData.userResponse, 'phq9', questionID);
-		next();
-	},*/
 	function(session, next){
 		session.userData.lastMessageSent = new Date();
 		builder.Prompts.text(session, "How difficult have any of these problems made it for you to do your work, take care of things at home, or get along with other people?");
@@ -969,18 +823,307 @@ bot.dialog('phq9', [
 			});
 	},
 	function(session, results, next){
-		var questionID = 16;
-		processDifficultyResponse(session, session.dialogData.userResponse, 'phq9', questionID);
+		questionID += 1;
+		processDifficultyResponse(session, session.conversationData.userResponse, 'gad7', questionID);
+		next();
+	},
+	function(session, results, next){
+	var severity = getSeverity(totalScore);
+	console.log("The user's score of %i indicates that the user has %s anxiety", totalScore, severity);
+	session.send('Thanks for answering these questions ' + session.userData.username + '.');
+	next();
+	},
+	function(session, results, next){
+		session.send('You\'ve just been through the GAD-7 questionnaire. Your score is %i, which will be useful for a clinician. Please do this questionnaire regularly over the next two weeks and, if you don\'t feel you\'ve improved, share your score and your responses with a clinician.', totalScore);
+		next();
+	},
+	function(session){
+		session.endConversation('I\'ll say goodbye for now ' + session.userData.username + ' but just say hello when you\'d like to talk again!');
+	}
+
+]);
+
+//--------------------//
+// clarifyDays Dialog
+//--------------------//
+bot.dialog('clarifyDays', [
+	function(session){
+		console.log("Beginning 'clarifyDays' dialog");
+		builder.Prompts.text(session, "I'm sorry, I didn't quite get that. Please try and give a specific number of days.");
+	},
+	function(session, results, next){
+		recogniseDayEntity(session.message.text)
+			.then(function(entity){ 
+				var botResponse = generateBotQuestionnaireResponse(entity);
+				session.conversationData.userResponse = results.response;
+				session.send("Thank you");
+				next();
+			})
+			.catch(function(error){ 
+				console.log("No entities identified" + error);
+				session.beginDialog('clarifyDays');
+			});
+	},
+	function(session){
+		session.endDialog();
+	}
+]);
+
+//------------------//
+// phq9 Dialog
+//------------------//
+bot.dialog('phq9', [
+	function (session, args, next){
+		console.log('Beginning phq9 dialog');
+		totalScore = 0;
+		builder.Prompts.confirm(session, "I'm now going to take you through a clinical process that will help you to explain how you feel to a clinician. Is that ok?");
+		//session.send("I'm now going to ask you some questions about how you've felt over the past two weeks");
+	},
+	function(session, results, next){
+		var userResponse = results.response;
+		if(userResponse == true){
+			session.send("Great!");
+			next();
+		}else{
+			session.endDialog("No problem!" + session.userData.username + "Come back when you feel ready to try this.");
+		}
+	}, 
+	function(session){
+		console.log("Asking phq9 q1");
+		session.userData.lastMessageSent = new Date();
+		builder.Prompts.text(session, "In the past two weeks, how many days have you had little interest or pleasure in doing things?");
+	}, 
+	function(session, results, next){ 
+		//session.dialogData.userResponse = results.response;
+		recogniseDayEntity(results.response)
+			.then(function(entity){ 
+				var botResponse = generateBotQuestionnaireResponse(entity);
+				session.send(botResponse);
+				session.conversationData.userResponse = results.response;
+				next();
+			})
+			.catch(function(error){ 
+				console.log("No entities identified" + error);
+				session.beginDialog('clarifyDays');
+			});
+	},
+	function(session, results, next){
+		questionID = 8;
+		console.log("in question 7 storage area");
+		processQuestionnaireResponse(session, session.conversationData.userResponse, 'phq9', questionID);
+		next();
+	},
+	function(session, next){
+		console.log("phq9 q2");
+		session.userData.lastMessageSent = new Date();
+		builder.Prompts.text(session, "In the past two weeks, how many days have you felt down, depressed, or hopeless?");
+	},
+	function(session, results, next){ 
+		session.dialogData.userResponse = results.response;
+		recogniseDayEntity(session.message.text)
+			.then(function(entity){ 
+				var botResponse = generateBotQuestionnaireResponse(entity);
+				session.send(botResponse);
+				session.conversationData.userResponse = results.response;
+				next();
+			})
+			.catch(function(error){ 
+				console.log("No entities identified" + error);
+				session.beginDialog('clarifyDays');
+			});
+	},
+	function(session, results, next){ 
+		questionID += 1;
+		processQuestionnaireResponse(session, session.conversationData.userResponse, 'phq9', questionID);
+		next();
+	},
+	function(session, next){
+		session.userData.lastMessageSent = new Date();
+		builder.Prompts.text(session, 'In the past two weeks, how many days have you had trouble falling or staying asleep, or sleeping too much?');
+	},
+	function(session, results, next){ 
+		session.dialogData.userResponse = results.response;
+		recogniseDayEntity(session.message.text)
+			.then(function(entity){ 
+				var botResponse = generateBotQuestionnaireResponse(entity);
+				session.send(botResponse);
+				session.conversationData.userResponse = results.response;
+				next();
+			})
+			.catch(function(error){ 
+				console.log("No entities identified" + error);
+				session.beginDialog('clarifyDays');
+			});
+	},
+	function(session, results, next){ 
+		questionID += 1;
+		processQuestionnaireResponse(session, session.conversationData.userResponse, 'phq9', questionID);
+		next();
+	},
+	function(session, next){
+		session.userData.lastMessageSent = new Date();
+		builder.Prompts.text(session, "In the past two weeks, how many days, how many days were you bothered by feeling tired or having little energy?");
+	},
+	function(session, results, next){ 
+		session.dialogData.userResponse = results.response;
+		recogniseDayEntity(session.message.text)
+			.then(function(entity){ 
+				var botResponse = generateBotQuestionnaireResponse(entity);
+				session.send(botResponse);
+				session.conversationData.userResponse = results.response;
+				next();
+			})
+			.catch(function(error){ 
+				console.log("No entities identified" + error);
+				session.beginDialog('clarifyDays');
+			});
+	},
+	function(session, results, next){ 
+		questionID += 1;
+		processQuestionnaireResponse(session, session.conversationData.userResponse, 'phq9', questionID);
+		next();
+	},
+	function(session, next){
+		session.userData.lastMessageSent = new Date();
+		builder.Prompts.text(session, "In the past two weeks, how many days have you had a poor appetite or overeaten?");
+	}, 
+	function(session, results, next){ 
+		session.dialogData.userResponse = results.response;
+		recogniseDayEntity(session.message.text)
+			.then(function(entity){ 
+				var botResponse = generateBotQuestionnaireResponse(entity);
+				session.send(botResponse);
+				session.conversationData.userResponse = results.response;
+				next();
+			})
+			.catch(function(error){ 
+				console.log("No entities identified" + error);
+				session.beginDialog('clarifyDays');
+			});
+	},
+	function(session, results, next){ 
+		questionID += 1;
+		processQuestionnaireResponse(session, session.conversationData.userResponse, 'phq9', questionID);
+		next();
+	},
+	function(session, next){
+		session.userData.lastMessageSent = new Date();
+		builder.Prompts.text(session, "In the past two weeks, how many days have you felt bad about yourself - or that you are a failure or have let yourself or your family down?");
+	}, 
+	function(session, results, next){ 
+		session.dialogData.userResponse = results.response;
+		recogniseDayEntity(session.message.text)
+			.then(function(entity){ 
+				var botResponse = generateBotQuestionnaireResponse(entity);
+				session.send(botResponse);
+				session.conversationData.userResponse = results.response;
+				next();
+			})
+			.catch(function(error){ 
+				console.log("No entities identified" + error);
+				session.beginDialog('clarifyDays');
+			});
+	},
+	function(session, results, next){ 
+		questionID += 1;
+		processQuestionnaireResponse(session, session.conversationData.userResponse, 'phq9', questionID);
+		next();
+	},
+	function(session, next){
+		session.userData.lastMessageSent = new Date();
+		builder.Prompts.text(session, "In the past two weeks, how many days have you had trouble concentrating on things, such as reading the newspaper or watching television?");
+	}, 
+	function(session, results, next){ 
+		session.dialogData.userResponse = results.response;
+		recogniseDayEntity(session.message.text)
+			.then(function(entity){ 
+				var botResponse = generateBotQuestionnaireResponse(entity);
+				session.send(botResponse);
+				session.conversationData.userResponse = results.response;
+				next();
+			})
+			.catch(function(error){ 
+				console.log("No entities identified" + error);
+				session.beginDialog('clarifyDays');
+			});
+	},
+	function(session, results, next){ 
+		questionID += 1;
+		processQuestionnaireResponse(session, session.conversationData.userResponse, 'phq9', questionID);
+		next();
+	},
+	function(session, next){
+		session.userData.lastMessageSent = new Date();
+		builder.Prompts.text(session, "In the past two weeks, how many days have you moved or spoken so slowly that other people could have noticed? Or the opposite - been so fidgety or restless that you've been moving around a lot more than usual?");
+	}, 
+	function(session, results, next){ 
+		session.dialogData.userResponse = results.response;
+		recogniseDayEntity(session.message.text)
+			.then(function(entity){ 
+				var botResponse = generateBotQuestionnaireResponse(entity);
+				session.send(botResponse);
+				session.conversationData.userResponse = results.response;
+				next();
+			})
+			.catch(function(error){ 
+				console.log("No entities identified" + error);
+				session.beginDialog('clarifyDays');
+			});
+	},
+	function(session, results, next){ 
+		questionID += 1;
+		processQuestionnaireResponse(session, session.conversationData.userResponse, 'phq9', questionID);
+		next();
+	},
+
+	function(session, next){
+		session.userData.lastMessageSent = new Date();
+		builder.Prompts.text(session, "In the past two weeks, how many days have you had thoughts that you'd be better off dead or of hurting yourself in some way?");
+	},
+	function(session, results, next){ 
+		session.dialogData.userResponse = results.response;
+		recogniseDayEntity(session.message.text)
+			.then(function(entity){ 
+				var botResponse = generateBotQuestionnaireResponse(entity);
+				session.send(botResponse);
+				session.conversationData.userResponse = results.response;
+				next();
+			})
+			.catch(function(error){ 
+				console.log("No entities identified" + error);
+				session.beginDialog('clarifyDays');
+			});
+	},
+	function(session, results, next){ 
+		questionID += 1;
+		processQuestionnaireResponse(session, session.conversationData.userResponse, 'phq9', questionID);
+		next();
+	},
+	function(session, next){
+		session.userData.lastMessageSent = new Date();
+		builder.Prompts.text(session, "How difficult have any of these problems made it for you to do your work, take care of things at home, or get along with other people?");
+	},
+	function(session, results, next){ 
+		session.dialogData.userResponse = results.response;
+		recogniseDifficultyEntity(session.message.text)
+			.then(function(entity){ 
+				session.conversationData.userResponse = results.response;
+				next();
+			})
+			.catch(function(error){ 
+				console.log("No entities identified" + error);
+				session.beginDialog('clarifyDifficulty');
+			});
+	},
+	function(session, results, next){
+		questionID += 1;
+		processDifficultyResponse(session, session.conversationData.userResponse, 'phq9', questionID);
 		next();
 	},
 	function(session, results, next){
 		var severity = getSeverity(totalScore);
 		console.log("The user's score of %i indicates that the user has %s depression", totalScore, severity);
-		session.send('Thank you for answering these questions. You\'ve just been through the PHQ-9 questionnaire. Your score is %i, which will be useful for a clinician.', totalScore);
-		next();
-	},
-	function(session, results, next){
-		session.send('Please do this questionnaire regularly over the next two weeks and, if you don\'t feel you\'ve improved, share your score and your responses with a clinician');
+		session.send('Thank you for answering these questions' + session.userData.username + '. You\'ve just been through the PHQ-9 questionnaire. Your score is %i, which will be useful for a clinician. Please do this questionnaire regularly over the next two weeks and, if you don\'t feel you\'ve improved, share your score and your responses with a clinician', totalScore);
 		next();
 	},
 	function(session){
