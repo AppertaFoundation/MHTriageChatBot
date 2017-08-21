@@ -94,7 +94,7 @@ var bot = new builder.UniversalBot(connector, [
 			session.beginDialog('greeting');
 		}else{
 			session.send("Hello " + session.userData.username + ". Welcome back!");
-			session.beginDialog('generalQs');
+			session.beginDialog('phq9');
 		}
 	}
 ]);
@@ -110,7 +110,7 @@ var totalScore = 0;
 
 var questionID = 0;
 
-var feeling = null;
+var feeling = 'Depressed';
 
 //=============
 // Test Values
@@ -213,7 +213,7 @@ bot.dialog('register', [
 							if(!err){
 								console.log("User successfully inserted into table");
 								session.send("Welcome " + session.userData.username + "! You've succesfully registered");
-								session.beginDialog('generalQs');
+								session.beginDialog('phq9');
 							}else{
 								console.log("Error" + err);
 							}
@@ -223,7 +223,6 @@ bot.dialog('register', [
 				request.on('row', function(columns){
 					console.log('Newly registered user id is: %d', columns[0].value);
 					session.userData.userID = columns[0].value;
-					userID = session.userData.userID;
 				});
 				connection.execSql(request);
 			});
@@ -392,7 +391,7 @@ function processGeneralQResponse(session, response, questionID){
 	insertIntoUserResponses(response)
 		// Using the interactionID created by the insertion, inserts the user response data into the other relevant tables
 		.then(function(interactionID){ 
-			insertGeneralQResponseData(interactionID, botTimeFormatted, userTimeFormatted, timeLapseHMS, questionID, userID, response)
+			insertGeneralQResponseData(interactionID, botTimeFormatted, userTimeFormatted, timeLapseHMS, questionID, session.userData.userID, response)
 			
 		})
 		.catch(function(error){console.log("error in promise function catch statement" + error)});
@@ -737,7 +736,7 @@ bot.dialog('gad7', [
 // phq9 Dialog
 //------------------//
 bot.dialog('phq9', [
-	function (session, args, next){
+	/*function (session, args, next){
 		console.log('Beginning phq9 dialog');
 		totalScore = 0;
 		builder.Prompts.confirm(session, "I'm now going to take you through a clinical process that will help you to explain how you feel to a clinician. Is that ok?");
@@ -953,7 +952,7 @@ bot.dialog('phq9', [
 		var questionID = 15;
 		processQuestionnaireResponse(session, session.dialogData.userResponse, 'phq9', questionID);
 		next();
-	},
+	},*/
 	function(session, next){
 		session.userData.lastMessageSent = new Date();
 		builder.Prompts.text(session, "How difficult have any of these problems made it for you to do your work, take care of things at home, or get along with other people?");
@@ -983,10 +982,10 @@ bot.dialog('phq9', [
 	function(session, results, next){
 		session.send('Please do this questionnaire regularly over the next two weeks and, if you don\'t feel you\'ve improved, share your score and your responses with a clinician');
 		next();
-	},*/
+	},
 	function(session){
 		if(feeling == 'Depressed'){
-			session.endConversation("Great! Thanks for chatting " + username + ". Just come back and say hello when you'd like to chat again :)");
+			session.endConversation("I'll say goodbye for now " + session.userData.username + ". Just come back and say hello when you'd like to chat again :)");
 		}else if(feeling == 'DepressedAndAnxious'){
 			session.beginDialog('gad7');
 		}
@@ -1148,7 +1147,7 @@ function processQuestionnaireResponse(session, results, questionnaireType, quest
 
 			insertIntoUserResponses(userResponse)
 				.then(function(interactionID){ 
-					insertQuestionnaireResponseData(interactionID, botTimeFormatted, userTimeFormatted, timeLapseHMS, questionID, userID, userResponse, questionnaireType, qScore)
+					insertQuestionnaireResponseData(interactionID, botTimeFormatted, userTimeFormatted, timeLapseHMS, questionID, session.userData.userID, userResponse, questionnaireType, qScore)
 					
 				})
 				.catch(function(error){console.log("error in promise function catch statement" + error)});
@@ -1188,7 +1187,7 @@ function processDifficultyResponse(session, results, questionnaireType, question
 
 			insertIntoUserResponses(userResponse)
 			.then(function(interactionID){ 
-				insertQuestionnaireEndData(interactionID, botTimeFormatted, userTimeFormatted, timeLapseHMS, questionID, userID, userResponse, questionnaireType, totalScore, difficultyEntity);
+				insertQuestionnaireEndData(interactionID, botTimeFormatted, userTimeFormatted, timeLapseHMS, questionID, session.userData.userID, userResponse, questionnaireType, totalScore, difficultyEntity);
 				
 			})
 			.catch(function(error){
