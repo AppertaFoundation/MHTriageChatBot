@@ -362,6 +362,11 @@ function getUserMsgTime(session){
 function getTimeLapse(session){
 	var botTime = new Date(session.userData.lastMessageSent);
 	var userTime = new Date(session.message.localTimestamp);
+	console.log("Times in getTimeLapse()");
+	console.log("botTime:");
+	console.log(botTime);
+	console.log("userTime");
+	console.log(userTime);
 	console.log("Time Lapse Info:");
 	var timeLapseMs = userTime - botTime;
 	console.log("Time lapse in ms is: " + timeLapseMs);
