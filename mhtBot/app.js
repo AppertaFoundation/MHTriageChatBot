@@ -331,27 +331,26 @@ function getBotMsgTime(session){
 	var botTime = new Date(session.userData.lastMessageSent);
 	console.log("Bot time unformatted is:");
 	console.log(botTime);
-	//var botTimeFormatted = null;
-	//if(local == true){
+
 	var botTimeFormatted = dateFormat(botTime, "yyyy-mm-dd HH:MM:ss");
-	//}else{
-	//var botTimeFormatted = botTime.format("yyyy-mm-dd HH:MM:ss");
-	//}
 
 	console.log("Bot messaged at: " + botTimeFormatted);
 	return botTimeFormatted;
 }
 
 function getUserMsgTime(session){
-	var userTime = session.message.localTimestamp;
+	var userTime = new Date(session.message.localTimestamp);
+	var userTimeNotLocal = session.message.Timestamp;
 
 	console.log("userTime unformatted is:");
 	console.log(userTime);
+	console.log("Non-local timestamp:");
+	console.log(userTimeNotLocal);
 	//var userTimeFormatted = null;
 	//if(local == true){
-	var userTimeFormatted = dateFormat(userTime, "yyyy-mm-dd HH:MM:ss");
+	//var userTimeFormatted = dateFormat(userTime, "yyyy-mm-dd HH:MM:ss");
 	//}else{
-	//var userTimeFormatted = userTime.format("yyyy-mm-dd HH:MM:ss");
+	var userTimeFormatted = userTime.format("yyyy-mm-dd HH:MM:ss");
 	//}
 
 	console.log("User responded at: " + userTimeFormatted);
@@ -368,6 +367,8 @@ function getTimeLapse(session){
 	console.log("userTime");
 	console.log(userTime);
 	console.log("Time Lapse Info:");
+	console.log("taking the formatted timsestamps away from one another gives");
+	console.log(getUserMsgTime(session) - getBotMsgTime(session));
 	var timeLapseMs = userTime - botTime;
 	console.log("Time lapse in ms is: " + timeLapseMs);
 	var timeLapseHMS = convertMsToHMS(timeLapseMs);
@@ -408,8 +409,8 @@ function insertIntoUserResponses(userResponse){
 
 function processGeneralQResponse(session, response, questionID){
 	// Gets timestamp information
-	var botTimeFormatted = getBotMsgTime(session);
-	var userTimeFormatted = getUserMsgTime(session);
+	var botTimeFormatted = new Date(getBotMsgTime(session));
+	var userTimeFormatted = new Date(getUserMsgTime(session));
 	var timeLapseHMS = getTimeLapse(session);
 
 	// inserts data into UserReponses table 
