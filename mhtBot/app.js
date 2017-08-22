@@ -343,7 +343,7 @@ function getBotMsgTime(session){
 }
 
 function getUserMsgTime(session){
-	var userTime = new Date(session.message.localTimestamp);
+	var userTime = session.message.localTimestamp;
 
 	console.log("userTime unformatted is:");
 	console.log(userTime);
@@ -579,6 +579,8 @@ bot.dialog('generalQs', [
 		questionID = 1;
 		console.log("Feeling is:");
 		console.log(feeling);
+		console.log("Session.message.localTimestamp");
+		console.log(session.message.localTimestamp);
 		processGeneralQResponse(session, session.conversationData.userResponse, questionID);
 		if(feeling == 'Happy'){
 			session.endConversation("I'll say goodbye for now " + session.userData.username + " but just say hello when you'd like to speak again :)");
