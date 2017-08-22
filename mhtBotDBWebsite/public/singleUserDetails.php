@@ -16,11 +16,13 @@ $username = getUsernameFromID($conn, $userID);
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="utf-8">
-	<title>Details for Single User</title>
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<?php include '../includes/bootstrapHead.php' ?>
+	<title><?php echo $username;?> Details</title>
 </head>
 <body>
+
+<?php include '../includes/nav.php'; ?>
+
 <header>
 <h1>Details for User <?php echo $username?></h1>
 </header>
@@ -28,8 +30,6 @@ $username = getUsernameFromID($conn, $userID);
 <main>
 
 <?php echo $userID; ?>
-
-
 
 <h2>PHQ9 Totals</h2>
 
@@ -168,5 +168,7 @@ $username = getUsernameFromID($conn, $userID);
 
 </main>
 </body>
+
+<?php include '../includes/bootstrapFoot.php'; ?>
 
 </html>

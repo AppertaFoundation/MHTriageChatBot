@@ -6,11 +6,12 @@ include '../includes/functions.php';
 
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-	<meta charset="utf-8">
-	<title>Database Access for Mental Health Triage Chatbot</title>
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-	</head>
+<head>
+
+	<?php include '../includes/bootstrapHead.php' ?>
+	<title>All Users | Database Access for Mental Health Triage Chatbot</title>
+
+</head>
 <body>
 
 <?php include '../includes/nav.php'; ?>
@@ -34,5 +35,8 @@ foreach($userID as $userID){
 
 </main>
 </body>
+
+<?php include '../includes/bootstrapFoot.php'; ?>
+
 </html>
 
