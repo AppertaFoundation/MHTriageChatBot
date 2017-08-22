@@ -1,14 +1,14 @@
 <?php
 // Includes
-include('includes/connect.php');
-include('includes/functions.php');
+include 'includes/connect.php';
+include 'includes/functions.php';
 
 ?>
 
 <?php
 //Test values
-$userID = 3;
-$username = 'Sam';
+//$userID = 3;
+//$username = 'Sam';
 ?>
 
 <!DOCTYPE html>
@@ -39,8 +39,6 @@ $username = 'Sam';
 		<th>User Response</th>
 	</tr>
 <?php
-	$questionID = 1;
-	$questionType = 'generalQs';
 	$tsql = "SELECT iq.InteractionID, iq.QuestionID, ur.UserResponse 
 				FROM UserResponses ur
 				JOIN InteractionQuestionIDs iq
@@ -55,7 +53,7 @@ $username = 'Sam';
 	}
 
 	echo "Successfully queried database";
-	
+
 	while($row = sqlsrv_fetch_array($getResults, SQLSRV_FETCH_ASSOC)){
 		$interactionID = $row['InteractionID'];
 		$questionID = $row['QuestionID'];
