@@ -328,6 +328,7 @@ bot.dialog('login', [
 //============
 
 function getBotMsgTime(session){
+	console.log("getBotMsgTime() executing");
 	var botTime = new Date(session.userData.lastMessageSent);
 	console.log("Bot time unformatted is:");
 	console.log(botTime);
@@ -339,48 +340,24 @@ function getBotMsgTime(session){
 }
 
 function getUserMsgTime(session){
-	// new way with manual timestamp
+	console.log("getUserMsgTime() executing");
 	var userTime = new Date(session.userData.lastMessageReceived);
-	console.log("User time with manual timestamp unformatted is:");
+	console.log("User unformatted is:");
 	console.log(userTime);
+
 	var userTimeFormatted = dateFormat(userTime, "yyyy-mm-dd HH:MM:ss");
-	console.log("User time from manual timestamp formmated is:");
-	console.log(userTimeFormatted);
+	console.log("User time formatted:" + userTimeFormatted);
 
-	/*
-	var userTime = new Date(session.message.localTimestamp);
-	var userTimeNotLocal = session.message.Timestamp;
-
-	console.log("userTime unformatted is:");
-	console.log(userTime);
-	console.log("Non-local timestamp:");
-	console.log(userTimeNotLocal);
-	//var userTimeFormatted = null;
-	//if(local == true){
-	var userTimeFormatted = dateFormat(userTime, "yyyy-mm-dd HH:MM:ss");
-	//}else{
-	//var userTimeFormatted = userTime.format("yyyy-mm-dd HH:MM:ss");
-	//}
-
-	console.log("User responded at: " + userTimeFormatted);*/
 	return userTimeFormatted;
 }
 
 
 function getTimeLapse(session){
+	console.log("getTimeLapse() executing");
 	var botTime = new Date(session.userData.lastMessageSent);
 	var userTime = new Date(session.message.localTimestamp);
 	var userTimeManual = new Date(session.userData.lastMessageReceived);
-	console.log("Times in getTimeLapse()");
-	console.log("botTime:");
-	console.log(botTime);
-	console.log("userTime");
-	console.log(userTime);
-	console.log("userTime manual");
-	console.log(userTimeManual);
 	console.log("Time Lapse Info:");
-	//console.log("taking the formatted timsestamps away from one another gives");
-	//console.log(getUserMsgTime(session) - getBotMsgTime(session));
 	var timeLapseMs = userTimeManual - botTime;
 	console.log("Time lapse in ms is: " + timeLapseMs);
 	var timeLapseHMS = convertMsToHMS(timeLapseMs);
@@ -560,6 +537,7 @@ bot.dialog('clarifyFeeling', [
 	},
 	function(session, results, next){
 		questionID = 2;
+		session.userData.lastMessageReceived = new Date();
 		processGeneralQResponse(session, results.response, questionID);
 		next();
 	},
@@ -579,24 +557,27 @@ bot.dialog('generalQs', [
 	},
 	function(session, results, next){ 
 		session.userData.lastMessageReceived = new Date();
-		console.log("User sent message at:");
-		console.log(session.userData.lastMessageReceived);
 		session.conversationData.userResponse = results.response;
+		questionID = 1;
 
 		recogniseFeeling(session.message.text)
 			.then(function(feelingEntity){ 
 				var botResponse = generateBotGeneralQResponse(feelingEntity);
 				session.send(botResponse + ".");
-				next();
+				processGeneralQResponse(session, session.conversationData.userResponse, questionID);
+				if(feeling == 'Happy'){
+					session.endConversation("I'll say goodbye for now " + session.userData.username + " but just say hello when you'd like to speak again :)");
+				}else{
+					next();
+				}
 			})
 			.catch(function(error){
-				//var botResponse = generateBotGeneralQResponse('no entity'); 
-				//session.send(botResponse);
+				processGeneralQResponse(session, session.conversationData.userResponse, questionID);
 				console.log("No feeling identified" + error);
 				session.beginDialog('clarifyFeeling');
 			});
 	},
-	function(session, results, next){
+	/*function(session, results, next){
 		questionID = 1;
 		console.log("Feeling is:");
 		console.log(feeling);
@@ -608,7 +589,7 @@ bot.dialog('generalQs', [
 		}else{
 			next();
 		}
-	},
+	},*/
 	function(session, args, next){
 		// https://stackoverflow.com/questions/42069081/get-duration-between-the-bot-sending-the-message-and-user-replying
 		session.userData.lastMessageSent = new Date();
@@ -617,6 +598,7 @@ bot.dialog('generalQs', [
 
 	function(session, results, next){
 		questionID = 3;
+		session.userData.lastMessageReceived = new Date();
 		processGeneralQResponse(session, results.response, questionID);
 		next();
 	},
@@ -627,6 +609,7 @@ bot.dialog('generalQs', [
 	},
 	function(session, results, next){
 		questionID = 4;
+		session.userData.lastMessageReceived = new Date();
 		processGeneralQResponse(session, results.response, questionID);
 		next();
 	},
@@ -636,6 +619,7 @@ bot.dialog('generalQs', [
 	},
 	function(session, results, next){
 		questionID = 5;
+		session.userData.lastMessageReceived = new Date();
 		processGeneralQResponse(session, results.response, questionID);
 		next();
 	},
@@ -646,6 +630,7 @@ bot.dialog('generalQs', [
 	function(session, results, next){
 		var userResponse = results.response;
 		questionID = 6;
+		session.userData.lastMessageReceived = new Date();
 		processGeneralQResponse(session, session.message.text, questionID);
 		if(userResponse == true){
 			session.userData.lastMessageSent = new Date();
@@ -656,9 +641,8 @@ bot.dialog('generalQs', [
 	},
 	function(session, results, next){
 		questionID = 7;
+		session.userData.lastMessageReceived = new Date();
 		processGeneralQResponse(session, session.message.text, questionID);
-		//processUserResponseNew(session, session.message.text, questionNo);
-		//processUserResponse(session, results, 5);
 		session.send("Thank you for answering these questions " + session.userData.username + ".");
 		next();
 	},
@@ -739,6 +723,7 @@ bot.dialog('gad7', [
 	},
 	function(session, results, next){ 
 		questionID = 17;
+		session.userData.lastMessageReceived = new Date();
 		processQuestionnaireResponse(session, session.conversationData.userResponse, 'gad7', questionID);
 		next();
 	},
@@ -757,6 +742,7 @@ bot.dialog('gad7', [
 	},
 	function(session, results, next){ 
 		questionID += 1;
+		session.userData.lastMessageReceived = new Date();
 		processQuestionnaireResponse(session, session.conversationData.userResponse, 'gad7', questionID);
 		next();
 	},
@@ -775,6 +761,7 @@ bot.dialog('gad7', [
 	},
 	function(session, results, next){ 
 		questionID += 1;
+		session.userData.lastMessageReceived = new Date();
 		processQuestionnaireResponse(session, session.conversationData.userResponse, 'gad7', questionID);
 		next();
 	},
@@ -793,6 +780,7 @@ bot.dialog('gad7', [
 	},
 	function(session, results, next){ 
 		questionID += 1;
+		session.userData.lastMessageReceived = new Date();
 		processQuestionnaireResponse(session, session.conversationData.userResponse, 'gad7', questionID);
 		next();
 	},
@@ -811,6 +799,7 @@ bot.dialog('gad7', [
 	},
 	function(session, results, next){ 
 		questionID += 1;
+		session.userData.lastMessageReceived = new Date();
 		processQuestionnaireResponse(session, session.conversationData.userResponse, 'gad7', questionID);
 		next();
 	},
@@ -829,6 +818,7 @@ bot.dialog('gad7', [
 	},
 	function(session, results, next){ 
 		questionID += 1;
+		session.userData.lastMessageReceived = new Date();
 		processQuestionnaireResponse(session, session.conversationData.userResponse, 'gad7', questionID);
 		next();
 	},
@@ -838,6 +828,7 @@ bot.dialog('gad7', [
 	}, 
 	function(session, results, next){ 
 		questionID += 1;
+		session.userData.lastMessageReceived = new Date();
 		processQuestionnaireResponse(session, session.conversationData.userResponse, 'gad7', questionID);
 		next();
 	},
@@ -867,6 +858,7 @@ bot.dialog('gad7', [
 	},
 	function(session, results, next){
 		questionID += 1;
+		session.userData.lastMessageReceived = new Date();
 		processDifficultyResponse(session, session.conversationData.userResponse, 'gad7', questionID);
 		next();
 	},
@@ -952,7 +944,7 @@ bot.dialog('phq9', [
 	},
 	function(session, results, next){
 		questionID = 8;
-		console.log("in question 7 storage area");
+		session.userData.lastMessageReceived = new Date();
 		processQuestionnaireResponse(session, session.conversationData.userResponse, 'phq9', questionID);
 		next();
 	},
@@ -977,6 +969,7 @@ bot.dialog('phq9', [
 	},
 	function(session, results, next){ 
 		questionID += 1;
+		session.userData.lastMessageReceived = new Date();
 		processQuestionnaireResponse(session, session.conversationData.userResponse, 'phq9', questionID);
 		next();
 	},
@@ -1000,6 +993,7 @@ bot.dialog('phq9', [
 	},
 	function(session, results, next){ 
 		questionID += 1;
+		session.userData.lastMessageReceived = new Date();
 		processQuestionnaireResponse(session, session.conversationData.userResponse, 'phq9', questionID);
 		next();
 	},
@@ -1023,6 +1017,7 @@ bot.dialog('phq9', [
 	},
 	function(session, results, next){ 
 		questionID += 1;
+		session.userData.lastMessageReceived = new Date();
 		processQuestionnaireResponse(session, session.conversationData.userResponse, 'phq9', questionID);
 		next();
 	},
@@ -1046,6 +1041,7 @@ bot.dialog('phq9', [
 	},
 	function(session, results, next){ 
 		questionID += 1;
+		session.userData.lastMessageReceived = new Date();
 		processQuestionnaireResponse(session, session.conversationData.userResponse, 'phq9', questionID);
 		next();
 	},
@@ -1069,6 +1065,7 @@ bot.dialog('phq9', [
 	},
 	function(session, results, next){ 
 		questionID += 1;
+		session.userData.lastMessageReceived = new Date();
 		processQuestionnaireResponse(session, session.conversationData.userResponse, 'phq9', questionID);
 		next();
 	},
@@ -1092,6 +1089,7 @@ bot.dialog('phq9', [
 	},
 	function(session, results, next){ 
 		questionID += 1;
+		session.userData.lastMessageReceived = new Date();
 		processQuestionnaireResponse(session, session.conversationData.userResponse, 'phq9', questionID);
 		next();
 	},
@@ -1115,6 +1113,7 @@ bot.dialog('phq9', [
 	},
 	function(session, results, next){ 
 		questionID += 1;
+		session.userData.lastMessageReceived = new Date();
 		processQuestionnaireResponse(session, session.conversationData.userResponse, 'phq9', questionID);
 		next();
 	},
@@ -1139,6 +1138,7 @@ bot.dialog('phq9', [
 	},
 	function(session, results, next){ 
 		questionID += 1;
+		session.userData.lastMessageReceived = new Date();
 		processQuestionnaireResponse(session, session.conversationData.userResponse, 'phq9', questionID);
 		next();
 	},
@@ -1160,6 +1160,7 @@ bot.dialog('phq9', [
 	},
 	function(session, results, next){
 		questionID += 1;
+		session.userData.lastMessageReceived = new Date();
 		processDifficultyResponse(session, session.conversationData.userResponse, 'phq9', questionID);
 		next();
 	},
