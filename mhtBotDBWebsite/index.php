@@ -54,6 +54,8 @@ $username = 'Sam';
 		die("Error in executing query to all responses");
 	}
 
+	echo "Successfully queried database";
+	
 	while($row = sqlsrv_fetch_array($getResults, SQLSRV_FETCH_ASSOC)){
 		$interactionID = $row['InteractionID'];
 		$questionID = $row['QuestionID'];
