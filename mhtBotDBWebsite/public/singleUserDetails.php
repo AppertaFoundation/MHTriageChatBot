@@ -29,117 +29,7 @@ $username = getUsernameFromID($conn, $userID);
 
 <?php echo $userID; ?>
 
-<?php
-function getBotTimeFromQID($conn, $questionID){
-	$result = null;
-	$tsql = "SELECT BotMsgTime FROM TimeStamps WHERE QuestionID = $questionID;";
-	$getResults = sqlsrv_query($conn, $tsql);
-	if($getResults == FALSE){
-		if(($errors = sqlsrv_errors())!=null){
-			formatErrors($errors);
-		}
-		die("Failure in executing getBotTimeFromQID() query");
-	}
 
-	echo "getBotTimeFromQID() query successfully executed";
-	while($row = sqlsrv_fetch_array($getResults, SQLSRV_FETCH_ASSOC)){
-		$result = $row['BotMsgTime'];
-	}
-	return $result;
-}
-
-function getUserTimeFromQID($conn, $questionID){
-	$result = null;
-	$tsql = "SELECT UserMsgTime FROM TimeStamps WHERE QuestionID = $questionID;";
-	$getResults = sqlsrv_query($conn, $tsql);
-	if($getResults == FALSE){
-		if(($errors = sqlsrv_errors())!=null){
-			formatErrors($errors);
-		}
-		die("Failure in executing getBotTimeFromQID() query");
-	}
-
-	echo "getBotTimeFromQID() query successfully executed";
-	while($row = sqlsrv_fetch_array($getResults, SQLSRV_FETCH_ASSOC)){
-		$result = $row['UserMsgTime'];
-	}
-	return $result;
-}
-
-function getTimeLapseFromQID($conn, $questionID){
-	$result = null;
-	$tsql = "SELECT TimeLapse FROM TimeStamps WHERE QuestionID = $questionID;";
-	$getResults = sqlsrv_query($conn, $tsql);
-	if($getResults == FALSE){
-		if(($errors = sqlsrv_errors())!=null){
-			formatErrors($errors);
-		}
-		die("Failure in executing getBotTimeFromQID() query");
-	}
-
-	echo "getBotTimeFromQID() query successfully executed";
-	while($row = sqlsrv_fetch_array($getResults, SQLSRV_FETCH_ASSOC)){
-		$result = $row['TimeLapse'];
-	}
-	return $result;
-}
-
-function getResponseSentiment($conn, $responseID){
-	$result = 0;
-	$tsql = "SELECT SentimentScore FROM Sentiment WHERE QuestionID = $responseID;";
-	$getResults = sqlsrv_Query($conn, $tsql);
-	if($getResults == FALSE){
-		if(($errors = sqlsrv_errors())!=null){
-			formatErrors($errors);
-		}
-		die("Error in executing getResponseSentiment() query");
-	}
-
-	echo "getResponseSentiment() query successfully executed";
-	while($row = sqlsrv_fetch_array($getResults, SQLSRV_FETCH_ASSOC)){
-		$result = $row['SentimentScore'];
-	}
-	return $result;
-}
-
-function getQuestionType($conn, $questionNo){
-	$result = null;
-	$tsql = "SELECT QuestionType FROM AllQuestions WHERE QuestionNo = $questionNo";
-	$getResults = sqlsrv_Query($conn, $tsql);
-	if($getResults == FALSE){
-		if(($errors = sqlsrv_errors())!=null){
-			formatErrors($errors);
-		}
-		die("Error in executing getQuestionType() query");
-	}
-
-	echo "getQuestionType() query successfully executed";
-	while($row = sqlsrv_fetch_array($getResults, SQLSRV_FETCH_ASSOC)){
-		$result = $row['QuestionType'];
-	}
-	return $result;
-}
-
-function getPhq9Score($conn, $questionID){
-	$result = null;
-	$tsql = "SELECT Phq9Score FROM Phq9Scores WHERE QuestionID = $questionID";
-	$getResults = sqlsrv_Query($conn, $tsql);
-	if($getResults == FALSE){
-		if(($errors = sqlsrv_errors())!=null){
-			formatErrors($errors);
-		}
-		die("Error in executing getPhq9Score() query");
-	}
-
-	echo "getPhq9Score() query successfully executed";
-	while($row = sqlsrv_fetch_array($getResults, SQLSRV_FETCH_ASSOC)){
-		$result = $row['Phq9Score'];
-	}
-	return $result;
-}
-
-
-?>
 
 <h2>PHQ9 Totals</h2>
 
@@ -188,7 +78,10 @@ function getPhq9Score($conn, $questionID){
 
 	<?php
 		$questionType = 'phq9';
-		$tsql = "SELECT aq.QuestionID, aq.QuestionNo, aq.Question FROM AllQuestions aq JOIN UserQuestionIDs uq ON aq.QuestionID = uq.QuestionID WHERE UserID = $userID AND QuestionType ='" . $questionType . "'";
+		$tsql = "SELECT aq.QuestionID, aq.QuestionNo, aq.Question 
+					FROM AllQuestions aq 
+					JOIN UserQuestionIDs uq ON aq.QuestionID = uq.QuestionID
+					WHERE UserID = $userID AND QuestionType ='" . $questionType . "'";
 		$getResults = sqlsrv_Query($conn, $tsql);
 		if($getResults == FALSE){
 			if(($errors = sqlsrv_errors())!=null){
