@@ -398,8 +398,8 @@ function insertIntoUserResponses(userResponse){
 
 function processGeneralQResponse(session, response, questionID){
 	// Gets timestamp information
-	var botTimeFormatted = new Date(getBotMsgTime(session));
-	var userTimeFormatted = new Date(getUserMsgTime(session));
+	var botTimeFormatted = getBotMsgTime(session);
+	var userTimeFormatted = getUserMsgTime(session);
 	var timeLapseHMS = getTimeLapse(session);
 
 	// inserts data into UserReponses table 
