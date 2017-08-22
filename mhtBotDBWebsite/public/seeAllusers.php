@@ -12,9 +12,8 @@ include '../includes/functions.php';
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 	</head>
 <body>
-<header>
-<h1>All Users</h1>
-</header>
+
+<?php include '../includes/nav.php'; ?>
 
 <main>
 
