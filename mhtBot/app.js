@@ -329,12 +329,12 @@ bot.dialog('login', [
 
 function getBotMsgTime(session){
 	var botTime = new Date(session.userData.lastMessageSent);
-	var botTimeFormatted = null;
-	if(local == true){
-		botTimeFormatted = dateFormat(botTime, "yyyy-mm-dd HH:MM:ss");
-	}else{
-		botTimeFormatted = botTime.format("yyyy-mm-dd HH:MM:ss");
-	}
+	//var botTimeFormatted = null;
+	//if(local == true){
+	//botTimeFormatted = dateFormat(botTime, "yyyy-mm-dd HH:MM:ss");
+	//}else{
+	var botTimeFormatted = botTime.format("yyyy-mm-dd HH:MM:ss");
+	//}
 
 	console.log("Bot messaged at: " + botTimeFormatted);
 	return botTimeFormatted;
@@ -342,12 +342,12 @@ function getBotMsgTime(session){
 
 function getUserMsgTime(session){
 	var userTime = new Date(session.message.localTimestamp);
-	var userTimeFormatted = null;
-	if(local == true){
+	//var userTimeFormatted = null;
+	/*if(local == true){
 		userTimeFormatted = dateFormat(userTime, "yyyy-mm-dd HH:MM:ss");
-	}else{
-		userTimeFormatted = userTime.format("yyyy-mm-dd HH:MM:ss");
-	}
+	}else{*/
+	var userTimeFormatted = userTime.format("yyyy-mm-dd HH:MM:ss");
+	//}
 
 	console.log("User responded at: " + userTimeFormatted);
 	return userTimeFormatted;
