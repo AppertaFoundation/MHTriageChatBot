@@ -1,14 +1,7 @@
 <?php
 // Includes
-include('includes/connect.php');
-include('includes/functions.php');
-
-?>
-
-<?php
-//Test values
-$userID = 3;
-$username = 'Sam';
+include '../includes/connect.php';
+include '../includes/functions.php';
 ?>
 
 <!DOCTYPE html>
@@ -18,18 +11,16 @@ $username = 'Sam';
 	<title>Database Access for Mental Health Triage Chatbot</title>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 	</head>
+<body>
 <header>
-<h1>Database Access for Mental Health Triage Chatbot</h1>
-<h2>This page provides access to the database supporting the mental health triage chatbot.</h2>
+<h1>All Responses</h1>
 </header>
 
-<body>
-<nav>
-<a href="public/seeAllUsers.php">All Users</a>
-<a href = "public/seeSingleUserDetails">Single User Details</a>
-</nav>
+<main>
 
-<h3>All Data</h3>
+<h3>Responses to General Questions</h3>
+
+<h4>Question 1 - "How are you feeling"?</h4>
 
 <table>
 	<tr>
@@ -71,7 +62,3 @@ $username = 'Sam';
 	?>
 
 </table>
-
-</body>
-
-</html>

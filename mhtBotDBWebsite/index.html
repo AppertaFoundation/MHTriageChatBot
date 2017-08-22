@@ -1,0 +1,37 @@
+<?php
+// Includes
+include('includes/connect.php');
+include('includes/functions.php');
+
+?>
+
+<?php
+//Test values
+$userID = 3;
+$username = 'Sam';
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+	<meta charset="utf-8">
+	<title>Database Access for Mental Health Triage Chatbot</title>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	</head>
+<header>
+<h1>Database Access for Mental Health Triage Chatbot</h1>
+<h2>This page provides access to the database supporting the mental health triage chatbot.</h2>
+</header>
+
+<body>
+<nav>
+<a href="public/seeAllUsers.php">All Users</a>
+<a href = "public/singleUserDetails.php">Single User Details</a>
+<a href = "public/highScoringUsers.php">High Scoring Users</a>
+<a href = "public/allResponses.php">All Questions and Responses</a>
+</nav>
+
+
+</body>
+
+</html>

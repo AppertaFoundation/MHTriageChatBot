@@ -37,7 +37,7 @@ function getAllUserIDs($conn){
 		die("Error in executing getAllUserIDs() query");
 	}
 
-	echo "getAllUserIDs() successfully executed";
+	//echo "getAllUserIDs() successfully executed";
 	while($row = sqlsrv_fetch_array($getResults, SQLSRV_FETCH_ASSOC)){
 		array_push($userIDs, $row['UserID']);
 	}
@@ -46,7 +46,7 @@ function getAllUserIDs($conn){
 
 function getUsernameFromID($conn, $userID){
 	$result = 0;
-	$tsql = "SELECT UserName FROM Users WHERE UserID = $userID";
+	$tsql = "SELECT Username FROM Users WHERE UserID = $userID";
 	$getResults = sqlsrv_query($conn, $tsql);
 	if($getResults == False){
 		if( ($errors = sqlsrv_errors())!=null){
@@ -55,9 +55,9 @@ function getUsernameFromID($conn, $userID){
 		die("Error in executing getUsernameFromID() query");
 	}
 
-	echo "getUserNameFromID() query successfully executed";
+	//echo "getUserNameFromID() query successfully executed";
 	while($row = sqlsrv_fetch_array($getResults, SQLSRV_FETCH_ASSOC)){
-		$result = $row['UserName'];
+		$result = $row['Username'];
 	}
 	return $result;
 }
@@ -137,6 +137,7 @@ function getUserResponsesIDs($conn, $userID){
 	echo "getUserResponsesIDs() query successfully executed";
 	while($row = sqlsrv_fetch_array($getResults, SQLSRV_FETCH_ASSOC)){
 		array_push($result, $row['QuestionID']);
+		echo $row['QuestionID'];
 	}
 	return $result;
 }
@@ -176,9 +177,9 @@ function getQuestionNoFromResponseID($conn, $responseID){
 	return $result;
 }
 
-function getQuestionFromQuestionNo($conn, $questionNo){
+function getQuestionFromQuestionID($conn, $questionNo){
 	$result = null;
-	$tsql = "SELECT Question FROM AllQuestions WHERE QuestionNo = $questionNo";
+	$tsql = "SELECT Question FROM AllQuestions WHERE QuestionID = $questionNo";
 	$getResults = sqlsrv_query($conn, $tsql);
 	if($getResults == False){
 		if(($errors = sqlsrv_errors())!=null){
@@ -186,7 +187,7 @@ function getQuestionFromQuestionNo($conn, $questionNo){
 		}
 		die("Error in eecuting getQuestionNoFromResponseID() query");
 	}
-	echo "getResponseFromID() query successfully executed";
+	//echo "getResponseFromID() query successfully executed";
 	while($row = sqlsrv_fetch_array($getResults, SQLSRV_FETCH_ASSOC)){
 		$result = $row['Question'];
 	}
