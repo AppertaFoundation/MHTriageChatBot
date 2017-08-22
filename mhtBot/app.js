@@ -339,6 +339,15 @@ function getBotMsgTime(session){
 }
 
 function getUserMsgTime(session){
+	// new way with manual timestamp
+	var userTime = new Date(session.userData.lastMessageReceived);
+	console.log("User time with manual timestamp unformatted is:");
+	console.log(userTime);
+	var userTimeFormatted = dateFormat(userTime, "yyyy-mm-dd HH:MM:ss");
+	console.log("User time from manual timestamp formmated is:");
+	console.log(userTimeFormatted);
+
+	/*
 	var userTime = new Date(session.message.localTimestamp);
 	var userTimeNotLocal = session.message.Timestamp;
 
@@ -348,12 +357,12 @@ function getUserMsgTime(session){
 	console.log(userTimeNotLocal);
 	//var userTimeFormatted = null;
 	//if(local == true){
-	//var userTimeFormatted = dateFormat(userTime, "yyyy-mm-dd HH:MM:ss");
+	var userTimeFormatted = dateFormat(userTime, "yyyy-mm-dd HH:MM:ss");
 	//}else{
-	var userTimeFormatted = userTime.format("yyyy-mm-dd HH:MM:ss");
+	//var userTimeFormatted = userTime.format("yyyy-mm-dd HH:MM:ss");
 	//}
 
-	console.log("User responded at: " + userTimeFormatted);
+	console.log("User responded at: " + userTimeFormatted);*/
 	return userTimeFormatted;
 }
 
@@ -361,15 +370,18 @@ function getUserMsgTime(session){
 function getTimeLapse(session){
 	var botTime = new Date(session.userData.lastMessageSent);
 	var userTime = new Date(session.message.localTimestamp);
+	var userTimeManual = new Date(session.userData.lastMessageReceived);
 	console.log("Times in getTimeLapse()");
 	console.log("botTime:");
 	console.log(botTime);
 	console.log("userTime");
 	console.log(userTime);
+	console.log("userTime manual");
+	console.log(userTimeManual);
 	console.log("Time Lapse Info:");
-	console.log("taking the formatted timsestamps away from one another gives");
-	console.log(getUserMsgTime(session) - getBotMsgTime(session));
-	var timeLapseMs = userTime - botTime;
+	//console.log("taking the formatted timsestamps away from one another gives");
+	//console.log(getUserMsgTime(session) - getBotMsgTime(session));
+	var timeLapseMs = userTimeManual - botTime;
 	console.log("Time lapse in ms is: " + timeLapseMs);
 	var timeLapseHMS = convertMsToHMS(timeLapseMs);
 	console.log("Time lapse in HH:MM:SS: " + timeLapseHMS);
@@ -566,6 +578,9 @@ bot.dialog('generalQs', [
 		builder.Prompts.text(session, 'How are you feeling today?');
 	},
 	function(session, results, next){ 
+		session.userData.lastMessageReceived = new Date();
+		console.log("User sent message at:");
+		console.log(session.userData.lastMessageReceived);
 		session.conversationData.userResponse = results.response;
 
 		recogniseFeeling(session.message.text)
