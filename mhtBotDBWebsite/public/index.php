@@ -56,53 +56,15 @@ include '../includes/functions.php';
 </nav>
 
 
-<h3>All Data</h3>
+<header>
+<h1>Mental Health Triage Chatbot Database Access</h1>
+</header>
 
-<div class="table-responsive">
-<table class="table">
-	<tr>
-		<th>Interaction ID</th>
-		<th>Question Number</th>
-		<th>Question Text</th>
-		<th>User Response</th>
-	</tr>
+<main>
 
-<?php
-	$tsql = "SELECT iq.InteractionID, iq.QuestionID, ur.UserResponse 
-				FROM UserResponses ur
-				JOIN InteractionQuestionIDs iq
-				ON iq.InteractionID = ur.InteractionID
-				ORDER BY iq.QuestionID";
-	$getResults = sqlsrv_Query($conn, $tsql);
-	if($getResults == FALSE){
-		if(($errors = sqlsrv_errors())!=null){
-			formatErrors($errors);
-		}
-		die("Error in executing query to all responses");
-	}
+Access the Mental Health Triage Chatbot data on this site.
 
-	echo "Successfully queried database";
-
-	while($row = sqlsrv_fetch_array($getResults, SQLSRV_FETCH_ASSOC)){
-		$interactionID = $row['InteractionID'];
-		$questionID = $row['QuestionID'];
-		$userResponse = $row['UserResponse'];
-		$question = getQuestionFromQuestionID($conn, $questionID);
-?>
-	<tr>
-		<td><?php echo $interactionID; ?></td>
-		<td><?php echo $questionID; ?></td>
-		<td><?php echo $question; ?></td>
-		<td><?php echo $userResponse; ?></td>
-	</tr>
-	<?php
-		}
-	?>
-
-
-</table>
-</div>
-
+</main>
 </body>
 
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>

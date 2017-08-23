@@ -46,7 +46,7 @@ function getAllUserIDs($conn){
 
 function getUsernameFromID($conn, $userID){
 	$result = 0;
-	$tsql = "SELECT Username FROM Users WHERE UserID = '$userID'";
+	$tsql = "SELECT Username FROM Users WHERE UserID = $userID";
 	$getResults = sqlsrv_query($conn, $tsql);
 	if($getResults == False){
 		if( ($errors = sqlsrv_errors())!=null){
@@ -123,6 +123,107 @@ function getQuestions($conn){
 	return $questions;
 }
 
+function getUserResponsesIDs($conn, $userID){
+	$result = array();
+	$tsql = "SELECT QuestionID FROM UserQuestionIDs WHERE UserID = $userID";
+	$getResults = sqlsrv_query($conn, $tsql);
+	if($getResults == FALSE){
+		if(($errors = sqlsrv_errors())!=null){
+			formatErrors($errors);
+		}
+		die("Error in executing getUserResponsesIDs() query");
+	}
+
+	echo "getUserResponsesIDs() query successfully executed";
+	while($row = sqlsrv_fetch_array($getResults, SQLSRV_FETCH_ASSOC)){
+		array_push($result, $row['QuestionID']);
+		echo $row['QuestionID'];
+	}
+	return $result;
+}
+
+function getResponseFromID($conn, $responseID){
+	$result = null;
+	$tsql = "SELECT UserResponse FROM UserResponsesNew WHERE QuestionID = $responseID";
+	$getResults = sqlsrv_query($conn, $tsql);
+	if($getResults == False){
+		if(($errors = sqlsrv_errors())!=null){
+			formatErrors($errors);
+		}
+		die("Error in executing getResponseFromID() query");
+	}
+
+	echo "getResponseFromID() query successfully executed";
+	while($row = sqlsrv_fetch_array($getResults, SQLSRV_FETCH_ASSOC)){
+		$result = $row['UserResponse'];
+	}
+	return $result;
+}
+
+
+
+
+
+
+
+
+
+
+
+function getResponseSentiment($conn, $responseID){
+	$result = 0;
+	$tsql = "SELECT SentimentScore FROM Sentiment WHERE QuestionID = $responseID;";
+	$getResults = sqlsrv_Query($conn, $tsql);
+	if($getResults == FALSE){
+		if(($errors = sqlsrv_errors())!=null){
+			formatErrors($errors);
+		}
+		die("Error in executing getResponseSentiment() query");
+	}
+
+	echo "getResponseSentiment() query successfully executed";
+	while($row = sqlsrv_fetch_array($getResults, SQLSRV_FETCH_ASSOC)){
+		$result = $row['SentimentScore'];
+	}
+	return $result;
+}
+
+function getQuestionType($conn, $questionNo){
+	$result = null;
+	$tsql = "SELECT QuestionType FROM AllQuestions WHERE QuestionNo = $questionNo";
+	$getResults = sqlsrv_Query($conn, $tsql);
+	if($getResults == FALSE){
+		if(($errors = sqlsrv_errors())!=null){
+			formatErrors($errors);
+		}
+		die("Error in executing getQuestionType() query");
+	}
+
+	echo "getQuestionType() query successfully executed";
+	while($row = sqlsrv_fetch_array($getResults, SQLSRV_FETCH_ASSOC)){
+		$result = $row['QuestionType'];
+	}
+	return $result;
+}
+
+function getPhq9Score($conn, $questionID){
+	$result = null;
+	$tsql = "SELECT Phq9Score FROM Phq9Scores WHERE QuestionID = $questionID";
+	$getResults = sqlsrv_Query($conn, $tsql);
+	if($getResults == FALSE){
+		if(($errors = sqlsrv_errors())!=null){
+			formatErrors($errors);
+		}
+		die("Error in executing getPhq9Score() query");
+	}
+
+	echo "getPhq9Score() query successfully executed";
+	while($row = sqlsrv_fetch_array($getResults, SQLSRV_FETCH_ASSOC)){
+		$result = $row['Phq9Score'];
+	}
+	return $result;
+}
+
 function getUserQuestionnaires($conn, $userID){
 	$resultArr = [];
 	$tsql = "SELECT QuestionnaireID FROM Questionnaires WHERE UserID = $userID";
@@ -137,7 +238,7 @@ function getUserQuestionnaires($conn, $userID){
 }
 
 
-function getQuestionnaireType($conn, $questionnaireID){
+function getQuestionnaireTpye($conn, $questionnaireID){
 	$result = null;
 	$tsql = "SELECT QuestionnaireType FROM Questionnaires WHERE QuestionnaireID = $questionnaireID";
 	$getResults = sqlsrv_Query($conn, $tsql);
@@ -148,12 +249,11 @@ function getQuestionnaireType($conn, $questionnaireID){
 		$result = $row['QuestionnaireType'];
 	}
 	return $result;
-}
 
 
 function getQuestionnaireTotalScore($conn, $questionnaireID){
 	$result = 0;
-	$tsql = "SELECT TotalScore FROM TotalScores WHERE QuestionnaireID = $questionnaireID";
+	$tsql = "SELECT TotalScore FROM TotalScores WHERE QuestionnaireID = $questionnaireID"
 	$getResults = sqlsrv_Query($conn, $tsql);
 	if($getResults == FALSE)
 		die("Error in executing getQuestionnaireTotalScore() query");
@@ -161,13 +261,12 @@ function getQuestionnaireTotalScore($conn, $questionnaireID){
 	while($row = sqlsrv_fetch_array($getResults, SQLSRV_FETCH_ASSOC)){
 		$result = $row['TotalScore'];
 	}
-
 	return $result;
 }
 
 function getQuestionnaireDateCompleted($conn, $questionnaireID){
 	$result = null;
-	$tsql = "SELECT DateCompleted FROM TotalScores WHERE QuestionnaireID = $questionnaireID";
+	$tsql = "SELECT DateCompleted FROM TotalScores WHERE QuestionnaireID = $questionnaireID"
 	$getResults = sqlsrv_Query($conn, $tsql);
 	if($getResults == FALSE)
 		die("Error in executing getQuestionnaireDateCompleted() query");
@@ -180,10 +279,7 @@ function getQuestionnaireDateCompleted($conn, $questionnaireID){
 
 function getUserPHQ9s($conn, $userID){
 	$resultArr = [];
-	$tsql = "SELECT QuestionnaireID 
-				FROM Questionnaires 
-				WHERE UserID = $userID 
-				AND QuestionnaireType = 'phq9'";
+	$tsql = "SELECT QuestionnaireID FROM Questionnaires WHERE UserID = $userID AND QuestionnaireType = 'phq9'";
 	$getResults = sqlsrv_Query($conn, $tsql);
 	if($getResults == FALSE)
 		die("Error in executing getUserPHQ9s() query");
@@ -208,7 +304,7 @@ function getUserGAD7s($conn, $userID){
 }
 
 
-function getUserGeneralQs($conn, $userID){
+function getUserGeneralsQs($conn, $userID){
 	$resultArr = [];
 	$tsql = "SELECT QuestionnaireID FROM Questionnaires WHERE UserID = $userID AND QuestionnaireType ='generalQs'";
 	$getResults = sqlsrv_Query($conn, $tsql);
@@ -230,13 +326,11 @@ function getQuestionnaireInteractionIDs($conn, $questionnaireID){
 	if($getResults == FALSE)
 		die("Error in executing getQuestionnaireInteractionIDs() query");
 
-	while($row = sqlsrv_fetch_array($getResults, SQLSRV_FETCH_ASSOC)){
+	wwhile($row = sqlsrv_fetch_array($getResults, SQLSRV_FETCH_ASSOC)){
 		array_push($resultArr, $row['InteractionID']);
 	}
 	return $resultArr;
 }
-
-
 
 function getQuestionIDFromInteractionID($conn, $interactionID){
 	$result = 0;
@@ -258,7 +352,7 @@ function getQuestionIDFromInteractionID($conn, $interactionID){
 function getQuestionTextFromQuestionID($conn, $questionID){
 	$result = null;
 	$tsql = "SELECT Question FROM AllQuestions WHERE QuestionID = $questionID";
-	$getResults = sqlsrv_Query($conn, $tsql);
+	$getResults = sqlsrv_query($conn, $tsql);
 	if($getResults == False){
 		if(($errors = sqlsrv_errors())!=null){
 			formatErrors($errors);
@@ -284,7 +378,7 @@ function getUserResponseFromInteractionID($conn, $interactionID){
 	}
 	//echo "getResponseFromID() query successfully executed";
 	while($row = sqlsrv_fetch_array($getResults, SQLSRV_FETCH_ASSOC)){
-		$result = $row['UserResponse'];
+		$result = $row['UserReponse'];
 	}
 	return $result;
 }
@@ -371,7 +465,7 @@ function getTimeLapse($conn, $interactionID){
 		die("Failure in executing getTimeLapse() query");
 	}
 
-	//echo "getBotTimeFromQID() query successfully executed";
+	echo "getBotTimeFromQID() query successfully executed";
 	while($row = sqlsrv_fetch_array($getResults, SQLSRV_FETCH_ASSOC)){
 		$result = $row['TimeLapse'];
 	}
@@ -385,8 +479,8 @@ function getUserScoresInDateRange($conn, $userID, $dateFrom, $dateTo){
 				FROM TotalScores ts JOIN Questionnaires q
 				ON ts.QuestionnaireID = q.QuestionnaireID
 				WHERE q.UserID = $userID 
-				AND DateCompleted >= '$dateFrom' 
-				AND DateCompleted <= '$dateTo';";
+				AND DateCompleted >= $dateFrom 
+				AND DateCompleted <= $dateTo;";
 	$getResults = sqlsrv_Query($conn, $tsql);
 	if($getResults == FALSE){
 		if(($errors = sqlsrv_errors())!=null){
@@ -401,11 +495,11 @@ function getUserScoresInDateRange($conn, $userID, $dateFrom, $dateTo){
 }
 
 function getHarmRiskUsers($conn, $questionID){
-	$resultArr = [];
-	$tsql = "SELECT DISTINCT ui.UserID 
+	$resultArr = null;
+	$tsql = "SELECT ui.UserID 
 				FROM UserInteractions ui JOIN InteractionQuestionIDs iq
 				ON ui.InteractionID = iq.InteractionID
-				WHERE iq.QuestionID = $questionID;";
+				WHERE iq.QuestionID = $questionID;"
 	$getResults = sqlsrv_query($conn, $tsql);
 	if($getResults == FALSE){
 		if(($errors = sqlsrv_errors())!=null){
@@ -417,7 +511,7 @@ function getHarmRiskUsers($conn, $questionID){
 	while($row = sqlsrv_fetch_array($getResults, SQLSRV_FETCH_ASSOC)){
 		array_push($resultArr, $row['UserID']);
 	}
-	return $resultArr;
+	return $result;
 }
 
 function getUserIDFromInteractionID($conn, $interactionID){
@@ -432,10 +526,12 @@ function getUserIDFromInteractionID($conn, $interactionID){
 	}
 
 	while($row = sqlsrv_fetch_array($getResults, SQLSRV_FETCH_ASSOC)){
-		$result = $row['UserID'];
+		$result = $row['UserID']);
 	}
 	return $result;
 }
+
+
 
 function checkForHarmIdeation($text, $suicideIdeationPhrases){
 	$phraseFound = false;

@@ -16,7 +16,13 @@ include '../includes/functions.php';
 
 <?php include '../includes/nav.php'; ?>
 
+<header>
+<h1>All Users</h1>
+</header>
+
 <main>
+
+<p>This is a list of all users on the system. More details about each individual user are accessible by clicking on their name.</p>
 
 <?php 
 $userID = getAllUserIDs($conn);

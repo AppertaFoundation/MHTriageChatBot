@@ -3,12 +3,13 @@
 include '../includes/connect.php';
 include '../includes/functions.php';
 
-//$userID = $_POST["userID"];
+$userID = $_POST["userID"];
 ?>
 
 <?php
 // Test Values
-$userID = 3;
+//$userID = 18;
+
 $username = getUsernameFromID($conn, $userID);
 ?>
 
@@ -29,139 +30,145 @@ $username = getUsernameFromID($conn, $userID);
 
 <main>
 
-<?php echo $userID; ?>
+<?php echo "User ID is: " . $userID; ?>
 
-<h2>PHQ9 Totals</h2>
 
-<table>
-	<tr>
-		<th>Total</th>
-		<th>Date Completed</th>
-	</tr>
-	<?php
-		$questionType = 'phq9';
-		$tsql = "SELECT Phq9Total, DateCompleted FROM Phq9Totals WHERE UserID = $userID";
-		$getResults = sqlsrv_Query($conn, $tsql);
-		if($getResults == FALSE){
-			if(($errors = sqlsrv_errors())!=null){
-				formatErrors($errors);
-			}
-			die("Error in executing query to get Phq9 totals and completion dates");
-		}
-
-		while($row = sqlsrv_fetch_array($getResults, SQLSRV_FETCH_ASSOC)){
-			$phq9Total = $row['Phq9Total'];
-			$dateCompleted = $row['DateCompleted'];
-	?>
-	<tr>
-		<td><?php echo $phq9Total; ?></td>
-		<td><?php echo date_format($dateCompleted, 'Y-m-d H:i:s'); ?></td>
-	</tr>
-	<?php
-		}
-	?>
-
-</table>
-
-<h2>PHQ9 History</h2>
+<h2>PHQ-9 History</h2>
 
 <table>
 	<tr>
-		<th>Question</th>
+		<th>QuestionnaireID</th>
+		<th>Question Number</th>
+		<th>Question Text</th>
 		<th>User Response</th>
-		<th>Phq9 Score</th>
+		<th>PHQ-9 Score</th>
 		<th>Sentiment Score</th>
 		<th>Time Bot Messaged</th>
 		<th>Time User Replied</th>
 		<th>Time Lapse</th>
 	</tr>
+<?php 
+$questionnaireIDs = getUserPHQ9s($conn, $userID);
+foreach($questionnaireIDs as $questionnaireID){
+	//$questionnaireID = $username+$questionnaireID;
+	$interactionIDs = getQuestionnaireInteractionIDs($conn, $questionnaireID);
+	foreach($interactionIDs as $interactionID){
+		$questionID = getQuestionIDFromInteractionID($conn, $interactionID);
+		$questionText = getQuestionTextFromQuestionID($conn, $questionID);
+		$userResponse = getUserResponseFromInteractionID($conn, $interactionID);
+		$phq9Score = getQuestionScore($conn, $interactionID);
+		$sentimentScore = getSentimentScore($conn, $interactionID);
+		$botTime = getBotTime($conn, $interactionID);
+		$userTime = getUserTime($conn, $interactionID);
+		$timeLapse = getTimeLapse($conn, $interactionID);
+?>
+	<tr>
+		<td><?php echo $questionnaireID+$username; ?></td>
+		<td><?php echo $questionID; ?></td>
+		<td><?php echo $questionText; ?></td>
+		<td><?php echo $userResponse; ?></td>
+		<td><?php echo $phq9Score; ?></td>
+		<td><?php echo $sentimentScore; ?></td>
+		<td><?php echo date_format($botTime, 'Y-m-d H:i:s'); ?></td>
+		<td><?php echo date_format($userTime, 'Y-m-d H:i:s'); ?></td>
+		<td><?php echo date_format($timeLapse, 'H:i:s'); ?></td>
+	</tr>
+<?php
+	}
+}
+?>
 
-	<?php
-		$questionType = 'phq9';
-		$tsql = "SELECT aq.QuestionID, aq.QuestionNo, aq.Question 
-					FROM AllQuestions aq 
-					JOIN UserQuestionIDs uq ON aq.QuestionID = uq.QuestionID
-					WHERE UserID = $userID AND QuestionType ='" . $questionType . "'";
-		$getResults = sqlsrv_Query($conn, $tsql);
-		if($getResults == FALSE){
-			if(($errors = sqlsrv_errors())!=null){
-				formatErrors($errors);
-			}
-			die("Error in executing query to get phq9 questionIDs associated with this user");
-		}
-
-		while($row = sqlsrv_fetch_array($getResults, SQLSRV_FETCH_ASSOC)){
-			$responseID = $row['QuestionID'];
-			$questionNo = $row['QuestionNo'];
-			$question = $row['Question'];
-
-			$userResponse = getResponseFromID($conn, $responseID);
-			$botTime = getBotTimeFromQID($conn, $responseID);
-			$userTime = getUserTimeFromQID($conn, $responseID);
-			$timeLapse = getTimeLapseFromQID($conn, $responseID);
-			$phq9Score = getPhq9Score($sonn, $responseID);
-			$sentimentScore = getResponseSentiment($conn, $responseID);
-			
-		?>
-			<tr>
-				<td><?php echo $question; ?></td>
-				<td><?php echo $userResponse; ?></td>
-				<td><?php echo $phq9Score; ?></td>
-				<td><?php echo $sentimentScore; ?></td>
-				<!--http://php.net/manual/en/datetime.format.php-->
-				<td><?php echo date_format($botTime, 'Y-m-d H:i:s'); ?></td>
-				<td><?php echo date_format($userTime, 'Y-m-d H:i:s'); ?></td>
-				<td><?php echo date_format($timeLapse, 'H:i:s'); ?></td>
-
-			</tr>
-		<?php
-		}
-		?>
+</table>
 
 <h2>GAD7 History</h2>
 
+<table>
+	<tr>
+		<th>Questionnaire ID</th>
+		<th>Question Number</th>
+		<th>Question Text</th>
+		<th>User Response</th>
+		<th>GAD-7 Score</th>
+		<th>Sentiment Score</th>
+		<th>Time Bot Messaged</th>
+		<th>Time User Replied</th>
+		<th>Time Lapse</th>
+	</tr>
+<?php 
+$questionnaireIDs = getUserGAD7s($conn, $userID);
+foreach($questionnaireIDs as $questionnaireID){
+	//$questionnaireID = $username+$questionnaireID;
+	$interactionIDs = getQuestionnaireInteractionIDs($conn, $questionnaireID);
+	foreach($interactionIDs as $interactionID){
+		$questionID = getQuestionIDFromInteractionID($conn, $interactionID);
+		$questionText = getQuestionTextFromQuestionID($conn, $questionID);
+		$userResponse = getUserResponseFromInteractionID($conn, $interactionID);
+		$gad7Score = getQuestionScore($conn, $interactionID);
+		$sentimentScore = getSentimentScore($conn, $interactionID);
+		$botTime = getBotTime($conn, $interactionID);
+		$userTime = getUserTime($conn, $interactionID);
+		$timeLapse = getTimeLapse($conn, $interactionID);
+?>
+	<tr>
+		<td><?php echo $questionnaireID+$username; ?></td>
+		<td><?php echo $questionID; ?></td>
+		<td><?php echo $questionText; ?></td>
+		<td><?php echo $userResponse; ?></td>
+		<td><?php echo $gad7Score; ?></td>
+		<td><?php echo $sentimentScore; ?></td>
+		<td><?php echo date_format($botTime, 'Y-m-d H:i:s'); ?></td>
+		<td><?php echo date_format($userTime, 'Y-m-d H:i:s'); ?></td>
+		<td><?php echo date_format($timeLapse, 'H:i:s'); ?></td>
+	</tr>
+<?php
+	}
+}
+?>
+
+</table>
 
 <h2>General Questions History</h2>
 
 <table>
 	<tr>
-		<th>Question Number</th>
+		<th>Questionnaire ID</th>
 		<th>Question Text</th>
 		<th>User Response</th>
-		<th>Sentient Score</th>
-		<th>Time Bot Sent Question</th>
-		<th>Time User Responded to Question</th>
+		<th>Sentiment Score</th>
+		<th>Time Bot Messaged</th>
+		<th>Time User Replied</th>
 		<th>Time Lapse</th>
 	</tr>
-	<?php
-		//$questionNo = 0;
-		$userResponseIDs = getUserResponsesIDs($conn, $userID);
-		foreach($userResponseIDs as $responseID){
-			//$questionNo = $questionNo + 1;
-			echo $responseID;
-			$userResponse = getResponseFromID($conn, $responseID);
-			$questionNo = getQuestionNoFromResponseID($conn, $responseID);
-			$question = getQuestionFromQuestionNo($conn, $questionNo);
-			$botTime = getBotTimeFromQID($conn, $responseID);
-			$userTime = getUserTimeFromQID($conn, $responseID);
-			$timeLapse = getTimeLapseFromQID($conn, $responseID);
-			$sentimentScore = getResponseSentiment($conn, $responseID);
-
-		?>
-		<tr>
-			<td><?php echo $questionNo; ?></td>
-			<td><?php echo $question; ?></td>
-			<td><?php echo $userResponse; ?></td>
-			<td><?php echo $sentimentScore; ?></td>
-			<!--http://php.net/manual/en/datetime.format.php-->
-			<td><?php echo date_format($botTime, 'Y-m-d H:i:s'); ?></td>
-			<td><?php echo date_format($userTime, 'Y-m-d H:i:s'); ?></td>
-			<td><?php echo date_format($timeLapse, 'H:i:s'); ?></td>
-
-		</tr>
-	<?php
-		}
-	?>
+<?php 
+$questionnaireIDs = getUserGeneralQs($conn, $userID);
+foreach($questionnaireIDs as $questionnaireID){
+	//$questionnaireID = $username+$questionnaireID;
+	$interactionIDs = getQuestionnaireInteractionIDs($conn, $questionnaireID);
+	foreach($interactionIDs as $interactionID){
+		echo $interactionID;
+		$questionID = getQuestionIDFromInteractionID($conn, $interactionID);
+		$questionText = getQuestionTextFromQuestionID($conn, $questionID);
+		$userResponse = getUserResponseFromInteractionID($conn, $interactionID);
+		$gad7Score = getQuestionScore($conn, $interactionID);
+		$sentimentScore = getSentimentScore($conn, $interactionID);
+		$botTime = getBotTime($conn, $interactionID);
+		$userTime = getUserTime($conn, $interactionID);
+		$timeLapse = getTimeLapse($conn, $interactionID);
+?>
+	<tr>
+		<td><?php echo $questionnaireID+$username; ?></td>
+		<td><?php echo $questionID; ?></td>
+		<td><?php echo $questionText; ?></td>
+		<td><?php echo $userResponse; ?></td>
+		<td><?php echo $sentimentScore; ?></td>
+		<td><?php echo date_format($botTime, 'Y-m-d H:i:s'); ?></td>
+		<td><?php echo date_format($userTime, 'Y-m-d H:i:s'); ?></td>
+		<td><?php echo date_format($timeLapse, 'H:i:s'); ?></td>
+	</tr>
+<?php
+	}
+}
+?>
 
 </table>
 
