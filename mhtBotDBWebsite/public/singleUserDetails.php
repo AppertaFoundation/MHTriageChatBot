@@ -8,7 +8,7 @@ $userID = $_POST["userID"];
 
 <?php
 // Test Values
-//$userID = 18;
+$userID = 7;
 
 $username = getUsernameFromID($conn, $userID);
 ?>
@@ -30,8 +30,53 @@ $username = getUsernameFromID($conn, $userID);
 
 <main>
 
-<?php echo "User ID is: " . $userID; ?>
+<h2>Questionnaire Totals</h2>
 
+<table>
+	<tr>
+		<th>ID</th>
+		<th>Questionnaire Type</th>
+		<th>Total Score</th>
+		<th>Date Completed</th>
+	</tr>
+
+<?php
+$questionnaireIDs = getUserQuestionnaires($conn, $userID);
+foreach($questionnaireIDs as $questionnaireID){
+	$ID = $questionnaireID . $username;
+	$questionnaireType = getQuestionnaireType($conn, $questionnaireID);
+	$totalScore = getQuestionnaireTotalScore($conn, $questionnaireID);
+	$dateCompleted = getQuestionnaireDateCompleted($conn, $questionnaireID);
+?>
+
+	<tr>
+		<td><?php echo $ID; ?></td>
+		<td><?php echo $questionnaireType; ?></td>
+		<td>
+			<?php
+				if($totalScore != null){
+					echo $totalScore;
+				}else{
+					echo "User has not completed this questionnaire";
+				}
+			?>
+		</td>
+		<td>
+			<?php
+				if($dateCompleted != null){
+					echo date_format($dateCompleted, 'Y-m-d H:i:s');
+				}else{
+					echo "n/a";
+				}
+			?>
+		</td>
+	</tr>
+	
+<?php
+}
+?>
+
+</table>
 
 <h2>PHQ-9 History</h2>
 
