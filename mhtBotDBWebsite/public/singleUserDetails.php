@@ -8,7 +8,7 @@ $userID = $_POST["userID"];
 
 <?php
 // Test Values
-$userID = 7;
+//$userID = 7;
 
 $username = getUsernameFromID($conn, $userID);
 ?>
@@ -71,7 +71,7 @@ foreach($questionnaireIDs as $questionnaireID){
 			?>
 		</td>
 	</tr>
-	
+
 <?php
 }
 ?>
