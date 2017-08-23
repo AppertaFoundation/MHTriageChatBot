@@ -102,6 +102,7 @@ var bot = new builder.UniversalBot(connector, [
 		}else{
 			session.send("Hello " + session.userData.username + ". Welcome back!");
 			session.beginDialog('generalQs');
+			//session.beginDialog('gad7'); /* for testing */
 		}
 	}
 ]);
@@ -221,6 +222,7 @@ bot.dialog('register', [
 								console.log("User successfully inserted into table");
 								session.send("Welcome " + session.userData.username + "! You've successfully registered.");
 								session.beginDialog('generalQs');
+								//session.beginDialog('gad7'); /* for testing */
 							}else{
 								console.log("Error" + err);
 							}
@@ -311,6 +313,7 @@ bot.dialog('login', [
 					console.log("User %s logged in.", session.userData.username);
 					session.endDialog("Wecome back %s!", session.userData.username);
 					session.beginDialog('generalQs');
+					//session.beginDialog('gad7'); /* for testing */
 				}else{
 					console.log("Passwords do not match");
 					session.send("I'm sorry, your password is incorrect. Please try logging in again");
@@ -396,6 +399,29 @@ function insertIntoUserResponses(userResponse){
 	});
 }
 
+function beginNewQuestionnaire(session, userID, questionnaireType){
+	return new Promise(
+		function(resolve, reject){
+			request = new Request(
+				"INSERT INTO Questionnaires (UserID, QuestionnaireType) VALUES (" + userID + ",' " + questionnaireType + "'); SELECT @@identity",
+				function(err){
+					if(!err){
+						console.log("Successful insert into Questionnaires");
+					}else{
+						console.log("Error in inserting into Questionnaires. " + err);
+					}
+				}
+				);
+
+			request.on('row', function(columns){
+				console.log("New questionnaireID is: " + columns[0].value);
+				session.userData.questionnaireID = columns[0].value;
+				resolve(columns[0].value);
+			});
+			connection.execSql(request);
+		});
+}
+
 function processGeneralQResponse(session, response, questionID){
 	// Gets timestamp information
 	var botTimeFormatted = new Date(getBotMsgTime(session));
@@ -409,7 +435,7 @@ function processGeneralQResponse(session, response, questionID){
 			insertGeneralQResponseData(interactionID, botTimeFormatted, userTimeFormatted, timeLapseHMS, questionID, session.userData.userID, response)
 			
 		})
-		.catch(function(error){console.log("error in promise function catch statement" + error)});
+		.catch(function(error){console.log("Error in insertIntoUserResponses() promise function. Now in catch statement " + error)});
 }
 
 function insertGeneralQResponseData(interactionID, botTime, userTime, timeLapse, questionID, userID, userResponse){
@@ -422,7 +448,7 @@ function insertGeneralQResponseData(interactionID, botTime, userTime, timeLapse,
 			+ "VALUES (" + mysql.escape(interactionID) + "," + mysql.escape(userID) + "); ",
 				function(err, rowCount, rows){
 					if(!err){
-						console.log("Data succesfully inserted into tables: Timestamps, InteractionQuestoinIDs, UserInteractions");
+						console.log("Data succesfully inserted into tables: Timestamps, InteractionQuestionIDs, UserInteractions");
 					}else{
 						console.log("Error in inserting GeneralQResponseData" + err);
 					}
@@ -552,6 +578,7 @@ bot.dialog('clarifyFeeling', [
 
 bot.dialog('generalQs', [
 	function(session, args, next){
+		beginNewQuestionnaire(session, session.userData.userID, 'generalQs')
 		session.userData.lastMessageSent = new Date();
 		builder.Prompts.text(session, 'How are you feeling today?');
 	},
@@ -577,19 +604,6 @@ bot.dialog('generalQs', [
 				session.beginDialog('clarifyFeeling');
 			});
 	},
-	/*function(session, results, next){
-		questionID = 1;
-		console.log("Feeling is:");
-		console.log(feeling);
-		console.log("Session.message.localTimestamp");
-		console.log(session.message.localTimestamp);
-		processGeneralQResponse(session, session.conversationData.userResponse, questionID);
-		if(feeling == 'Happy'){
-			session.endConversation("I'll say goodbye for now " + session.userData.username + " but just say hello when you'd like to speak again :)");
-		}else{
-			next();
-		}
-	},*/
 	function(session, args, next){
 		// https://stackoverflow.com/questions/42069081/get-duration-between-the-bot-sending-the-message-and-user-replying
 		session.userData.lastMessageSent = new Date();
@@ -704,16 +718,27 @@ bot.dialog('gad7', [
 			session.endConversation("No problem, just come back and say hello when you feel ready to try this. Hope to speak to you again soon " + session.userData.username + "!");
 		}
 	},
+	function(session, results, next){
+		beginNewQuestionnaire(session, session.userData.userID, 'gad7')
+			.then(function(questionnaireID){
+				session.userData.questionnaireID = questionnaireID;
+				next();
+			})
+			.catch(function(error){
+				console.log("Error in beginNewQuestionnaire() promise. " + error);
+			})
+	},
 	function(session){
 		session.userData.lastMessageSent = new Date();
 		builder.Prompts.text(session, "In the past two weeks, how many days have you felt nervous, anxious, or on edge?");
 	}, 
 	function(session, results, next){ 
-		session.dialogData.userResponse = results.response;
+
 		recogniseDayEntity(session.message.text)
 			.then(function(entity){ 
 				var botResponse = generateBotQuestionnaireResponse(entity);
 				session.send(botResponse);
+				session.conversationData.userResponse = results.response;
 				next();
 			})
 			.catch(function(error){ 
@@ -722,9 +747,12 @@ bot.dialog('gad7', [
 			});
 	},
 	function(session, results, next){ 
-		questionID = 17;
+		questionID = 18;
+		console.log("Post q1 asked");
+		console.log("questionnaire ID identified is");
+		console.log(session.userData.questionnaireID);
 		session.userData.lastMessageReceived = new Date();
-		processQuestionnaireResponse(session, session.conversationData.userResponse, 'gad7', questionID);
+		processQuestionnaireResponse(session, session.conversationData.userResponse, 'gad7', questionID, session.userData.questionnaireID);
 		next();
 	},
 	function(session){
@@ -736,6 +764,7 @@ bot.dialog('gad7', [
 		recogniseDayEntity(session.message.text)
 			.then(function(entity){ var botResponse = generateBotQuestionnaireResponse(entity);
 				session.send(botResponse);
+				session.conversationData.userResponse = results.response;
 				next(); })
 			.catch(function(error){ console.log("No entities identified" + error);
 				session.beginDialog('clarifyDays'); });
@@ -743,7 +772,7 @@ bot.dialog('gad7', [
 	function(session, results, next){ 
 		questionID += 1;
 		session.userData.lastMessageReceived = new Date();
-		processQuestionnaireResponse(session, session.conversationData.userResponse, 'gad7', questionID);
+		processQuestionnaireResponse(session, session.conversationData.userResponse, 'gad7', questionID, session.userData.questionnaireID);
 		next();
 	},
 	function(session){
@@ -753,7 +782,9 @@ bot.dialog('gad7', [
 	function(session, results, next){ 
 		session.dialogData.userResponse = results.response;
 		recogniseDayEntity(session.message.text)
-			.then(function(entity){ var botResponse = generateBotQuestionnaireResponse(entity);
+			.then(function(entity){ 
+				var botResponse = generateBotQuestionnaireResponse(entity);
+				session.conversationData.userResponse = results.response;
 				session.send(botResponse);
 				next(); })
 			.catch(function(error){ console.log("No entities identified" + error);
@@ -762,7 +793,7 @@ bot.dialog('gad7', [
 	function(session, results, next){ 
 		questionID += 1;
 		session.userData.lastMessageReceived = new Date();
-		processQuestionnaireResponse(session, session.conversationData.userResponse, 'gad7', questionID);
+		processQuestionnaireResponse(session, session.conversationData.userResponse, 'gad7', questionID, session.userData.questionnaireID);
 		next();
 	},
 	function(session){
@@ -772,8 +803,10 @@ bot.dialog('gad7', [
 	function(session, results, next){ 
 		session.dialogData.userResponse = results.response;
 		recogniseDayEntity(session.message.text)
-			.then(function(entity){ var botResponse = generateBotQuestionnaireResponse(entity);
+			.then(function(entity){
+				var botResponse = generateBotQuestionnaireResponse(entity);
 				session.send(botResponse);
+				session.conversationData.userResponse = results.response;
 				next(); })
 			.catch(function(error){ console.log("No entities identified" + error);
 				session.beginDialog('clarifyDays'); });
@@ -781,7 +814,7 @@ bot.dialog('gad7', [
 	function(session, results, next){ 
 		questionID += 1;
 		session.userData.lastMessageReceived = new Date();
-		processQuestionnaireResponse(session, session.conversationData.userResponse, 'gad7', questionID);
+		processQuestionnaireResponse(session, session.conversationData.userResponse, 'gad7', questionID, session.userData.questionnaireID);
 		next();
 	},
 	function(session){
@@ -791,8 +824,10 @@ bot.dialog('gad7', [
 	function(session, results, next){ 
 		session.dialogData.userResponse = results.response;
 		recogniseDayEntity(session.message.text)
-			.then(function(entity){ var botResponse = generateBotQuestionnaireResponse(entity);
+			.then(function(entity){ 
+				var botResponse = generateBotQuestionnaireResponse(entity);
 				session.send(botResponse);
+				session.conversationData.userResponse = results.response;
 				next(); })
 			.catch(function(error){ console.log("No entities identified" + error);
 				session.beginDialog('clarifyDays'); });
@@ -800,7 +835,7 @@ bot.dialog('gad7', [
 	function(session, results, next){ 
 		questionID += 1;
 		session.userData.lastMessageReceived = new Date();
-		processQuestionnaireResponse(session, session.conversationData.userResponse, 'gad7', questionID);
+		processQuestionnaireResponse(session, session.conversationData.userResponse, 'gad7', questionID, session.userData.questionnaireID);
 		next();
 	},
 	function(session){
@@ -810,8 +845,10 @@ bot.dialog('gad7', [
 	function(session, results, next){ 
 		session.dialogData.userResponse = results.response;
 		recogniseDayEntity(session.message.text)
-			.then(function(entity){ var botResponse = generateBotQuestionnaireResponse(entity);
+			.then(function(entity){ 
+				var botResponse = generateBotQuestionnaireResponse(entity);
 				session.send(botResponse);
+				session.conversationData.userResponse = results.response;
 				next(); })
 			.catch(function(error){ console.log("No entities identified" + error);
 				session.beginDialog('clarifyDays'); });
@@ -819,7 +856,7 @@ bot.dialog('gad7', [
 	function(session, results, next){ 
 		questionID += 1;
 		session.userData.lastMessageReceived = new Date();
-		processQuestionnaireResponse(session, session.conversationData.userResponse, 'gad7', questionID);
+		processQuestionnaireResponse(session, session.conversationData.userResponse, 'gad7', questionID, session.userData.questionnaireID);
 		next();
 	},
 	function(session){
@@ -829,14 +866,16 @@ bot.dialog('gad7', [
 	function(session, results, next){ 
 		questionID += 1;
 		session.userData.lastMessageReceived = new Date();
-		processQuestionnaireResponse(session, session.conversationData.userResponse, 'gad7', questionID);
+		processQuestionnaireResponse(session, session.conversationData.userResponse, 'gad7', questionID, session.userData.questionnaireID);
 		next();
 	},
 	function(session, results, next){ 
 		session.dialogData.userResponse = results.response;
 		recogniseDayEntity(session.message.text)
-			.then(function(entity){ var botResponse = generateBotQuestionnaireResponse(entity);
+			.then(function(entity){ 
+				var botResponse = generateBotQuestionnaireResponse(entity);
 				session.send(botResponse);
+				session.conversationData.userResponse = results.response;
 				next(); })
 			.catch(function(error){ console.log("No entities identified" + error);
 				session.beginDialog('clarifyDays'); });
@@ -849,6 +888,7 @@ bot.dialog('gad7', [
 		session.dialogData.userResponse = results.response;
 		recogniseDifficultyEntity(session.message.text)
 			.then(function(entity){ 
+				session.conversationData.userResponse = results.response;
 				next();
 			})
 			.catch(function(error){ 
@@ -859,7 +899,7 @@ bot.dialog('gad7', [
 	function(session, results, next){
 		questionID += 1;
 		session.userData.lastMessageReceived = new Date();
-		processDifficultyResponse(session, session.conversationData.userResponse, 'gad7', questionID);
+		processDifficultyResponse(session, session.conversationData.userResponse, 'gad7', questionID, session.userData.questionnaireID);
 		next();
 	},
 	function(session, results, next){
@@ -908,7 +948,7 @@ bot.dialog('clarifyDays', [
 // phq9 Dialog
 //------------------//
 bot.dialog('phq9', [
-	function (session, args, next){
+	/*function (session, args, next){
 		console.log('Beginning phq9 dialog');
 		totalScore = 0;
 		builder.Prompts.confirm(session, "I'm now going to take you through a clinical process that will help you to explain how you feel to a clinician. Is that ok?");
@@ -922,9 +962,9 @@ bot.dialog('phq9', [
 		}else{
 			session.endDialog("No problem!" + session.userData.username + "Come back when you feel ready to try this.");
 		}
-	}, 
+	}, */
 	function(session){
-		console.log("Asking phq9 q1");
+		beginNewQuestionnaire(session, session.userData.userID, 'phq9');
 		session.userData.lastMessageSent = new Date();
 		builder.Prompts.text(session, "In the past two weeks, how many days have you had little interest or pleasure in doing things?");
 	}, 
@@ -945,7 +985,8 @@ bot.dialog('phq9', [
 	function(session, results, next){
 		questionID = 8;
 		session.userData.lastMessageReceived = new Date();
-		processQuestionnaireResponse(session, session.conversationData.userResponse, 'phq9', questionID);
+		console.log("Current questionnaireID is: " + session.userData.questionnaireID);
+		processQuestionnaireResponse(session, session.conversationData.userResponse, 'phq9', questionID, session.userData.questionnaireID);
 		next();
 	},
 	function(session, next){
@@ -970,7 +1011,7 @@ bot.dialog('phq9', [
 	function(session, results, next){ 
 		questionID += 1;
 		session.userData.lastMessageReceived = new Date();
-		processQuestionnaireResponse(session, session.conversationData.userResponse, 'phq9', questionID);
+		processQuestionnaireResponse(session, session.conversationData.userResponse, 'phq9', questionID, session.userData.questionnaireID);
 		next();
 	},
 	function(session, next){
@@ -994,7 +1035,7 @@ bot.dialog('phq9', [
 	function(session, results, next){ 
 		questionID += 1;
 		session.userData.lastMessageReceived = new Date();
-		processQuestionnaireResponse(session, session.conversationData.userResponse, 'phq9', questionID);
+		processQuestionnaireResponse(session, session.conversationData.userResponse, 'phq9', questionID, session.userData.questionnaireID);
 		next();
 	},
 	function(session, next){
@@ -1018,7 +1059,7 @@ bot.dialog('phq9', [
 	function(session, results, next){ 
 		questionID += 1;
 		session.userData.lastMessageReceived = new Date();
-		processQuestionnaireResponse(session, session.conversationData.userResponse, 'phq9', questionID);
+		processQuestionnaireResponse(session, session.conversationData.userResponse, 'phq9', questionID, session.userData.questionnaireID);
 		next();
 	},
 	function(session, next){
@@ -1042,7 +1083,7 @@ bot.dialog('phq9', [
 	function(session, results, next){ 
 		questionID += 1;
 		session.userData.lastMessageReceived = new Date();
-		processQuestionnaireResponse(session, session.conversationData.userResponse, 'phq9', questionID);
+		processQuestionnaireResponse(session, session.conversationData.userResponse, 'phq9', questionID, session.userData.questionnaireID);
 		next();
 	},
 	function(session, next){
@@ -1066,7 +1107,7 @@ bot.dialog('phq9', [
 	function(session, results, next){ 
 		questionID += 1;
 		session.userData.lastMessageReceived = new Date();
-		processQuestionnaireResponse(session, session.conversationData.userResponse, 'phq9', questionID);
+		processQuestionnaireResponse(session, session.conversationData.userResponse, 'phq9', questionID, session.userData.questionnaireID);
 		next();
 	},
 	function(session, next){
@@ -1090,7 +1131,7 @@ bot.dialog('phq9', [
 	function(session, results, next){ 
 		questionID += 1;
 		session.userData.lastMessageReceived = new Date();
-		processQuestionnaireResponse(session, session.conversationData.userResponse, 'phq9', questionID);
+		processQuestionnaireResponse(session, session.conversationData.userResponse, 'phq9', questionID, session.userData.questionnaireID);
 		next();
 	},
 	function(session, next){
@@ -1114,7 +1155,7 @@ bot.dialog('phq9', [
 	function(session, results, next){ 
 		questionID += 1;
 		session.userData.lastMessageReceived = new Date();
-		processQuestionnaireResponse(session, session.conversationData.userResponse, 'phq9', questionID);
+		processQuestionnaireResponse(session, session.conversationData.userResponse, 'phq9', questionID, session.userData.questionnaireID);
 		next();
 	},
 
@@ -1139,7 +1180,7 @@ bot.dialog('phq9', [
 	function(session, results, next){ 
 		questionID += 1;
 		session.userData.lastMessageReceived = new Date();
-		processQuestionnaireResponse(session, session.conversationData.userResponse, 'phq9', questionID);
+		processQuestionnaireResponse(session, session.conversationData.userResponse, 'phq9', questionID, session.userData.questionnaireID);
 		next();
 	},
 	function(session, next){
@@ -1161,7 +1202,7 @@ bot.dialog('phq9', [
 	function(session, results, next){
 		questionID += 1;
 		session.userData.lastMessageReceived = new Date();
-		processDifficultyResponse(session, session.conversationData.userResponse, 'phq9', questionID);
+		processDifficultyResponse(session, session.conversationData.userResponse, 'phq9', questionID, session.userData.questionnaireID);
 		next();
 	},
 	function(session, results, next){
@@ -1184,7 +1225,17 @@ bot.dialog('phq9', [
 //============
 
 
-function insertQuestionnaireResponseData(interactionID, botTime, userTime, timeLapse, questionID, userID, userResponse, questionnaireType, qScore){
+function insertQuestionnaireResponseData(interactionID, botTime, userTime, timeLapse, questionID, userID, userResponse, questionnaireType, qScore, questionnaireID){
+	console.log("InteractionID: " + interactionID);
+	console.log("BotTime: " + botTime);
+	console.log("UserTime: " + userTime);
+	console.log("TimeLapse: " + timeLapse);
+	console.log("QuestionID: " + questionID);
+	console.log("UserID: " + userID);
+	console.log("UserResponse: " + userResponse);
+	console.log("QuestionnaireType: " + questionnaireType);
+	console.log("qScore: " + qScore);
+	console.log("questionnaireID " + questionnaireID);
 	request = new Request(
 		"INSERT INTO Timestamps (InteractionID, BotMsgTime, UserMsgTime, TimeLapse) " 
 			+ "VALUES (" + mysql.escape(interactionID) + "," + mysql.escape(botTime) + "," + mysql.escape(userTime) + "," + mysql.escape(timeLapse) + "); " 
@@ -1192,34 +1243,38 @@ function insertQuestionnaireResponseData(interactionID, botTime, userTime, timeL
 			+ "VALUES (" + mysql.escape(interactionID) + "," + mysql.escape(questionID) + ");"
 		+ "INSERT INTO UserInteractions (InteractionID, UserID) "
 			+ "VALUES (" + mysql.escape(interactionID) + "," + mysql.escape(userID) + "); "
-		+ "INSERT INTO QuestionScores(InteractionID, QuestionnaireType, Score) "
-			+ "VALUES (" + mysql.escape(interactionID) + "," + mysql.escape(questionnaireType) + "," + mysql.escape(qScore) + ");",
+		+ "INSERT INTO QuestionScores(QuestionnaireID, InteractionID, Score) "
+			+ "VALUES (" + questionnaireID + "," + mysql.escape(interactionID) + "," + mysql.escape(qScore) + ");",
 				function(err, rowCount, rows){
 					if(!err){
 						console.log("Questionnaire user response data successfully inserted into tables: Timestamps, InteractionQuestionIDs, UserInteractions, QuestionScores, TotalScores");
 					}else{
-						console.log("Error in inserting data" + err);
+						console.log("Error in inserting questionnaire response data." + err);
 					}
 				}
 	);
 	connection.execSql(request);
 }
 
-function insertQuestionnaireEndData(interactionID, botTime, userTime, timeLapse, questionID, userID, userResponse, questionnaireType, totalScore, difficultyEntity){
+function insertQuestionnaireEndData(interactionID, botTime, userTime, timeLapse, questionID, userID, userResponse, questionnaireType, totalScore, difficultyEntity, questionnaireID){
+	console.log("In insertQuestionnnaireEndData()");
+	console.log("QuestionnaireID is: " + questionnaireID);
 	request = new Request(
 		"INSERT INTO Timestamps (InteractionID, BotMsgTime, UserMsgTime, TimeLapse) " 
 			+ "VALUES (" + mysql.escape(interactionID) + "," + mysql.escape(botTime) + "," + mysql.escape(userTime) + "," + mysql.escape(timeLapse) + "); " 
 		+ "INSERT INTO InteractionQuestionIDs (InteractionID, QuestionID) "
 			+ "VALUES (" + mysql.escape(interactionID) + "," + mysql.escape(questionID) + ");"
 		+ "INSERT INTO UserInteractions (InteractionID, UserID) "
-			+ "VALUES (" + mysql.escape(interactionID) + "," + mysql.escape(userID) + "); "
-		+ "INSERT INTO TotalScores (UserID, TotalScore, DateCompleted, Difficulty) "
-			+ "VALUES (" + mysql.escape(userID) + "," + mysql.escape(totalScore) + "," + mysql.escape(userTime) + "," + mysql.escape(difficultyEntity) + ");",
+			+ "VALUES (" + mysql.escape(interactionID) + "," + mysql.escape(userID) + "); " 
+		+ "INSERT INTO Difficulty (QuestionnaireID, Difficulty) " +
+		  "VALUES (" + questionnaireID + ",' " + difficultyEntity + "');" +
+		  "INSERT INTO TotalScores (QuestionnaireID, TotalScore, DateCompleted) " +
+		  	"VALUES ('" + mysql.escape(questionnaireID) + "'," + mysql.escape(totalScore) + ","  + mysql.escape(userTime) + ");",
 				function(err, rowCount, rows){
 					if(!err){
 						console.log("Completed questionnaire user response data successfully inserted into tables: Timestamps, InteractionQuestionIDs, UserInteractions, TotalScores");
 					}else{
-						console.log("Error in inserting data" + err);
+						console.log("Error in inserting questionnaire end data. " + err);
 					}
 				}
 	);
@@ -1296,7 +1351,8 @@ function recogniseDifficultyEntity(text){
 }
 
 
-function processQuestionnaireResponse(session, results, questionnaireType, questionID){
+function processQuestionnaireResponse(session, results, questionnaireType, questionID, questionnaireID){
+	console.log("Executing processQuestionnaireResponse()");
 	var userResponse = results;
 	var botTimeFormatted = new Date(getBotMsgTime(session));
 	var userTimeFormatted = new Date(getUserMsgTime(session));
@@ -1334,15 +1390,15 @@ function processQuestionnaireResponse(session, results, questionnaireType, quest
 
 			insertIntoUserResponses(userResponse)
 				.then(function(interactionID){ 
-					insertQuestionnaireResponseData(interactionID, botTimeFormatted, userTimeFormatted, timeLapseHMS, questionID, session.userData.userID, userResponse, questionnaireType, qScore)
+					insertQuestionnaireResponseData(interactionID, botTimeFormatted, userTimeFormatted, timeLapseHMS, questionID, session.userData.userID, userResponse, questionnaireType, qScore, questionnaireID)
 					
 				})
-				.catch(function(error){console.log("error in promise function catch statement" + error)});
+				.catch(function(error){console.log("Error in insertIntoUserResponses() promise in processQuestionnaireResponse(). Now in catch statement. " + error)});
 		}
 	);
 }
 
-function processDifficultyResponse(session, results, questionnaireType, questionID){
+function processDifficultyResponse(session, results, questionnaireType, questionID, questionnaireID){
 	var userResponse = results;
 	var botTimeFormatted = new Date(getBotMsgTime(session));
 	var userTimeFormatted = new Date(getUserMsgTime(session));
@@ -1374,7 +1430,7 @@ function processDifficultyResponse(session, results, questionnaireType, question
 
 			insertIntoUserResponses(userResponse)
 			.then(function(interactionID){ 
-				insertQuestionnaireEndData(interactionID, botTimeFormatted, userTimeFormatted, timeLapseHMS, questionID, session.userData.userID, userResponse, questionnaireType, totalScore, difficultyEntity);
+				insertQuestionnaireEndData(interactionID, botTimeFormatted, userTimeFormatted, timeLapseHMS, questionID, session.userData.userID, userResponse, questionnaireType, totalScore, difficultyEntity, questionnaireID);
 				
 			})
 			.catch(function(error){
