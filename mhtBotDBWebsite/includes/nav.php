@@ -19,7 +19,7 @@
 		<div class="collapse navbar-collapse" id="siteNavBar">
 			<ul class="nav navbar-nav">
 				<li><a href="index.php">Home</a><li>
-				<li><a href="allUsers.php">All Users</a></li>
+				<li><a href="../public/allUsers.php">All Users</a></li>
 				<li><a href="highScoringUsers.php">High Scoring Users</a></li>
 				<li><a href="harmRisk.php">Users at Risk of Harm</a></li>
 			</ul>
