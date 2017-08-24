@@ -34,7 +34,7 @@ $username = getUsernameFromID($conn, $userID);
 
 <?php
 $questionnaireIDs = getUserQuestionnaires($conn, $userID);
-if($questionnaireIDs !=){
+if($questionnaireIDs != null){
 ?>
 
 	<div class="table-responsive">
