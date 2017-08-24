@@ -130,8 +130,7 @@ CREATE TABLE Gad7Totals(
 )
 
 CREATE TABLE AllQuestions(
-	QuestionID INT IDENTITY PRIMARY KEY,
-	QuestionNo INT,
+	QuestionID INT PRIMARY KEY,
 	QuestionType VARCHAR(128),
 	Question VARCHAR(MAX),
 );
@@ -142,24 +141,32 @@ CREATE TABLE UserResponses(
 
 
 
-INSERT INTO AllQuestions(QuestionNo, QuestionType, Question){
-	(1, 'general', 'How are you feeling today?'),
-	(2, 'general', 'Would you say you''re feeling happy, anxious, or low?'),
-	(3, 'general', 'What has led you to seek an assessment for how you''re feeling?'),
-	(4, 'general', 'Do you know what''s triggered any negative thoughts and feelings?'),
-	(5, 'general', 'What have these thoughts and feelings stopped you doing?'),
-	(6, 'general', 'Do you have a care plan?'),
-	(7, 'general', 'Is it working for you?'),
-	(1, 'phq9', 'How many days have you had little interest or pleasure in doing things?'),
-	(2, 'phq9', 'How many days have you felt down, depressed, or hopeless?'),
-	(3, 'phq9','How many days have you had trouble falling or staying asleep, or sleeping too much?'),
-	(4, 'phq9','How many days have you been bothered by feeling tired or having little energy?'),
+INSERT INTO AllQuestions(QuestionID, QuestionType, Question) VALUES
+	(1, 'generalQs', 'How are you feeling today?'),
+	(2, 'generalQs', 'To work out how to best help you, would you be able to be able to tell me if you''re mostly feeling low, or anxious, or happy?'),
+	(3, 'generalQs', 'What has led you to seek an assessment for how you''re feeling?'),
+	(4, 'generalQs', 'Can you identity anything in particular that might have triggered any negative thoughts and feelings?'),
+	(5, 'generalQs', 'What have these thoughts and feelings stopped you doing?'),
+	(6, 'generalQs', 'Do you have a care plan?'),
+	(7, 'generalQs', 'Is it working for you?'),
+	(8, 'phq9', 'How many days have you had little interest or pleasure in doing things?'),
+	(9, 'phq9', 'How many days have you felt down, depressed, or hopeless?'),
+	(10, 'phq9','How many days have you had trouble falling or staying asleep, or sleeping too much?'),
+	(11, 'phq9','How many days have you been bothered by feeling tired or having little energy?'),
 	(12, 'phq9', 'How many days have you had a poor appetite or overeaten?'),
 	(13, 'phq9', 'How many days have you felt bad about yourself - or that you are a failure or have let yourself or your family down?'),
 	(14, 'phq9', 'How many days have you had trouble concentrating on things, such as reading the newspaper or watching television?'),
 	(15, 'phq9', 'How many days have you moved or spoken so slowly that other people could have noticed? Or the opposite - being so fidgety or restless that you''ve been moving around a lot more than usual?'),
 	(16, 'phq9', 'How many days have you had thoughts that you''d be better off dead or of hurting yourself in some way?'),
-
+	(17, 'phq9', 'How difficult have any of these problems made it for you to do your work, take care of things at home, or get along with other people?'),
+	(18, 'gad7', 'How many days have you felt nervous, anxious, or on edge?'),
+	(19, 'gad7', 'How many days have you not been able to stop or control worrying'),
+	(20, 'gad7', 'How many days have you worried too much about different things?'),
+	(21, 'gad7', 'How many days have you had trouble relaxing?'),
+	(22, 'gad7', 'How many days have you been so restless that it''s hard to sit still?'),
+	(23, 'gad7', 'How many days have you become easily annoyed or irritable?'),
+	(24, 'gad7', 'How many days have you felt afraid, as if something awful might happen?'),
+	(25, 'phq9', 'How difficult have any of these problems made it for you to do your work, take care of things at home, or get along with other people?')
 
 
 INSERT INTO AllQuestions (QuestionNo, QuestionType, Question)

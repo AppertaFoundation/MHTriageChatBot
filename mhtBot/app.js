@@ -97,12 +97,12 @@ var bot = new builder.UniversalBot(connector, [
 	function(session){
 		console.log(session.userData.username);
 		if(session.userData.username == null){
-			session.send('Hi, I\'m MaxBot. I hope we\'ll be able to work together to help you');
+			session.send('Hello!');
 			session.beginDialog('greeting');
 		}else{
-			session.send("Hello " + session.userData.username + ". Welcome back!");
+			session.send("Hi " + session.userData.username + "!");
 			session.beginDialog('generalQs');
-			//session.beginDialog('gad7'); /* for testing */
+			//session.beginDialog('phq9'); /* for testing */
 		}
 	}
 ]);
@@ -375,6 +375,7 @@ function replaceSingleQuotes(str){
 }
 
 function insertIntoUserResponses(userResponse){
+	console.log("executing insertIntoUserResponse()");
 	return new Promise(
 		function(resolve, reject){
 			request = new Request(
@@ -403,7 +404,7 @@ function beginNewQuestionnaire(session, userID, questionnaireType){
 	return new Promise(
 		function(resolve, reject){
 			request = new Request(
-				"INSERT INTO Questionnaires (UserID, QuestionnaireType) VALUES (" + userID + ",' " + questionnaireType + "'); SELECT @@identity",
+				"INSERT INTO Questionnaires (UserID, QuestionnaireType) VALUES (" + userID + ", '" + questionnaireType + "'); SELECT @@identity",
 				function(err){
 					if(!err){
 						console.log("Successful insert into Questionnaires");
@@ -422,7 +423,7 @@ function beginNewQuestionnaire(session, userID, questionnaireType){
 		});
 }
 
-function processGeneralQResponse(session, response, questionID){
+function processGeneralQResponse(session, response, questionID, questionnaireID){
 	// Gets timestamp information
 	var botTimeFormatted = new Date(getBotMsgTime(session));
 	var userTimeFormatted = new Date(getUserMsgTime(session));
@@ -432,20 +433,22 @@ function processGeneralQResponse(session, response, questionID){
 	insertIntoUserResponses(response)
 		// Using the interactionID created by the insertion, inserts the user response data into the other relevant tables
 		.then(function(interactionID){ 
-			insertGeneralQResponseData(interactionID, botTimeFormatted, userTimeFormatted, timeLapseHMS, questionID, session.userData.userID, response)
+			insertGeneralQResponseData(interactionID, botTimeFormatted, userTimeFormatted, timeLapseHMS, questionID, session.userData.userID, response, questionnaireID)
 			
 		})
 		.catch(function(error){console.log("Error in insertIntoUserResponses() promise function. Now in catch statement " + error)});
 }
 
-function insertGeneralQResponseData(interactionID, botTime, userTime, timeLapse, questionID, userID, userResponse){
-		request = new Request(
+function insertGeneralQResponseData(interactionID, botTime, userTime, timeLapse, questionID, userID, userResponse, questionnaireID){
+	request = new Request(
 		"INSERT INTO Timestamps (InteractionID, BotMsgTime, UserMsgTime, TimeLapse) " 
 			+ "VALUES (" + mysql.escape(interactionID) + "," + mysql.escape(botTime) + "," + mysql.escape(userTime) + "," + mysql.escape(timeLapse) + "); " 
 		+ "INSERT INTO InteractionQuestionIDs (InteractionID, QuestionID) "
 			+ "VALUES (" + mysql.escape(interactionID) + "," + mysql.escape(questionID) + ");"
 		+ "INSERT INTO UserInteractions (InteractionID, UserID) "
-			+ "VALUES (" + mysql.escape(interactionID) + "," + mysql.escape(userID) + "); ",
+			+ "VALUES (" + mysql.escape(interactionID) + "," + mysql.escape(userID) + "); "
+		+ "INSERT INTO QuestionScores(QuestionnaireID, InteractionID, Score) "
+			+ "VALUES (" + questionnaireID + "," + mysql.escape(interactionID) + "," + 0 + ");",
 				function(err, rowCount, rows){
 					if(!err){
 						console.log("Data succesfully inserted into tables: Timestamps, InteractionQuestionIDs, UserInteractions");
@@ -549,12 +552,16 @@ bot.dialog('clarifyFeeling', [
 		recogniseFeeling(session.message.text)
 			.then(function(feelingEntity){ 
 				var botResponse = generateBotGeneralQResponse(feelingEntity);
-				console.log(feeling);
+				console.log(feelingEntity);
 				console.log("Bot response is:");
 				console.log(botResponse);
-				
-				session.send("Thank you for telling me this. " + botResponse + " though.");
-				next();
+				if(feelingEntity == 'Happy'){
+					session.send(botResponse);
+					session.endConversation("I'll say goodbye for now " + session.userData.username + " but just say hello when you'd like to speak again :)");
+				}else{
+					session.send("Thank you for telling me this. " + botResponse + " though.");
+					next();
+				}
 			})
 			.catch(function(error){ 
 				console.log("No entities identified" + error);
@@ -564,7 +571,7 @@ bot.dialog('clarifyFeeling', [
 	function(session, results, next){
 		questionID = 2;
 		session.userData.lastMessageReceived = new Date();
-		processGeneralQResponse(session, results.response, questionID);
+		processGeneralQResponse(session, session.conversationData.userResponse, questionID, session.userData.questionnaireID)
 		next();
 	},
 	function(session){
@@ -580,7 +587,7 @@ bot.dialog('generalQs', [
 	function(session, args, next){
 		beginNewQuestionnaire(session, session.userData.userID, 'generalQs')
 		session.userData.lastMessageSent = new Date();
-		builder.Prompts.text(session, 'How are you feeling today?');
+		builder.Prompts.text(session, 'How are you?');
 	},
 	function(session, results, next){ 
 		session.userData.lastMessageReceived = new Date();
@@ -590,16 +597,17 @@ bot.dialog('generalQs', [
 		recogniseFeeling(session.message.text)
 			.then(function(feelingEntity){ 
 				var botResponse = generateBotGeneralQResponse(feelingEntity);
-				session.send(botResponse + ".");
-				processGeneralQResponse(session, session.conversationData.userResponse, questionID);
+				processGeneralQResponse(session, session.conversationData.userResponse, questionID, session.userData.questionnaireID);
 				if(feeling == 'Happy'){
+					session.send(botResponse);
 					session.endConversation("I'll say goodbye for now " + session.userData.username + " but just say hello when you'd like to speak again :)");
 				}else{
+					session.send(botResponse + ".");
 					next();
 				}
 			})
 			.catch(function(error){
-				processGeneralQResponse(session, session.conversationData.userResponse, questionID);
+				processGeneralQResponse(session, session.conversationData.userResponse, questionID, session.userData.questionnaireID);
 				console.log("No feeling identified" + error);
 				session.beginDialog('clarifyFeeling');
 			});
@@ -613,7 +621,8 @@ bot.dialog('generalQs', [
 	function(session, results, next){
 		questionID = 3;
 		session.userData.lastMessageReceived = new Date();
-		processGeneralQResponse(session, results.response, questionID);
+		session.conversationData.userResponse = results.response;
+		processGeneralQResponse(session, results.response, questionID, session.userData.questionnaireID);
 		next();
 	},
 	function(session){
@@ -624,7 +633,8 @@ bot.dialog('generalQs', [
 	function(session, results, next){
 		questionID = 4;
 		session.userData.lastMessageReceived = new Date();
-		processGeneralQResponse(session, results.response, questionID);
+		session.conversationData.userResponse = results.response;
+		processGeneralQResponse(session, session.conversationData.userResponse, questionID, session.userData.questionnaireID);
 		next();
 	},
 	function(session){
@@ -634,18 +644,19 @@ bot.dialog('generalQs', [
 	function(session, results, next){
 		questionID = 5;
 		session.userData.lastMessageReceived = new Date();
-		processGeneralQResponse(session, results.response, questionID);
+		session.conversationData.userResponse = results.response;
+		processGeneralQResponse(session, session.conversationData.userResponse, questionID, session.userData.questionnaireID);
 		next();
 	},
 	function(session){
 		session.userData.lastMessageSent = new Date();
-		builder.Prompts.confirm(session, 'Do you have a care plan?');
+		builder.Prompts.confirm(session, 'Do you have a care plan? If you don\'t know what a care plan is, please answer \'No\'.');
 	},
 	function(session, results, next){
 		var userResponse = results.response;
 		questionID = 6;
 		session.userData.lastMessageReceived = new Date();
-		processGeneralQResponse(session, session.message.text, questionID);
+		processGeneralQResponse(session, session.message.text, questionID, session.userData.questionnaireID);
 		if(userResponse == true){
 			session.userData.lastMessageSent = new Date();
 			builder.Prompts.text(session, 'Is it working for you?');
@@ -656,7 +667,7 @@ bot.dialog('generalQs', [
 	function(session, results, next){
 		questionID = 7;
 		session.userData.lastMessageReceived = new Date();
-		processGeneralQResponse(session, session.message.text, questionID);
+		processGeneralQResponse(session, session.message.text, questionID, session.userData.questionnaireID);
 		session.send("Thank you for answering these questions " + session.userData.username + ".");
 		next();
 	},
@@ -676,7 +687,7 @@ bot.dialog('generalQs', [
 bot.dialog('clarifyDifficulty', [
 	function(session){
 		console.log("Beginning 'clarifyDifficult' dialog");
-		builder.Prompts.text(session, "I'm sorry, I didn't quite get that. Would you say these problems have made these areas of your life somewhat difficult, very difficult, extremely difficult, or not difficult at all?");
+		builder.Prompts.text(session, "I'm sorry, I didn't quite get that. Would you say these problems have made these areas of your life: somewhat difficult, very difficult, extremely difficult, or not difficult at all?");
 	},
 	function(session, results, next){
 		recogniseDifficultyEntity(session.message.text)
@@ -948,7 +959,7 @@ bot.dialog('clarifyDays', [
 // phq9 Dialog
 //------------------//
 bot.dialog('phq9', [
-	/*function (session, args, next){
+	function (session, args, next){
 		console.log('Beginning phq9 dialog');
 		totalScore = 0;
 		builder.Prompts.confirm(session, "I'm now going to take you through a clinical process that will help you to explain how you feel to a clinician. Is that ok?");
@@ -962,7 +973,7 @@ bot.dialog('phq9', [
 		}else{
 			session.endDialog("No problem!" + session.userData.username + "Come back when you feel ready to try this.");
 		}
-	}, */
+	}, 
 	function(session){
 		beginNewQuestionnaire(session, session.userData.userID, 'phq9');
 		session.userData.lastMessageSent = new Date();
@@ -1208,7 +1219,7 @@ bot.dialog('phq9', [
 	function(session, results, next){
 		var severity = getSeverity(totalScore);
 		console.log("The user's score of %i indicates that the user has %s depression", totalScore, severity);
-		session.send('Thank you for answering these questions ' + session.userData.username + '. You\'ve just been through the PHQ-9 questionnaire. Your score is %i, which will be useful for a clinician. Please do this questionnaire regularly over the next two weeks and, if you don\'t feel you\'ve improved, share your score and your responses with a clinician', totalScore);
+		session.send('Thank you for answering these questions ' + session.userData.username + '. You\'ve just been through the PHQ-9 questionnaire. Your score is %i, which will be useful for a clinician. Please do this questionnaire regularly and, if after two weeks you don\'t feel any better, please share your score and your responses with a clinician. Your data is available at the [MhtBot:Data](http://mhtbotdbaccess.azurewebsites.net) site.', totalScore);
 		next();
 	},
 	function(session){
