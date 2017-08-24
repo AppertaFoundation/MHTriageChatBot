@@ -9,7 +9,7 @@ include '../includes/functions.php';
 <head>
 
 	<?php include '../includes/bootstrapHead.php' ?>
-	<title>All Users | Database Access for Mental Health Triage Chatbot</title>
+	<title>All Users | MhtBot: Data</title>
 
 </head>
 <body>

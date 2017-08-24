@@ -9,7 +9,7 @@ include '../includes/functions.php';
 <head>
 
 	<?php include '../includes/bootstrapHead.php' ?>
-	<title>High Scoring Users</title>
+	<title>High Scoring Users | MhtBot: Data</title>
 
 </head>
 <body>

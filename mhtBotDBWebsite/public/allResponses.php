@@ -41,12 +41,10 @@ include '../includes/functions.php';
 		die("Error in executing query to all responses");
 	}
 
-	echo "Successfully queried database";
-
 	while($row = sqlsrv_fetch_array($getResults, SQLSRV_FETCH_ASSOC)){
 		$interactionID = $row['InteractionID'];
 		$questionID = $row['QuestionID'];
-		$question = getQuestionFromQuestionID($conn, $questionID);
+		$question = getQuestionTextFromQuestionID($conn, $questionID);
 		$userResponse = $row['UserResponse'];
 ?>
 	<tr>
