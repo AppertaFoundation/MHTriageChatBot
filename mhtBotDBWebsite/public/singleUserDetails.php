@@ -32,36 +32,46 @@ $username = getUsernameFromID($conn, $userID);
 
 <h2>Questionnaire Totals</h2>
 
-<div class="table-responsive">
-<table class="table">
-	<tr>
-		<th>ID</th>
-		<th>Questionnaire Type</th>
-		<th>Total Score</th>
-		<th>Date Completed</th>
-	</tr>
-
 <?php
 $questionnaireIDs = getUserQuestionnaires($conn, $userID);
-foreach($questionnaireIDs as $questionnaireID){
-	$ID = $questionnaireID;
-	$questionnaireType = getQuestionnaireType($conn, $questionnaireID);
-	$totalScore = getQuestionnaireTotalScore($conn, $questionnaireID);
-	$dateCompleted = getQuestionnaireDateCompleted($conn, $questionnaireID);
-	if($totalScore !=null && $dateCompleted != null){
+if($questionnaireIDs !=){
 ?>
 
-	<tr>
-		<td><?php echo $ID; ?></td>
-		<td><?php echo $questionnaireType; ?></td>
-		<td><?php echo $totalScore; ?>
-		</td>
-		<td><?php echo date_format($dateCompleted, 'Y-m-d H:i:s'); ?>
-		</td>
-	</tr>
+	<div class="table-responsive">
+	<table class="table">
+		<tr>
+			<th>ID</th>
+			<th>Questionnaire Type</th>
+			<th>Total Score</th>
+			<th>Date Completed</th>
+		</tr>
 
-<?php
+	<?php
+
+	foreach($questionnaireIDs as $questionnaireID){
+		$ID = $questionnaireID;
+		$questionnaireType = getQuestionnaireType($conn, $questionnaireID);
+		$totalScore = getQuestionnaireTotalScore($conn, $questionnaireID);
+		$dateCompleted = getQuestionnaireDateCompleted($conn, $questionnaireID);
+		if($totalScore !=null && $dateCompleted != null){
+	?>
+
+		<tr>
+			<td><?php echo $ID; ?></td>
+			<td><?php echo $questionnaireType; ?></td>
+			<td><?php echo $totalScore; ?>
+			</td>
+			<td><?php echo date_format($dateCompleted, 'Y-m-d H:i:s'); ?>
+			</td>
+		</tr>
+
+	<?php
+		}
 	}
+}else{
+?>
+	<p>No data to show. User has not completed any questionnaires.</p>
+<?php
 }
 ?>
 
