@@ -221,7 +221,6 @@ if($questionnaireIDs != null){
 		//$questionnaireID = $username+$questionnaireID;
 		$interactionIDs = getQuestionnaireInteractionIDs($conn, $questionnaireID);
 		foreach($interactionIDs as $interactionID){
-			echo $interactionID;
 			$questionID = getQuestionIDFromInteractionID($conn, $interactionID);
 			$questionText = getQuestionTextFromQuestionID($conn, $questionID);
 			$userResponse = getUserResponseFromInteractionID($conn, $interactionID);
@@ -257,7 +256,7 @@ if($questionnaireIDs != null){
 </main>
 
 <?php include '../includes/scripts.php'; ?>
-<?php// include '../js/myscripts.js'; ?>
+<?php include '../js/myscripts.js'; ?>
 
 
 
