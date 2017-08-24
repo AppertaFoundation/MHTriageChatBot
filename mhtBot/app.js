@@ -920,7 +920,7 @@ bot.dialog('gad7', [
 	next();
 	},
 	function(session, results, next){
-		session.send('You\'ve just been through the GAD-7 questionnaire. Your score is %i, which will be useful for a clinician. Please do this questionnaire regularly over the next two weeks and, if you don\'t feel you\'ve improved, share your score and your responses with a clinician.', totalScore);
+		session.send('You\'ve just been through the GAD-7 questionnaire. Your score is %i, which will be useful for a clinician. Please do this questionnaire regularly over the next two weeks and, if you don\'t feel you\'ve improved, share your score and your responses with a clinician. Your data is available at the [MhtBot:Data](http://mhtbotdbaccess.azurewebsites.net) site.', totalScore);
 		next();
 	},
 	function(session){
