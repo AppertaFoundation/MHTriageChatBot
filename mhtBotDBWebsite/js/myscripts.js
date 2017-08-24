@@ -1,4 +1,2 @@
 
-$("table").tableExport({
-	position: 'bottom'
-});
+$("table").tableExport();

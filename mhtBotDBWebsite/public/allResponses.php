@@ -19,7 +19,7 @@ include '../includes/functions.php';
 <h1>All Responses</h1>
 
 <div class="table-responsive">
-<table class="table">
+<table class="table" id="allResponses_<?php echo $username;?>">
 	<tr>
 		<th>Interaction ID</th>
 		<th>Question Number</th>

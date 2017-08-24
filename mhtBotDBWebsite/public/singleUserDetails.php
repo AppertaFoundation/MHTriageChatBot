@@ -3,12 +3,12 @@
 include '../includes/connect.php';
 include '../includes/functions.php';
 
-$userID = $_POST["userID"];
+//$userID = $_POST["userID"];
 ?>
 
 <?php
 // Test Values
-//$userID = 7;
+$userID = 7;
 
 $username = getUsernameFromID($conn, $userID);
 ?>
@@ -38,7 +38,7 @@ if($questionnaireIDs != null){
 ?>
 
 	<div class="table-responsive">
-	<table class="table">
+	<table class="table" id="questionnaireTotals_<?php echo $username;?>">
 		<tr>
 			<th>ID</th>
 			<th>Questionnaire Type</th>
@@ -86,7 +86,7 @@ if($questionnaireIDs != null){
 ?>
 
 	<div class="table-responsive">
-	<table class="table">
+	<table class="table" id="phq9History_<?php echo $username;?>">
 		<tr>
 			<th>ID</th>
 			<th>Question Number</th>
@@ -146,7 +146,7 @@ if($questionnaireIDs != null){
 ?>
 
 	<div class="table-responsive">
-	<table class="table">
+	<table class="table" id="gad7History_<?php echo $username;?>">
 		<tr>
 			<th>Questionnaire ID</th>
 			<th>Question Number</th>
@@ -204,9 +204,10 @@ if($questionnaireIDs != null){
 ?>
 
 	<div class="table-responsive">
-	<table class="table">
+	<table class="table" id="generalQsHistory_<?php echo $username;?>">
 		<tr>
 			<th>Questionnaire ID</th>
+			<th>Question Number</th>
 			<th>Question Text</th>
 			<th>User Response</th>
 			<th>Sentiment Score</th>
@@ -231,7 +232,7 @@ if($questionnaireIDs != null){
 			$timeLapse = getTimeLapse($conn, $interactionID);
 	?>
 		<tr>
-			<td><?php echo $questionnaireID+$username; ?></td>
+			<td><?php echo $questionnaireID; ?></td>
 			<td><?php echo $questionID; ?></td>
 			<td><?php echo $questionText; ?></td>
 			<td><?php echo $userResponse; ?></td>
