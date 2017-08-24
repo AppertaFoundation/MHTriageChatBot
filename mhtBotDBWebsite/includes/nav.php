@@ -10,7 +10,7 @@
 				<span class="icon-bar"></span>
 				<span class="icon-bar"></span>
 			</button>
-			<a class="navbar-brand" href="../public/index.php">MhtBot Database Access</a>
+			<a class="navbar-brand" href="../public/index.php">MhtBot: Data</a>
 		</div>
 		
 	        <span class="navbar-toggler-icon"></span>
@@ -22,6 +22,7 @@
 				<li><a href="../public/allUsers.php">All Users</a></li>
 				<li><a href="../public/highScoringUsers.php">High Scoring Users</a></li>
 				<li><a href="../public/harmRisk.php">Users at Risk of Harm</a></li>
+				<li><a href="../public/allResponses.php">All Responses</a></li>
 			</ul>
 		</div><!-- /.navbar-collapse -->
 	</div><!-- /.container-fluid -->

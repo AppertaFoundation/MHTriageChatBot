@@ -9,7 +9,7 @@ include '../includes/functions.php';
 <head>
 
 	<?php include '../includes/bootstrapHead.php' ?>
-	<title>Users At Risk of Harm</title>
+	<title>Users At Risk of Harm | MhtBot</title>
 
 </head>
 <body>

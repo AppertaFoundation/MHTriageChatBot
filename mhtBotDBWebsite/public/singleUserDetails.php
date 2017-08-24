@@ -32,7 +32,8 @@ $username = getUsernameFromID($conn, $userID);
 
 <h2>Questionnaire Totals</h2>
 
-<table>
+<div class="table-responsive">s
+<table class="table">
 	<tr>
 		<th>ID</th>
 		<th>Questionnaire Type</th>
@@ -77,10 +78,12 @@ foreach($questionnaireIDs as $questionnaireID){
 ?>
 
 </table>
+</div>
 
 <h2>PHQ-9 History</h2>
 
-<table>
+<div class="table-responsive">
+<table class="table">
 	<tr>
 		<th>QuestionnaireID</th>
 		<th>Question Number</th>
@@ -124,10 +127,12 @@ foreach($questionnaireIDs as $questionnaireID){
 ?>
 
 </table>
+</div>
 
 <h2>GAD7 History</h2>
 
-<table>
+<div class="table-responsive">
+<table class="table">
 	<tr>
 		<th>Questionnaire ID</th>
 		<th>Question Number</th>
@@ -171,10 +176,12 @@ foreach($questionnaireIDs as $questionnaireID){
 ?>
 
 </table>
+</div>
 
 <h2>General Questions History</h2>
 
-<table>
+<div class="table-responsive">
+<table class="table">
 	<tr>
 		<th>Questionnaire ID</th>
 		<th>Question Text</th>
@@ -216,6 +223,7 @@ foreach($questionnaireIDs as $questionnaireID){
 ?>
 
 </table>
+</div>
 
 
 </main>
