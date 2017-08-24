@@ -253,8 +253,15 @@ if($questionnaireIDs != null){
 </table>
 </div>
 
-
 </main>
+
+<?php include '../includes/scripts.php'; ?>
+<?php// include '../js/myscripts.js'; ?>
+
+<script>
+$("table").tableExport();
+</script>
+
 </body>
 
 </html>
