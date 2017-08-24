@@ -19,6 +19,8 @@ $username = getUsernameFromID($conn, $userID);
 <head>
 	<?php include '../includes/bootstrapHead.php' ?>
 	<title><?php echo $username;?> Details | MhtBot: Data</title>
+
+
 </head>
 <body>
 
@@ -256,5 +258,12 @@ if($questionnaireIDs != null){
 
 </main>
 </body>
+
+<?php include '../includes/scripts.php'; ?>
+<?php// include '../js/myscripts.js'; ?>
+
+<script>
+$("table").tableExport();
+</script>
 
 </html>

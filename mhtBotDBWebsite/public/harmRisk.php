@@ -106,6 +106,6 @@ while($row = sqlsrv_fetch_array($getResults, SQLSRV_FETCH_ASSOC)){
 </main>
 </body>
 
-<?php include '../includes/bootstrapFoot.php'; ?>
+<?php include '../includes/scripts.php'; ?>
 
 </html>

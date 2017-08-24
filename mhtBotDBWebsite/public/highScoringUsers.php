@@ -71,6 +71,6 @@ foreach($userIDs as $userID){
 </main>
 </body>
 
-<?php include '../includes/bootstrapFoot.php'; ?>
+<?php include '../includes/scripts.php'; ?>
 
 </html>
