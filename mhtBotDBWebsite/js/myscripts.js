@@ -1,1 +1,4 @@
-<?php include '../includes/scripts.php'; ?>
+
+$("table").tableExport({
+	position: 'bottom'
+});

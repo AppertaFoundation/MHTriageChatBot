@@ -258,9 +258,7 @@ if($questionnaireIDs != null){
 <?php include '../includes/scripts.php'; ?>
 <?php// include '../js/myscripts.js'; ?>
 
-<script>
-$("table").tableExport();
-</script>
+
 
 </body>
 

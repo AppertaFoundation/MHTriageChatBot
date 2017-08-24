@@ -11,3 +11,5 @@
 <script src="../js/xlsx.core.min.js"></script>
 <script src="../js/FileSaver.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/TableExport/4.0.11/js/tableexport.min.js"></script>
+
+<script src="../js/myscripts.js"></script>
