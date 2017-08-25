@@ -226,7 +226,7 @@ bot.dialog('login', [
 			console.log("Password from db is: " + columns[1].value);
 
 			var hash = columns[1].value;
-			session.delay(5000);
+			
 			bcrypt.compare(plainTextPassword, hash, function(err, res){
 				if(res === true){
 					console.log("Password entered matches password stored in database");
@@ -235,6 +235,7 @@ bot.dialog('login', [
 					session.userData.userID = columns[0].value;
 
 					console.log("User %s logged in.", session.userData.username);
+					session.sendTyping();
 					session.delay(5000);
 					session.endDialog("Wecome back %s!", session.userData.username);
 					session.beginDialog('generalQs');
