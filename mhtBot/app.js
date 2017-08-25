@@ -329,6 +329,8 @@ bot.dialog('register', [
 ]);
 
 
+
+
 //------------------//
 //GeneralQs Dialog
 //------------------//
@@ -378,6 +380,8 @@ bot.dialog('generalQs', [
 		session.userData.lastMessageReceived = new Date();
 		session.conversationData.userResponse = results.response;
 		processGeneralQResponse(session, results.response, questionID, session.userData.questionnaireID);
+		session.delay(5000);
+		session.send(generateBotGeneralQResponse2());
 		next();
 	},
 	function(session){
@@ -391,6 +395,8 @@ bot.dialog('generalQs', [
 		session.userData.lastMessageReceived = new Date();
 		session.conversationData.userResponse = results.response;
 		processGeneralQResponse(session, session.conversationData.userResponse, questionID, session.userData.questionnaireID);
+		session.delay(5000);
+		session.send(generateBotGeneralQResponse2());
 		next();
 	},
 	function(session){
@@ -404,6 +410,8 @@ bot.dialog('generalQs', [
 		session.conversationData.userResponse = results.response;
 		session.delay(5000);
 		processGeneralQResponse(session, session.conversationData.userResponse, questionID, session.userData.questionnaireID);
+		session.delay(5000);
+		session.send(generateBotGeneralQResponse2());
 		next();
 	},
 	function(session){
@@ -416,6 +424,8 @@ bot.dialog('generalQs', [
 		session.userData.lastMessageReceived = new Date();
 		session.delay(5000);
 		processGeneralQResponse(session, session.message.text, questionID, session.userData.questionnaireID);
+		session.delay(5000);
+		session.send(generateBotGeneralQResponse2());
 		if(userResponse == true){
 			session.userData.lastMessageSent = new Date();
 			session.delay(5000);
@@ -1077,6 +1087,10 @@ function generateBotGeneralQResponse(feeling){
 	}else{
 		return "Thank you.";
 	}
+}
+
+function generateBotGeneralQResponse2(){
+	return "Thanks."
 }
 
 function generateBotQuestionnaireResponse(entity){
