@@ -256,9 +256,7 @@ if($questionnaireIDs != null){
 </main>
 
 <?php include '../includes/scripts.php'; ?>
-<?php include '../js/myscripts.js'; ?>
-
-
+<script src = '../js/myscripts.js'></script>
 
 </body>
 
