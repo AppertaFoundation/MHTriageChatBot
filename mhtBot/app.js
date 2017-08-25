@@ -130,6 +130,20 @@ bot.dialog('login', require('./dialogs/login'));
 bot.dialog('register', require('./dialogs/register'));
 
 //------------------//
+//Logout - for testing
+//------------------//
+bot.dialog('logout', [
+	function(session, args, next){
+		session.userData.userID = null;
+		session.userData.username = null;
+		session.userData.questionnaireID = null;
+		session.endConversation("Logging you out");
+	}
+]).triggerAction({
+	matches: /^logout$/i
+});
+
+//------------------//
 //GeneralQs Dialog
 //------------------//
 
@@ -1191,58 +1205,63 @@ function recogniseFeeling(text){
 		function(resolve, reject){
 			builder.LuisRecognizer.recognize(text, process.env.LUIS_MODEL_URL,
 				function(err, intents, entities, compositeEntities){
-					console.log("Now in recogniseFeeling() function");
+					if(!err){
+						console.log("Now in recogniseFeeling() function");
 
-					console.log("Intents and confidence scores identified are:");
-					console.log(intents);
-					console.log("Intent with highest confidence score is:");
-					console.log(intents[0]);
-					console.log("Entities identified are:");
-					console.log(entities);
+						console.log("Intents and confidence scores identified are:");
+						console.log(intents);
+						console.log("Intent with highest confidence score is:");
+						console.log(intents[0]);
+						console.log("Entities identified are:");
+						console.log(entities);
 
-					var depressed = false;
-					var anxious = false;
-					var happy = false;
+						var depressed = false;
+						var anxious = false;
+						var happy = false;
 
-					console.log("Number of entities identified");
-					console.log(entities.length);
+						console.log("Number of entities identified");
+						console.log(entities.length);
 
-					//if(intents[0] != null && intents[0].intent = 'Feeling' && entities
+						//if(intents[0] != null && intents[0].intent = 'Feeling' && entities
 
-					if(intents[0]!=null && entities[0]!=null){
-						console.log("At least one intent and entity have been identified");
+						if(intents[0]!=null && entities[0]!=null){
+							console.log("At least one intent and entity have been identified");
 
-						for(i=0; i<entities.length; i++){
-							if(entities[i].type == 'Depressed'){
-								depressed = true;
-								console.log("'Depressed' entity recognised");
-							}else if(entities[i].type == 'Anxious'){
-								anxious = true;
-								console.log("'Anxious' entity recognised");
-							}else if(entities[i].type == 'Happy'){
-								happy = true;
-								console.log("'Happy' entity recognised");
+							for(i=0; i<entities.length; i++){
+								if(entities[i].type == 'Depressed'){
+									depressed = true;
+									console.log("'Depressed' entity recognised");
+								}else if(entities[i].type == 'Anxious'){
+									anxious = true;
+									console.log("'Anxious' entity recognised");
+								}else if(entities[i].type == 'Happy'){
+									happy = true;
+									console.log("'Happy' entity recognised");
+								}
 							}
-						}
 
-						if(depressed == true && anxious == true){
-							feeling = 'DepressedAndAnxious';
-							console.log("Global variable 'feeling' set to 'DepressedAndAnxious'");
-						}else if(depressed == true){
-							feeling = 'Depressed';
-							console.log("Global variable 'feeling' set to 'Depressed'");
-						}else if(anxious == true){
-							feeling = 'Anxious';
-							console.log("Global variable 'feeling' set to 'Anxious'");
-						}else if(happy == true){
-							feeling = 'Happy';
-							console.log("Global variable 'feeling' set to 'Happy'");
-						}
+							if(depressed == true && anxious == true){
+								feeling = 'DepressedAndAnxious';
+								console.log("Global variable 'feeling' set to 'DepressedAndAnxious'");
+							}else if(depressed == true){
+								feeling = 'Depressed';
+								console.log("Global variable 'feeling' set to 'Depressed'");
+							}else if(anxious == true){
+								feeling = 'Anxious';
+								console.log("Global variable 'feeling' set to 'Anxious'");
+							}else if(happy == true){
+								feeling = 'Happy';
+								console.log("Global variable 'feeling' set to 'Happy'");
+							}
 
-						resolve(feeling);
+							resolve(feeling);
+
+						}else{
+							console.log("One of the following occured: no intents identified; no entities were identified");
+							reject();
+						}
 					}else{
-						console.log("One of the following occured: no intents identified; no entities were identified");
-						reject();
+							console.log("Error in recogniseFeeling()" + err);
 					}
 				}
 			);
