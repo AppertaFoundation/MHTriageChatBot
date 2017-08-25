@@ -33,8 +33,16 @@ $username = getUsernameFromID($conn, $userID);
 <h2>Questionnaire Totals</h2>
 
 <?php
+$questionnaireCompleted = false;
 $questionnaireIDs = getUserQuestionnaires($conn, $userID);
-if($questionnaireIDs != null){
+foreach($questionnaireIDs as $questionnaireID){
+	$totalScore = getQuestionnaireTotalScore($conn, $questionnaireID);
+	if($totalScore !=null){
+		$questionnaireCompleted = true;
+	}
+}
+
+if($questionnaireCompleted == true){
 ?>
 
 	<div class="table-responsive">
