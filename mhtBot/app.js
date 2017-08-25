@@ -229,11 +229,13 @@ bot.dialog('login', [
 					session.userData.userID = columns[0].value;
 
 					console.log("User %s logged in.", session.userData.username);
+					session.delay(5000);
 					session.endDialog("Wecome back %s!", session.userData.username);
 					session.beginDialog('generalQs');
 					//session.beginDialog('gad7');  for testing 
 				}else{
 					console.log("Passwords do not match");
+					session.delay(5000);
 					session.send("I'm sorry, your password is incorrect. Please try logging in again");
 					session.beginDialog('login');
 				}
@@ -504,6 +506,7 @@ bot.dialog('clarifyFeeling', [
 bot.dialog('clarifyDifficulty', [
 	function(session){
 		console.log("Beginning 'clarifyDifficult' dialog");
+		session.delay(5000);
 		builder.Prompts.text(session, "I'm sorry, I didn't quite get that. Would you say these problems have made these areas of your life: somewhat difficult, very difficult, extremely difficult, or not difficult at all?");
 	},
 	function(session, results, next){
@@ -511,6 +514,7 @@ bot.dialog('clarifyDifficulty', [
 			.then(function(entity){ 
 				var botResponse = generateBotQuestionnaireResponse(entity);
 				session.conversationData.userResponse = results.response;
+				session.delay(5000);
 				session.send("Thank you.");
 				next();
 			})
@@ -530,6 +534,7 @@ bot.dialog('clarifyDifficulty', [
 bot.dialog('clarifyDays', [
 	function(session){
 		console.log("Beginning 'clarifyDays' dialog");
+		session.delay(5000);
 		builder.Prompts.text(session, "I'm sorry, I didn't quite get that. Please try and give a specific number of days.");
 	},
 	function(session, results, next){
@@ -537,6 +542,7 @@ bot.dialog('clarifyDays', [
 			.then(function(entity){ 
 				var botResponse = generateBotQuestionnaireResponse(entity);
 				session.conversationData.userResponse = results.response;
+				session.delay(5000);
 				session.send("Thank you");
 				next();
 			})
@@ -597,6 +603,7 @@ bot.dialog('phq9', [
 		questionID = 8;
 		session.userData.lastMessageReceived = new Date();
 		console.log("Current questionnaireID is: " + session.userData.questionnaireID);
+		session.delay(5000);
 		processQuestionnaireResponse(session, session.conversationData.userResponse, 'phq9', questionID, session.userData.questionnaireID);
 		next();
 	},
@@ -655,6 +662,7 @@ bot.dialog('phq9', [
 	},
 	function(session, next){
 		session.userData.lastMessageSent = new Date();
+		session.delay(5000);
 		builder.Prompts.text(session, "In the past two weeks, how many days were you bothered by feeling tired or having little energy?");
 	},
 	function(session, results, next){ 
@@ -662,6 +670,7 @@ bot.dialog('phq9', [
 		recogniseDayEntity(session.message.text)
 			.then(function(entity){ 
 				var botResponse = generateBotQuestionnaireResponse(entity);
+				session.delay(5000);
 				session.send(botResponse);
 				session.conversationData.userResponse = results.response;
 				next();
@@ -679,6 +688,7 @@ bot.dialog('phq9', [
 	},
 	function(session, next){
 		session.userData.lastMessageSent = new Date();
+		session.delay(5000);
 		builder.Prompts.text(session, "In the past two weeks, how many days have you had a poor appetite or overeaten?");
 	}, 
 	function(session, results, next){ 
@@ -686,6 +696,7 @@ bot.dialog('phq9', [
 		recogniseDayEntity(session.message.text)
 			.then(function(entity){ 
 				var botResponse = generateBotQuestionnaireResponse(entity);
+				session.delay(5000);
 				session.send(botResponse);
 				session.conversationData.userResponse = results.response;
 				next();
@@ -703,6 +714,7 @@ bot.dialog('phq9', [
 	},
 	function(session, next){
 		session.userData.lastMessageSent = new Date();
+		session.delay(5000);
 		builder.Prompts.text(session, "In the past two weeks, how many days have you felt bad about yourself - or that you are a failure or have let yourself or your family down?");
 	}, 
 	function(session, results, next){ 
@@ -710,6 +722,7 @@ bot.dialog('phq9', [
 		recogniseDayEntity(session.message.text)
 			.then(function(entity){ 
 				var botResponse = generateBotQuestionnaireResponse(entity);
+				session.delay(5000);
 				session.send(botResponse);
 				session.conversationData.userResponse = results.response;
 				next();
