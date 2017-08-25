@@ -232,7 +232,6 @@ if($questionnaireIDs != null){
 			$questionID = getQuestionIDFromInteractionID($conn, $interactionID);
 			$questionText = getQuestionTextFromQuestionID($conn, $questionID);
 			$userResponse = getUserResponseFromInteractionID($conn, $interactionID);
-			$gad7Score = getQuestionScore($conn, $interactionID);
 			$sentimentScore = getSentimentScore($conn, $interactionID);
 			$botTime = getBotTime($conn, $interactionID);
 			$userTime = getUserTime($conn, $interactionID);
@@ -264,7 +263,6 @@ if($questionnaireIDs != null){
 </main>
 
 <?php include '../includes/scripts.php'; ?>
-<script src = '../js/myscripts.js'></script>
 
 </body>
 
