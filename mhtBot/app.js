@@ -88,7 +88,7 @@ var bot = new builder.UniversalBot(connector, [
 		}else{
 			session.send("Hi " + session.userData.username + "!");
 			session.beginDialog('generalQs');
-			//session.beginDialog('phq9'); /* for testing */
+			//session.beginDialog('gad7'); /* for testing */
 		}
 	}
 ]);
@@ -945,17 +945,8 @@ bot.dialog('gad7', [
 			session.endConversation("No problem, just come back and say hello when you feel ready to try this. Hope to speak to you again soon " + session.userData.username + "!");
 		}
 	},
-	function(session, results, next){
-		beginNewQuestionnaire(session, session.userData.userID, 'gad7')
-			.then(function(questionnaireID){
-				session.userData.questionnaireID = questionnaireID;
-				next();
-			})
-			.catch(function(error){
-				console.log("Error in beginNewQuestionnaire() promise. " + error);
-			})
-	},
 	function(session){
+		beginNewQuestionnaire(session, session.userData.userID, 'gad7');
 		session.userData.lastMessageSent = new Date();
 		session.sendTyping();
 		session.delay(5000);
@@ -979,7 +970,6 @@ bot.dialog('gad7', [
 	},
 	function(session, results, next){ 
 		questionID = 18;
-		console.log("Post q1 asked");
 		console.log("questionnaire ID identified is");
 		console.log(session.userData.questionnaireID);
 		session.userData.lastMessageReceived = new Date();
@@ -1117,12 +1107,6 @@ bot.dialog('gad7', [
 		builder.Prompts.text(session, "In the past two weeks, how many days have you felt afraid, as if something awful might happen?");
 	}, 
 	function(session, results, next){ 
-		questionID += 1;
-		session.userData.lastMessageReceived = new Date();
-		processQuestionnaireResponse(session, session.conversationData.userResponse, 'gad7', questionID, session.userData.questionnaireID);
-		next();
-	},
-	function(session, results, next){ 
 		session.dialogData.userResponse = results.response;
 		recogniseDayEntity(session.message.text)
 			.then(function(entity){ 
@@ -1133,8 +1117,16 @@ bot.dialog('gad7', [
 				session.conversationData.userResponse = results.response;
 				next(); })
 			.catch(function(error){ console.log("No entities identified" + error);
-				session.beginDialog('clarifyDays'); });
+				session.beginDialog('clarifyDays'); 
+			});
 	},
+	function(session, results, next){ 
+		questionID += 1;
+		session.userData.lastMessageReceived = new Date();
+		processQuestionnaireResponse(session, session.conversationData.userResponse, 'gad7', questionID, session.userData.questionnaireID);
+		next();
+	},
+
 	function(session, next){
 		session.userData.lastMessageSent = new Date();
 		session.sendTyping();
@@ -1145,9 +1137,6 @@ bot.dialog('gad7', [
 		session.dialogData.userResponse = results.response;
 		recogniseDifficultyEntity(session.message.text)
 			.then(function(entity){ 
-				session.sendTyping();
-				session.delay(5000);
-				session.send(botResponse);
 				session.conversationData.userResponse = results.response;
 				next();
 			})
@@ -1163,26 +1152,18 @@ bot.dialog('gad7', [
 		next();
 	},
 	function(session, results, next){
-	var severity = getSeverity(totalScore);
-	console.log("The user's score of %i indicates that the user has %s anxiety", totalScore, severity);
-	session.sendTyping();
-	session.delay(5000);
-	session.send(botResponse);
-	session.send('Thanks for answering these questions ' + session.userData.username + '.');
-	next();
-	},
-	function(session, results, next){
+		var severity = getSeverity(totalScore);
+		console.log("The user's score of %i indicates that the user has %s anxiety", totalScore, severity);
 		session.sendTyping();
 		session.delay(5000);
-		session.send('You\'ve just been through the GAD-7 questionnaire. Your score is %i, which will be useful for a clinician. Please do this questionnaire regularly over the next two weeks and, if you don\'t feel you\'ve improved, share your score and your responses with a clinician. Your data is available at the [MhtBot:Data](http://mhtbotdbaccess.azurewebsites.net) site.', totalScore);
+		session.send('Thanks for answering these questions ' + session.userData.username + '. You\'ve just been through the GAD-7 questionnaire. Your score is %i, which will be useful for a clinician. Please do this questionnaire regularly and, if after two weeks you don\'t feel any better, please share your score and your responses with a clinician. Your data is available at the [MhtBot:Data](http://mhtbotdbaccess.azurewebsites.net) site.', totalScore);
 		next();
 	},
 	function(session){
 		session.sendTyping();
 		session.delay(5000);
-		session.endConversation('I\'ll say goodbye for now ' + session.userData.username + ' but just say hello when you\'d like to talk again!');
-	}
-
+		session.endConversation("I'll say goodbye for now " + session.userData.username + " but just say hello when you'd like to talk again :)");
+	},
 ]);
 
 
