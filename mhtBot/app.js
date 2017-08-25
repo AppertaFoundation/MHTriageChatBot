@@ -133,12 +133,16 @@ bot.dialog('logout', [
 	matches: /^logout$/i
 });
 
+//------------------//
+// Greeting Dialog
+//------------------//
 bot.dialog('greeting', [
 	function(session, args, next){
 		builder.Prompts.confirm(session, "Are you already registered?");
 	},
 	function(session, results){
 		session.sendTyping();
+		session.delay(5000);
 		var userResponse = results.response;
 		if(userResponse == true){
 			session.endDialog('Great, let\'s log you in');
@@ -156,7 +160,8 @@ bot.dialog('greeting', [
 //------------------//
 bot.dialog('login', [
 	function(session){
-			builder.Prompts.text(session, "Please enter your username:");
+		session.delay(5000);
+		builder.Prompts.text(session, "Please enter your username:");
 	},
 	function(session,results, next){
 		session.userData.username = results.response;
@@ -173,6 +178,7 @@ bot.dialog('login', [
 						next();
 					}else{
 						console.log("Username " + session.userData.username + " does not exist");
+						session.delay(5000);
 						session.send("I'm sorry, I don't recognise that username. Please try logging in again.");
 						session.beginDialog('login');
 					}
@@ -185,6 +191,7 @@ bot.dialog('login', [
 		connection.execSql(request);
 	},
 	function(session){
+		session.delay(5000);
 		builder.Prompts.text(session, "Thanks. Now please enter your password.");
 	},
 	function(session, result){
@@ -213,6 +220,7 @@ bot.dialog('login', [
 			console.log("Password from db is: " + columns[1].value);
 
 			var hash = columns[1].value;
+			session.delay(5000);
 			bcrypt.compare(plainTextPassword, hash, function(err, res){
 				if(res === true){
 					console.log("Password entered matches password stored in database");
@@ -329,6 +337,7 @@ bot.dialog('generalQs', [
 	function(session, args, next){
 		beginNewQuestionnaire(session, session.userData.userID, 'generalQs')
 		session.userData.lastMessageSent = new Date();
+		session.delay(5000);
 		builder.Prompts.text(session, 'How are you?');
 	},
 	function(session, results, next){ 
@@ -338,10 +347,13 @@ bot.dialog('generalQs', [
 
 		recogniseFeeling(session.message.text)
 			.then(function(feelingEntity){ 
+				session.delay(5000);
 				var botResponse = generateBotGeneralQResponse(feelingEntity);
 				processGeneralQResponse(session, session.conversationData.userResponse, questionID, session.userData.questionnaireID);
 				if(feeling == 'Happy'){
+					session.delay(5000);
 					session.send(botResponse);
+					session.delay(5000);
 					session.endConversation("I'll say goodbye for now " + session.userData.username + " but just say hello when you'd like to speak again :)");
 				}else{
 					session.send(botResponse + ".");
@@ -357,6 +369,7 @@ bot.dialog('generalQs', [
 	function(session, args, next){
 		// https://stackoverflow.com/questions/42069081/get-duration-between-the-bot-sending-the-message-and-user-replying
 		session.userData.lastMessageSent = new Date();
+		session.delay(5000);
 		builder.Prompts.text(session, 'What has led you to seek an assessment for how you\'re feeling?');
 	}, 
 
@@ -370,6 +383,7 @@ bot.dialog('generalQs', [
 	function(session){
 		session.userData.lastMessageSent = new Date();
 		session.sendTyping();
+		session.delay(5000);
 		builder.Prompts.text(session, 'Can you identify anything in particular that might have triggered any negative thoughts and feelings?');
 	},
 	function(session, results, next){
@@ -381,12 +395,14 @@ bot.dialog('generalQs', [
 	},
 	function(session){
 		session.userData.lastMessageSent = new Date();
+		session.delay(5000);
 		builder.Prompts.text(session, 'What have these thoughts and feelings stopped you doing?');
 	},
 	function(session, results, next){
 		questionID = 5;
 		session.userData.lastMessageReceived = new Date();
 		session.conversationData.userResponse = results.response;
+		session.delay(5000);
 		processGeneralQResponse(session, session.conversationData.userResponse, questionID, session.userData.questionnaireID);
 		next();
 	},
@@ -398,9 +414,11 @@ bot.dialog('generalQs', [
 		var userResponse = results.response;
 		questionID = 6;
 		session.userData.lastMessageReceived = new Date();
+		session.delay(5000);
 		processGeneralQResponse(session, session.message.text, questionID, session.userData.questionnaireID);
 		if(userResponse == true){
 			session.userData.lastMessageSent = new Date();
+			session.delay(5000);
 			builder.Prompts.text(session, 'Is it working for you?');
 		}else{
 			next();
@@ -410,6 +428,7 @@ bot.dialog('generalQs', [
 		questionID = 7;
 		session.userData.lastMessageReceived = new Date();
 		processGeneralQResponse(session, session.message.text, questionID, session.userData.questionnaireID);
+		session.delay(5000);
 		session.send("Thank you for answering these questions " + session.userData.username + ".");
 		next();
 	},
@@ -430,6 +449,7 @@ bot.dialog('clarifyFeeling', [
 	function(session){
 		console.log("Beginning 'clarifyFeeling' dialog");
 		session.userData.lastMessageSent = new Date();
+		session.delay(5000);
 		builder.Prompts.text(session, "To work out how to best help you, would you be able to be able to tell me if you're mostly feeling low, or anxious, or happy?");
 	},
 	function(session, results, next){
@@ -442,9 +462,12 @@ bot.dialog('clarifyFeeling', [
 				console.log("Bot response is:");
 				console.log(botResponse);
 				if(feelingEntity == 'Happy'){
+					session.delay(5000);
 					session.send(botResponse);
+					session.delay(5000);
 					session.endConversation("I'll say goodbye for now " + session.userData.username + " but just say hello when you'd like to speak again :)");
 				}else{
+					session.delay(5000);
 					session.send("Thank you for telling me this. " + botResponse + " though.");
 					next();
 				}
@@ -524,21 +547,25 @@ bot.dialog('phq9', [
 	function (session, args, next){
 		console.log('Beginning phq9 dialog');
 		totalScore = 0;
+		session.delay(5000);
 		builder.Prompts.confirm(session, "I'm now going to take you through a clinical process that will help you to explain how you feel to a clinician. Is that ok?");
 		//session.send("I'm now going to ask you some questions about how you've felt over the past two weeks");
 	},
 	function(session, results, next){
 		var userResponse = results.response;
 		if(userResponse == true){
+			session.delay(5000);
 			session.send("Great!");
 			next();
 		}else{
+			session.delay(5000);
 			session.endDialog("No problem!" + session.userData.username + "Come back when you feel ready to try this.");
 		}
 	}, 
 	function(session){
 		beginNewQuestionnaire(session, session.userData.userID, 'phq9');
 		session.userData.lastMessageSent = new Date();
+		session.delay(5000);
 		builder.Prompts.text(session, "In the past two weeks, how many days have you had little interest or pleasure in doing things?");
 	}, 
 	function(session, results, next){ 
@@ -546,6 +573,7 @@ bot.dialog('phq9', [
 		recogniseDayEntity(results.response)
 			.then(function(entity){ 
 				var botResponse = generateBotQuestionnaireResponse(entity);
+				session.delay(5000);
 				session.send(botResponse);
 				session.conversationData.userResponse = results.response;
 				next();
@@ -565,6 +593,7 @@ bot.dialog('phq9', [
 	function(session, next){
 		console.log("phq9 q2");
 		session.userData.lastMessageSent = new Date();
+		session.delay(5000);
 		builder.Prompts.text(session, "In the past two weeks, how many days have you felt down, depressed, or hopeless?");
 	},
 	function(session, results, next){ 
@@ -572,6 +601,7 @@ bot.dialog('phq9', [
 		recogniseDayEntity(session.message.text)
 			.then(function(entity){ 
 				var botResponse = generateBotQuestionnaireResponse(entity);
+				session.delay(5000);
 				session.send(botResponse);
 				session.conversationData.userResponse = results.response;
 				next();
@@ -589,6 +619,7 @@ bot.dialog('phq9', [
 	},
 	function(session, next){
 		session.userData.lastMessageSent = new Date();
+		session.delay(5000);
 		builder.Prompts.text(session, 'In the past two weeks, how many days have you had trouble falling or staying asleep, or sleeping too much?');
 	},
 	function(session, results, next){ 
@@ -596,6 +627,7 @@ bot.dialog('phq9', [
 		recogniseDayEntity(session.message.text)
 			.then(function(entity){ 
 				var botResponse = generateBotQuestionnaireResponse(entity);
+				session.delay(5000);
 				session.send(botResponse);
 				session.conversationData.userResponse = results.response;
 				next();
@@ -781,11 +813,13 @@ bot.dialog('phq9', [
 	function(session, results, next){
 		var severity = getSeverity(totalScore);
 		console.log("The user's score of %i indicates that the user has %s depression", totalScore, severity);
+		session.delay(5000);
 		session.send('Thank you for answering these questions ' + session.userData.username + '. You\'ve just been through the PHQ-9 questionnaire. Your score is %i, which will be useful for a clinician. Please do this questionnaire regularly and, if after two weeks you don\'t feel any better, please share your score and your responses with a clinician. Your data is available at the [MhtBot:Data](http://mhtbotdbaccess.azurewebsites.net) site.', totalScore);
 		next();
 	},
 	function(session){
 		if(feeling == 'Depressed'){
+			session.delay(5000);
 			session.endConversation("I'll say goodbye for now " + session.userData.username + ". Just come back and say hello when you'd like to chat again :)");
 		}else if(feeling == 'DepressedAndAnxious'){
 			session.beginDialog('gad7');
