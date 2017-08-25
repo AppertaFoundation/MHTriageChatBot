@@ -34,6 +34,12 @@ connection.on('connect', function(err)
 	}
 );
 
+var DialogLabels = {
+	generalQs: 'generalQs',
+};
+
+bot.dialog('generalQs', require('../app'));
+
 module.exports = [
 	function(session){
 			builder.Prompts.text(session, "Please enter your username:");
