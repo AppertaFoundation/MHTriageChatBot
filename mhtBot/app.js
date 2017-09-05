@@ -1385,7 +1385,7 @@ function processDifficultyResponse(session, results, questionnaireType, question
 
 			insertIntoUserResponses(userResponse)
 			.then(function(interactionID){ 
-				insertQuestionnaireEndData(interactionID, botTimeFormatted, userTimeFormatted, timeLapseHMS, questionID, session.userData.userID, userResponse, questionnaireType, totalScore, difficultyEntity, questionnaireID);
+				insertQuestionnaireEndData(interactionID, botTimeFormatted, userTimeFormatted, timeLapseHMS, questionID, session.userData.userID, userResponse, questionnaireType, 0, totalScore, difficultyEntity, questionnaireID);
 				
 			})
 			.catch(function(error){
@@ -1490,7 +1490,7 @@ function insertQuestionnaireResponseData(interactionID, botTime, userTime, timeL
 	connection.execSql(request);
 }
 
-function insertQuestionnaireEndData(interactionID, botTime, userTime, timeLapse, questionID, userID, userResponse, questionnaireType, totalScore, difficultyEntity, questionnaireID){
+function insertQuestionnaireEndData(interactionID, botTime, userTime, timeLapse, questionID, userID, userResponse, questionnaireType, qScore, totalScore, difficultyEntity, questionnaireID){
 	console.log("In insertQuestionnnaireEndData()");
 	console.log("QuestionnaireID is: " + questionnaireID);
 	request = new Request(
@@ -1500,13 +1500,15 @@ function insertQuestionnaireEndData(interactionID, botTime, userTime, timeLapse,
 			+ "VALUES (" + mysql.escape(interactionID) + "," + mysql.escape(questionID) + ");"
 		+ "INSERT INTO UserInteractions (InteractionID, UserID) "
 			+ "VALUES (" + mysql.escape(interactionID) + "," + mysql.escape(userID) + "); " 
+		+ "INSERT INTO QuestionScores(QuestionnaireID, InteractionID, Score) "
+			+ "VALUES (" + questionnaireID + "," + msql.escape(interactionID) + "," + mysql.escape(qScore) + ");",
 		+ "INSERT INTO Difficulty (QuestionnaireID, Difficulty) " +
 		  "VALUES (" + questionnaireID + ",' " + difficultyEntity + "');" +
 		  "INSERT INTO TotalScores (QuestionnaireID, TotalScore, DateCompleted) " +
 		  	"VALUES ('" + mysql.escape(questionnaireID) + "'," + mysql.escape(totalScore) + ","  + mysql.escape(userTime) + ");",
 				function(err, rowCount, rows){
 					if(!err){
-						console.log("Completed questionnaire user response data successfully inserted into tables: Timestamps, InteractionQuestionIDs, UserInteractions, TotalScores");
+						console.log("Completed questionnaire user response data successfully inserted into tables: Timestamps, InteractionQuestionIDs, UserInteractions, Difficulty, TotalScores");
 					}else{
 						console.log("Error in inserting questionnaire end data. " + err);
 					}
