@@ -310,7 +310,7 @@ function getUserScoresInDateRange($conn, $userID, $dateFrom, $dateTo, $questionn
 				FROM TotalScores ts JOIN Questionnaires q
 				ON ts.QuestionnaireID = q.QuestionnaireID
 				WHERE q.UserID = $userID 
-				AND q.QuestionnaireType == '$questionnaireType'
+				AND q.QuestionnaireType = '$questionnaireType'
 				AND DateCompleted >= '$dateFrom' 
 				AND DateCompleted <= '$dateTo';";
 	$getResults = sqlsrv_Query($conn, $tsql);
