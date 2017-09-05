@@ -27,7 +27,8 @@ include '../includes/functions.php';
 <p>The severity of depression and anxiety corresponding to PHQ-9 and GAD-7 user scores is shown in the tables below.</p>
 
 <div class="table-responsive">
-<table class="table" id="depressionSeverity">
+<table class="table table-bordered" id="depressionSeverity">
+	<caption>Depression Severity Associated with PHQ-9 Scores</caption>
 	<tr>
 		<th>Score Range</th>
 		<th>Depression Severity</th>
@@ -52,7 +53,8 @@ include '../includes/functions.php';
 </div>
 
 <div class="table-responsive">
-<table class="table" id="anxietySeverity">
+<table class="table table-bordered" id="anxietySeverity">
+<caption>Anxiety Severity Associated with GAD-7 Scores</caption>
 	<tr>
 		<th>Score Range</th>
 		<th>Anxiety Severity</th>
@@ -123,7 +125,7 @@ foreach($userIDs as $userID){
 			$severeScores +=1;
 		}
 	}
-	
+
 	if($severeScores >= $threshold){
 	?>
 		<form action = "singleUserDetails.php" method="post">
