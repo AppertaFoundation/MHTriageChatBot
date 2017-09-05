@@ -26,9 +26,9 @@ include '../includes/functions.php';
 
 <p>The severity of depression and anxiety corresponding to PHQ-9 and GAD-7 user scores is shown in the tables below.</p>
 
+<h2>Depression Severity Associated with PHQ-9 Scores</h2>
 <div class="table-responsive">
 <table class="table table-bordered" id="depressionSeverity">
-	<caption>Depression Severity Associated with PHQ-9 Scores</caption>
 	<tr>
 		<th>Score Range</th>
 		<th>Depression Severity</th>
@@ -52,9 +52,9 @@ include '../includes/functions.php';
 </table>
 </div>
 
+<h2>Anxiety Severity Associated with GAD-7 Scores</h2>
 <div class="table-responsive">
 <table class="table table-bordered" id="anxietySeverity">
-<caption>Anxiety Severity Associated with GAD-7 Scores</caption>
 	<tr>
 		<th>Score Range</th>
 		<th>Anxiety Severity</th>
@@ -81,6 +81,8 @@ include '../includes/functions.php';
 </section>
 
 <section>
+
+<h2>List of High Scoring Users</h2>
 
 <?php
 $highTotalScore = 15; // scores of 16-20 indicate severe anxiety/depression
