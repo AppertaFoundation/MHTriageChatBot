@@ -22,7 +22,63 @@ include '../includes/functions.php';
 
 <main>
 
-<p>Below is a list of users who have had particularly high scores over the past two weeks.</p>
+<section>
+
+<p>The severity of depression and anxiety corresponding to PHQ-9 and GAD-7 user scores is shown in the tables below.</p>
+
+<div class="table-responsive">
+<table class="table" id="depressionSeverity">
+	<tr>
+		<th>Score Range</th>
+		<th>Depression Severity</th>
+	</tr>
+	<tr>
+		<td>0-5</td>
+		<td>Mild</td>
+	</tr>
+	<tr>
+		<td>6-10</td>
+		<td>Moderate</td>
+	</tr>
+	<tr>
+		<td>11-15</td>
+		<td>Moderately severe</td>
+	</tr>
+	<tr>
+		<td>16-20</td>
+		<td>Severe depression</td>
+	</tr>
+</table>
+</div>
+
+<div class="table-responsive">
+<table class="table" id="anxietySeverity">
+	<tr>
+		<th>Score Range</th>
+		<th>Anxiety Severity</th>
+	</tr>
+	<tr>
+		<td>0-5</td>
+		<td>Mild</td>
+	</tr>
+	<tr>
+		<td>6-10</td>
+		<td>Moderate</td>
+	</tr>
+	<tr>
+		<td>11-15</td>
+		<td>Moderately severe</td>
+	</tr>
+	<tr>
+		<td>15-21</td>
+		<td>Severe anxiety</td>
+	</tr>
+</table>
+</div>
+
+</section>
+
+<section>
 
 <?php
 $highTotalScore = 15; // scores of 16-20 indicate severe anxiety/depression
@@ -44,19 +100,30 @@ $severeScores = 0;
 $threshold = 1;
 ?>
 
-<p>Users with a score greater than <?php echo $highTotalScore; ?> more than <?php echo $threshold; ?> time over a period of two weeks from today (<?php echo $dateTo; ?>) are listed below</p>
+<p>Users who have score that is in the PHQ-9/GAD-7 severe range <?php echo $threshold; ?> or more times over a period of two weeks from today (<?php echo $dateTo; ?>) are listed below:</p>
 
 
 <?php
 $userIDs = getAllUserIDs($conn);
 foreach($userIDs as $userID){
 	$username = getUsernameFromID($conn, $userID);
-	$userScores = getUserScoresInDateRange($conn, $userID, $dateFrom, $dateTo);
-	foreach($userScores as $userScore){
-		if($userScore > $highTotalScore){
+
+	// Check phq9 user scores
+	$userScoresPhq9 = getUserScoresInDateRange($conn, $userID, $dateFrom, $dateTo, 'phq9');
+	foreach($userScoresPhq9 as $userScorePhq9){
+		if($userScorePhq9 > 15){
 			$severeScores += 1;
 		}
 	}
+
+	// Check gad7 user scores
+	$userScoresGad7 = getUserScoresInDateRange($conn, $userID, $dateFrom, $dateTo, 'gad7');
+	foreach($userScoresGad7 as $userScoreGad7){
+		if($userScoreGad7 > 14){
+			$severeScores +=1;
+		}
+	}
+	
 	if($severeScores >= $threshold){
 	?>
 		<form action = "singleUserDetails.php" method="post">
@@ -67,6 +134,8 @@ foreach($userIDs as $userID){
 	}
 }
 ?>
+
+</section>
 
 </main>
 </body>
