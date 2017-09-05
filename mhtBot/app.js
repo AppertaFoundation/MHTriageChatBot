@@ -88,7 +88,7 @@ var bot = new builder.UniversalBot(connector, [
 		}else{
 			session.send("Hi " + session.userData.username + "!");
 			session.beginDialog('generalQs');
-			//session.beginDialog('gad7'); /* for testing */
+			//session.beginDialog('phq9'); /* for testing */
 		}
 	}
 ]);
@@ -650,7 +650,7 @@ bot.dialog('phq9', [
 		session.delay(delayTime);
 		processQuestionnaireResponse(session, session.conversationData.userResponse, 'phq9', questionID, session.userData.questionnaireID);
 		next();
-	},
+	}, 
 	function(session, next){
 		console.log("phq9 q2");
 		session.userData.lastMessageSent = new Date();
@@ -1501,9 +1501,9 @@ function insertQuestionnaireEndData(interactionID, botTime, userTime, timeLapse,
 		+ "INSERT INTO UserInteractions (InteractionID, UserID) "
 			+ "VALUES (" + mysql.escape(interactionID) + "," + mysql.escape(userID) + "); " 
 		+ "INSERT INTO QuestionScores(QuestionnaireID, InteractionID, Score) "
-			+ "VALUES (" + questionnaireID + "," + msql.escape(interactionID) + "," + mysql.escape(qScore) + ");",
+			+ "VALUES (" + questionnaireID + "," + mysql.escape(interactionID) + "," + mysql.escape(qScore) + ");"
 		+ "INSERT INTO Difficulty (QuestionnaireID, Difficulty) " +
-		  "VALUES (" + questionnaireID + ",' " + difficultyEntity + "');" +
+		  	"VALUES (" + questionnaireID + ",' " + difficultyEntity + "');" +
 		  "INSERT INTO TotalScores (QuestionnaireID, TotalScore, DateCompleted) " +
 		  	"VALUES ('" + mysql.escape(questionnaireID) + "'," + mysql.escape(totalScore) + ","  + mysql.escape(userTime) + ");",
 				function(err, rowCount, rows){
