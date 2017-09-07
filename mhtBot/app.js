@@ -115,7 +115,7 @@ var feeling = null;
 var local = false;
 
 // to set session.delay() to make SMS messages come through in correct order.
-var delayTime = 1000;
+var delayTime = 2000;
 
 
 //=============
