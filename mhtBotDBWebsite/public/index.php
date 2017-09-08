@@ -31,6 +31,17 @@ include '../includes/functions.php';
 
 <p>Access the Mental Health Triage Chatbot's data on this site.<p>
 
+<p>If you would like to speak to the MhtBot, it is available on the following channels:</p>
+
+<ul>
+	<li><a href="http://mhttestbot.azurewebsites.net/">Web Chat and Skype</a></li>
+	<li><a href = "https://www.facebook.com/MhtBot-878645355626146">Facebook Messenger</a>*</li>
+	<li>SMS at +441163262158</li>
+</ul>
+
+<p>* Please note that MhtBot in Facebook Messenger is currently only available to designated testers.</p>
+
+
 </main>
 </body>
 
