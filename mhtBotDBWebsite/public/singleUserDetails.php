@@ -96,8 +96,7 @@ if($questionnaireIDs != null){
 	<div class="table-responsive">
 	<table class="table" id="phq9History_<?php echo $username;?>">
 		<tr>
-			<th>ID</th>
-			<th>Question Number</th>
+			<th>Questionnaire ID</th>
 			<th>Question Text</th>
 			<th>User Response</th>
 			<th>PHQ-9 Score</th>
@@ -123,7 +122,6 @@ if($questionnaireIDs != null){
 	?>
 		<tr>
 			<td><?php echo $questionnaireID ?></td>
-			<td><?php echo $questionID; ?></td>
 			<td><?php echo $questionText; ?></td>
 			<td><?php echo $userResponse; ?></td>
 			<td><?php echo $phq9Score; ?></td>
@@ -157,7 +155,6 @@ if($questionnaireIDs != null){
 	<table class="table" id="gad7History_<?php echo $username;?>">
 		<tr>
 			<th>Questionnaire ID</th>
-			<th>Question Number</th>
 			<th>Question Text</th>
 			<th>User Response</th>
 			<th>GAD-7 Score</th>
@@ -182,7 +179,6 @@ if($questionnaireIDs != null){
 	?>
 		<tr>
 			<td><?php echo $questionnaireID+$username; ?></td>
-			<td><?php echo $questionID; ?></td>
 			<td><?php echo $questionText; ?></td>
 			<td><?php echo $userResponse; ?></td>
 			<td><?php echo $gad7Score; ?></td>
@@ -215,7 +211,6 @@ if($questionnaireIDs != null){
 	<table class="table" id="generalQsHistory_<?php echo $username;?>">
 		<tr>
 			<th>Questionnaire ID</th>
-			<th>Question Number</th>
 			<th>Question Text</th>
 			<th>User Response</th>
 			<th>Sentiment Score</th>
@@ -239,7 +234,6 @@ if($questionnaireIDs != null){
 	?>
 		<tr>
 			<td><?php echo $questionnaireID; ?></td>
-			<td><?php echo $questionID; ?></td>
 			<td><?php echo $questionText; ?></td>
 			<td><?php echo $userResponse; ?></td>
 			<td><?php echo $sentimentScore; ?></td>
