@@ -1,0 +1,1871 @@
+{
+  "luis_schema_version": "2.1.0",
+  "versionId": "0.1",
+  "name": "MHTriageBot",
+  "desc": "",
+  "culture": "en-us",
+  "intents": [
+    {
+      "name": "Days"
+    },
+    {
+      "name": "Difficulty"
+    },
+    {
+      "name": "Feeling"
+    },
+    {
+      "name": "None"
+    }
+  ],
+  "entities": [
+    {
+      "name": "Anxious"
+    },
+    {
+      "name": "Depressed"
+    },
+    {
+      "name": "ExtremelyDifficult"
+    },
+    {
+      "name": "Happy"
+    },
+    {
+      "name": "MoreThanHalfTheDays"
+    },
+    {
+      "name": "NearlyEveryDay"
+    },
+    {
+      "name": "NotAtAll"
+    },
+    {
+      "name": "NotDifficultAtAll"
+    },
+    {
+      "name": "SeveralDays"
+    },
+    {
+      "name": "SomewhatDifficult"
+    },
+    {
+      "name": "VeryDifficult"
+    }
+  ],
+  "composites": [],
+  "closedLists": [],
+  "bing_entities": [],
+  "actions": [],
+  "model_features": [],
+  "regex_features": [],
+  "utterances": [
+    {
+      "text": "ten",
+      "intent": "Days",
+      "entities": [
+        {
+          "entity": "MoreThanHalfTheDays",
+          "startPos": 0,
+          "endPos": 2
+        }
+      ]
+    },
+    {
+      "text": "eleven",
+      "intent": "Days",
+      "entities": [
+        {
+          "entity": "MoreThanHalfTheDays",
+          "startPos": 0,
+          "endPos": 5
+        }
+      ]
+    },
+    {
+      "text": "none",
+      "intent": "Days",
+      "entities": [
+        {
+          "entity": "NotAtAll",
+          "startPos": 0,
+          "endPos": 3
+        }
+      ]
+    },
+    {
+      "text": "11",
+      "intent": "Days",
+      "entities": [
+        {
+          "entity": "MoreThanHalfTheDays",
+          "startPos": 0,
+          "endPos": 1
+        }
+      ]
+    },
+    {
+      "text": "zero",
+      "intent": "Days",
+      "entities": [
+        {
+          "entity": "NotAtAll",
+          "startPos": 0,
+          "endPos": 3
+        }
+      ]
+    },
+    {
+      "text": "12",
+      "intent": "Days",
+      "entities": [
+        {
+          "entity": "NearlyEveryDay",
+          "startPos": 0,
+          "endPos": 1
+        }
+      ]
+    },
+    {
+      "text": "10",
+      "intent": "Days",
+      "entities": [
+        {
+          "entity": "MoreThanHalfTheDays",
+          "startPos": 0,
+          "endPos": 1
+        }
+      ]
+    },
+    {
+      "text": "2",
+      "intent": "Days",
+      "entities": [
+        {
+          "entity": "SeveralDays",
+          "startPos": 0,
+          "endPos": 0
+        }
+      ]
+    },
+    {
+      "text": "one",
+      "intent": "Days",
+      "entities": [
+        {
+          "entity": "SeveralDays",
+          "startPos": 0,
+          "endPos": 2
+        }
+      ]
+    },
+    {
+      "text": "1",
+      "intent": "Days",
+      "entities": [
+        {
+          "entity": "SeveralDays",
+          "startPos": 0,
+          "endPos": 0
+        }
+      ]
+    },
+    {
+      "text": "eight",
+      "intent": "Days",
+      "entities": [
+        {
+          "entity": "MoreThanHalfTheDays",
+          "startPos": 0,
+          "endPos": 4
+        }
+      ]
+    },
+    {
+      "text": "six",
+      "intent": "Days",
+      "entities": [
+        {
+          "entity": "SeveralDays",
+          "startPos": 0,
+          "endPos": 2
+        }
+      ]
+    },
+    {
+      "text": "nine",
+      "intent": "Days",
+      "entities": [
+        {
+          "entity": "MoreThanHalfTheDays",
+          "startPos": 0,
+          "endPos": 3
+        }
+      ]
+    },
+    {
+      "text": "4",
+      "intent": "Days",
+      "entities": [
+        {
+          "entity": "SeveralDays",
+          "startPos": 0,
+          "endPos": 0
+        }
+      ]
+    },
+    {
+      "text": "9",
+      "intent": "Days",
+      "entities": [
+        {
+          "entity": "MoreThanHalfTheDays",
+          "startPos": 0,
+          "endPos": 0
+        }
+      ]
+    },
+    {
+      "text": "seven",
+      "intent": "Days",
+      "entities": [
+        {
+          "entity": "SeveralDays",
+          "startPos": 0,
+          "endPos": 4
+        }
+      ]
+    },
+    {
+      "text": "great",
+      "intent": "Feeling",
+      "entities": [
+        {
+          "entity": "Happy",
+          "startPos": 0,
+          "endPos": 4
+        }
+      ]
+    },
+    {
+      "text": "wonderful",
+      "intent": "Feeling",
+      "entities": [
+        {
+          "entity": "Happy",
+          "startPos": 0,
+          "endPos": 8
+        }
+      ]
+    },
+    {
+      "text": "3",
+      "intent": "Days",
+      "entities": [
+        {
+          "entity": "SeveralDays",
+          "startPos": 0,
+          "endPos": 0
+        }
+      ]
+    },
+    {
+      "text": "8",
+      "intent": "Days",
+      "entities": [
+        {
+          "entity": "MoreThanHalfTheDays",
+          "startPos": 0,
+          "endPos": 0
+        }
+      ]
+    },
+    {
+      "text": "not at all",
+      "intent": "Days",
+      "entities": [
+        {
+          "entity": "NotAtAll",
+          "startPos": 0,
+          "endPos": 9
+        }
+      ]
+    },
+    {
+      "text": "7",
+      "intent": "Days",
+      "entities": [
+        {
+          "entity": "SeveralDays",
+          "startPos": 0,
+          "endPos": 0
+        }
+      ]
+    },
+    {
+      "text": "5",
+      "intent": "Days",
+      "entities": [
+        {
+          "entity": "SeveralDays",
+          "startPos": 0,
+          "endPos": 0
+        }
+      ]
+    },
+    {
+      "text": "6",
+      "intent": "Days",
+      "entities": [
+        {
+          "entity": "SeveralDays",
+          "startPos": 0,
+          "endPos": 0
+        }
+      ]
+    },
+    {
+      "text": "0",
+      "intent": "Days",
+      "entities": [
+        {
+          "entity": "NotAtAll",
+          "startPos": 0,
+          "endPos": 0
+        }
+      ]
+    },
+    {
+      "text": "five",
+      "intent": "Days",
+      "entities": [
+        {
+          "entity": "SeveralDays",
+          "startPos": 0,
+          "endPos": 3
+        }
+      ]
+    },
+    {
+      "text": "three",
+      "intent": "Days",
+      "entities": [
+        {
+          "entity": "SeveralDays",
+          "startPos": 0,
+          "endPos": 4
+        }
+      ]
+    },
+    {
+      "text": "two",
+      "intent": "Days",
+      "entities": [
+        {
+          "entity": "SeveralDays",
+          "startPos": 0,
+          "endPos": 2
+        }
+      ]
+    },
+    {
+      "text": "four",
+      "intent": "Days",
+      "entities": [
+        {
+          "entity": "SeveralDays",
+          "startPos": 0,
+          "endPos": 3
+        }
+      ]
+    },
+    {
+      "text": "happy",
+      "intent": "Feeling",
+      "entities": [
+        {
+          "entity": "Happy",
+          "startPos": 0,
+          "endPos": 4
+        }
+      ]
+    },
+    {
+      "text": "13",
+      "intent": "Days",
+      "entities": [
+        {
+          "entity": "NearlyEveryDay",
+          "startPos": 0,
+          "endPos": 1
+        }
+      ]
+    },
+    {
+      "text": "14",
+      "intent": "Days",
+      "entities": [
+        {
+          "entity": "NearlyEveryDay",
+          "startPos": 0,
+          "endPos": 1
+        }
+      ]
+    },
+    {
+      "text": "4 days",
+      "intent": "Days",
+      "entities": [
+        {
+          "entity": "SeveralDays",
+          "startPos": 0,
+          "endPos": 5
+        }
+      ]
+    },
+    {
+      "text": "twelve",
+      "intent": "Days",
+      "entities": [
+        {
+          "entity": "NearlyEveryDay",
+          "startPos": 0,
+          "endPos": 5
+        }
+      ]
+    },
+    {
+      "text": "down",
+      "intent": "Feeling",
+      "entities": [
+        {
+          "entity": "Depressed",
+          "startPos": 0,
+          "endPos": 3
+        }
+      ]
+    },
+    {
+      "text": "depressed",
+      "intent": "Feeling",
+      "entities": [
+        {
+          "entity": "Depressed",
+          "startPos": 0,
+          "endPos": 8
+        }
+      ]
+    },
+    {
+      "text": "delighted",
+      "intent": "Feeling",
+      "entities": [
+        {
+          "entity": "Happy",
+          "startPos": 0,
+          "endPos": 8
+        }
+      ]
+    },
+    {
+      "text": "low",
+      "intent": "Feeling",
+      "entities": [
+        {
+          "entity": "Depressed",
+          "startPos": 0,
+          "endPos": 2
+        }
+      ]
+    },
+    {
+      "text": "all of them",
+      "intent": "Days",
+      "entities": [
+        {
+          "entity": "NearlyEveryDay",
+          "startPos": 0,
+          "endPos": 10
+        }
+      ]
+    },
+    {
+      "text": "the best",
+      "intent": "Feeling",
+      "entities": [
+        {
+          "entity": "Happy",
+          "startPos": 0,
+          "endPos": 7
+        }
+      ]
+    },
+    {
+      "text": "content",
+      "intent": "Feeling",
+      "entities": [
+        {
+          "entity": "Happy",
+          "startPos": 0,
+          "endPos": 6
+        }
+      ]
+    },
+    {
+      "text": "cheerful",
+      "intent": "Feeling",
+      "entities": [
+        {
+          "entity": "Happy",
+          "startPos": 0,
+          "endPos": 7
+        }
+      ]
+    },
+    {
+      "text": "anxious",
+      "intent": "Feeling",
+      "entities": [
+        {
+          "entity": "Anxious",
+          "startPos": 0,
+          "endPos": 6
+        }
+      ]
+    },
+    {
+      "text": "one week",
+      "intent": "Days",
+      "entities": [
+        {
+          "entity": "MoreThanHalfTheDays",
+          "startPos": 0,
+          "endPos": 7
+        }
+      ]
+    },
+    {
+      "text": "3 days",
+      "intent": "Days",
+      "entities": [
+        {
+          "entity": "SeveralDays",
+          "startPos": 0,
+          "endPos": 5
+        }
+      ]
+    },
+    {
+      "text": "four days",
+      "intent": "Days",
+      "entities": [
+        {
+          "entity": "SeveralDays",
+          "startPos": 0,
+          "endPos": 8
+        }
+      ]
+    },
+    {
+      "text": "extremely difficult",
+      "intent": "Difficulty",
+      "entities": [
+        {
+          "entity": "ExtremelyDifficult",
+          "startPos": 0,
+          "endPos": 18
+        }
+      ]
+    },
+    {
+      "text": "two days",
+      "intent": "Days",
+      "entities": [
+        {
+          "entity": "SeveralDays",
+          "startPos": 0,
+          "endPos": 7
+        }
+      ]
+    },
+    {
+      "text": "1 week",
+      "intent": "Days",
+      "entities": [
+        {
+          "entity": "SeveralDays",
+          "startPos": 0,
+          "endPos": 5
+        }
+      ]
+    },
+    {
+      "text": "2 days",
+      "intent": "Days",
+      "entities": [
+        {
+          "entity": "SeveralDays",
+          "startPos": 0,
+          "endPos": 5
+        }
+      ]
+    },
+    {
+      "text": "2 weeks",
+      "intent": "Days",
+      "entities": [
+        {
+          "entity": "NearlyEveryDay",
+          "startPos": 0,
+          "endPos": 6
+        }
+      ]
+    },
+    {
+      "text": "5 days",
+      "intent": "Days",
+      "entities": [
+        {
+          "entity": "SeveralDays",
+          "startPos": 0,
+          "endPos": 5
+        }
+      ]
+    },
+    {
+      "text": "10 days",
+      "intent": "Days",
+      "entities": [
+        {
+          "entity": "MoreThanHalfTheDays",
+          "startPos": 0,
+          "endPos": 6
+        }
+      ]
+    },
+    {
+      "text": "1 day",
+      "intent": "Days",
+      "entities": [
+        {
+          "entity": "SeveralDays",
+          "startPos": 0,
+          "endPos": 4
+        }
+      ]
+    },
+    {
+      "text": "every day",
+      "intent": "Days",
+      "entities": [
+        {
+          "entity": "NearlyEveryDay",
+          "startPos": 0,
+          "endPos": 8
+        }
+      ]
+    },
+    {
+      "text": "one day",
+      "intent": "Days",
+      "entities": [
+        {
+          "entity": "SeveralDays",
+          "startPos": 0,
+          "endPos": 6
+        }
+      ]
+    },
+    {
+      "text": "not the best",
+      "intent": "Feeling",
+      "entities": []
+    },
+    {
+      "text": "every single day",
+      "intent": "Days",
+      "entities": [
+        {
+          "entity": "NearlyEveryDay",
+          "startPos": 0,
+          "endPos": 15
+        }
+      ]
+    },
+    {
+      "text": "14 days",
+      "intent": "Days",
+      "entities": [
+        {
+          "entity": "NearlyEveryDay",
+          "startPos": 0,
+          "endPos": 6
+        }
+      ]
+    },
+    {
+      "text": "three days",
+      "intent": "Days",
+      "entities": [
+        {
+          "entity": "SeveralDays",
+          "startPos": 0,
+          "endPos": 9
+        }
+      ]
+    },
+    {
+      "text": "12 days",
+      "intent": "Days",
+      "entities": [
+        {
+          "entity": "NearlyEveryDay",
+          "startPos": 0,
+          "endPos": 6
+        }
+      ]
+    },
+    {
+      "text": "seven days",
+      "intent": "Days",
+      "entities": [
+        {
+          "entity": "SeveralDays",
+          "startPos": 0,
+          "endPos": 9
+        }
+      ]
+    },
+    {
+      "text": "ten days",
+      "intent": "Days",
+      "entities": [
+        {
+          "entity": "MoreThanHalfTheDays",
+          "startPos": 0,
+          "endPos": 7
+        }
+      ]
+    },
+    {
+      "text": "twelve days",
+      "intent": "Days",
+      "entities": [
+        {
+          "entity": "NearlyEveryDay",
+          "startPos": 0,
+          "endPos": 10
+        }
+      ]
+    },
+    {
+      "text": "five days",
+      "intent": "Days",
+      "entities": [
+        {
+          "entity": "SeveralDays",
+          "startPos": 0,
+          "endPos": 8
+        }
+      ]
+    },
+    {
+      "text": "six days",
+      "intent": "Days",
+      "entities": [
+        {
+          "entity": "SeveralDays",
+          "startPos": 0,
+          "endPos": 7
+        }
+      ]
+    },
+    {
+      "text": "9 days",
+      "intent": "Days",
+      "entities": [
+        {
+          "entity": "MoreThanHalfTheDays",
+          "startPos": 0,
+          "endPos": 5
+        }
+      ]
+    },
+    {
+      "text": "thirteen",
+      "intent": "Days",
+      "entities": [
+        {
+          "entity": "NearlyEveryDay",
+          "startPos": 0,
+          "endPos": 7
+        }
+      ]
+    },
+    {
+      "text": "8 days",
+      "intent": "Days",
+      "entities": [
+        {
+          "entity": "MoreThanHalfTheDays",
+          "startPos": 0,
+          "endPos": 5
+        }
+      ]
+    },
+    {
+      "text": "nine days",
+      "intent": "Days",
+      "entities": [
+        {
+          "entity": "MoreThanHalfTheDays",
+          "startPos": 0,
+          "endPos": 8
+        }
+      ]
+    },
+    {
+      "text": "i'm very happy",
+      "intent": "Feeling",
+      "entities": [
+        {
+          "entity": "Happy",
+          "startPos": 9,
+          "endPos": 13
+        }
+      ]
+    },
+    {
+      "text": "several days",
+      "intent": "Days",
+      "entities": [
+        {
+          "entity": "SeveralDays",
+          "startPos": 0,
+          "endPos": 11
+        }
+      ]
+    },
+    {
+      "text": "more than half the days",
+      "intent": "Days",
+      "entities": [
+        {
+          "entity": "MoreThanHalfTheDays",
+          "startPos": 0,
+          "endPos": 22
+        }
+      ]
+    },
+    {
+      "text": "nearly every day",
+      "intent": "Days",
+      "entities": [
+        {
+          "entity": "NearlyEveryDay",
+          "startPos": 0,
+          "endPos": 15
+        }
+      ]
+    },
+    {
+      "text": "very unhappy",
+      "intent": "Feeling",
+      "entities": [
+        {
+          "entity": "Depressed",
+          "startPos": 5,
+          "endPos": 11
+        }
+      ]
+    },
+    {
+      "text": "i'm feeling really down",
+      "intent": "Feeling",
+      "entities": [
+        {
+          "entity": "Depressed",
+          "startPos": 19,
+          "endPos": 22
+        }
+      ]
+    },
+    {
+      "text": "fourteen",
+      "intent": "Days",
+      "entities": [
+        {
+          "entity": "NearlyEveryDay",
+          "startPos": 0,
+          "endPos": 7
+        }
+      ]
+    },
+    {
+      "text": "0 days",
+      "intent": "Days",
+      "entities": [
+        {
+          "entity": "NotAtAll",
+          "startPos": 0,
+          "endPos": 5
+        }
+      ]
+    },
+    {
+      "text": "zero days",
+      "intent": "Days",
+      "entities": [
+        {
+          "entity": "NotAtAll",
+          "startPos": 0,
+          "endPos": 3
+        }
+      ]
+    },
+    {
+      "text": "all the days",
+      "intent": "Days",
+      "entities": [
+        {
+          "entity": "NearlyEveryDay",
+          "startPos": 0,
+          "endPos": 11
+        }
+      ]
+    },
+    {
+      "text": "quite difficult",
+      "intent": "Difficulty",
+      "entities": [
+        {
+          "entity": "SomewhatDifficult",
+          "startPos": 0,
+          "endPos": 14
+        }
+      ]
+    },
+    {
+      "text": "pretty difficult",
+      "intent": "Difficulty",
+      "entities": [
+        {
+          "entity": "SomewhatDifficult",
+          "startPos": 0,
+          "endPos": 15
+        }
+      ]
+    },
+    {
+      "text": "very difficult",
+      "intent": "Difficulty",
+      "entities": [
+        {
+          "entity": "VeryDifficult",
+          "startPos": 0,
+          "endPos": 13
+        }
+      ]
+    },
+    {
+      "text": "very hard",
+      "intent": "Difficulty",
+      "entities": [
+        {
+          "entity": "VeryDifficult",
+          "startPos": 0,
+          "endPos": 8
+        }
+      ]
+    },
+    {
+      "text": "no days",
+      "intent": "Days",
+      "entities": [
+        {
+          "entity": "NotAtAll",
+          "startPos": 0,
+          "endPos": 6
+        }
+      ]
+    },
+    {
+      "text": "not difficult at all",
+      "intent": "Difficulty",
+      "entities": [
+        {
+          "entity": "NotDifficultAtAll",
+          "startPos": 0,
+          "endPos": 19
+        }
+      ]
+    },
+    {
+      "text": "somewhat difficult",
+      "intent": "Difficulty",
+      "entities": [
+        {
+          "entity": "SomewhatDifficult",
+          "startPos": 0,
+          "endPos": 17
+        }
+      ]
+    },
+    {
+      "text": "thirteen days",
+      "intent": "Days",
+      "entities": [
+        {
+          "entity": "MoreThanHalfTheDays",
+          "startPos": 0,
+          "endPos": 12
+        }
+      ]
+    },
+    {
+      "text": "eleven days",
+      "intent": "Days",
+      "entities": [
+        {
+          "entity": "MoreThanHalfTheDays",
+          "startPos": 0,
+          "endPos": 10
+        }
+      ]
+    },
+    {
+      "text": "over a week",
+      "intent": "Days",
+      "entities": [
+        {
+          "entity": "MoreThanHalfTheDays",
+          "startPos": 0,
+          "endPos": 10
+        }
+      ]
+    },
+    {
+      "text": "half the days",
+      "intent": "Days",
+      "entities": [
+        {
+          "entity": "SeveralDays",
+          "startPos": 0,
+          "endPos": 12
+        }
+      ]
+    },
+    {
+      "text": "i think of committing suicide daily",
+      "intent": "Days",
+      "entities": [
+        {
+          "entity": "NearlyEveryDay",
+          "startPos": 30,
+          "endPos": 34
+        }
+      ]
+    },
+    {
+      "text": "i feel bad about myself nearly every day",
+      "intent": "Days",
+      "entities": [
+        {
+          "entity": "NearlyEveryDay",
+          "startPos": 24,
+          "endPos": 39
+        }
+      ]
+    },
+    {
+      "text": "i have trouble falling asleep every night",
+      "intent": "Days",
+      "entities": [
+        {
+          "entity": "NearlyEveryDay",
+          "startPos": 30,
+          "endPos": 40
+        }
+      ]
+    },
+    {
+      "text": "i feel depressed every second day",
+      "intent": "Days",
+      "entities": [
+        {
+          "entity": "MoreThanHalfTheDays",
+          "startPos": 17,
+          "endPos": 32
+        }
+      ]
+    },
+    {
+      "text": "i never have any interest in doing anything",
+      "intent": "Days",
+      "entities": [
+        {
+          "entity": "NotAtAll",
+          "startPos": 2,
+          "endPos": 42
+        }
+      ]
+    },
+    {
+      "text": "these problems have not caused a problem in any of these areas",
+      "intent": "Difficulty",
+      "entities": [
+        {
+          "entity": "NotDifficultAtAll",
+          "startPos": 0,
+          "endPos": 61
+        }
+      ]
+    },
+    {
+      "text": "very significant difficult",
+      "intent": "Difficulty",
+      "entities": [
+        {
+          "entity": "ExtremelyDifficult",
+          "startPos": 0,
+          "endPos": 25
+        }
+      ]
+    },
+    {
+      "text": "quite significant difficulty",
+      "intent": "Difficulty",
+      "entities": [
+        {
+          "entity": "VeryDifficult",
+          "startPos": 0,
+          "endPos": 27
+        }
+      ]
+    },
+    {
+      "text": "pretty hard",
+      "intent": "Difficulty",
+      "entities": [
+        {
+          "entity": "SomewhatDifficult",
+          "startPos": 0,
+          "endPos": 10
+        }
+      ]
+    },
+    {
+      "text": "quite hard",
+      "intent": "Difficulty",
+      "entities": [
+        {
+          "entity": "SomewhatDifficult",
+          "startPos": 0,
+          "endPos": 9
+        }
+      ]
+    },
+    {
+      "text": "extremely hard",
+      "intent": "Difficulty",
+      "entities": [
+        {
+          "entity": "ExtremelyDifficult",
+          "startPos": 0,
+          "endPos": 13
+        }
+      ]
+    },
+    {
+      "text": "somewhat hard",
+      "intent": "Difficulty",
+      "entities": [
+        {
+          "entity": "SomewhatDifficult",
+          "startPos": 0,
+          "endPos": 12
+        }
+      ]
+    },
+    {
+      "text": "it has been quite difficult to do my work",
+      "intent": "Difficulty",
+      "entities": [
+        {
+          "entity": "SomewhatDifficult",
+          "startPos": 12,
+          "endPos": 26
+        }
+      ]
+    },
+    {
+      "text": "it has not been at all difficult to do my work but it has been somewhat difficult to get along with other people",
+      "intent": "Difficulty",
+      "entities": [
+        {
+          "entity": "SomewhatDifficult",
+          "startPos": 63,
+          "endPos": 80
+        }
+      ]
+    },
+    {
+      "text": "i've haven't found it too difficult to do my work but i have been finding it very difficult to take care of things at home",
+      "intent": "Difficulty",
+      "entities": [
+        {
+          "entity": "VeryDifficult",
+          "startPos": 77,
+          "endPos": 90
+        }
+      ]
+    },
+    {
+      "text": "they haven't made it difficult for me to do any of these things",
+      "intent": "Difficulty",
+      "entities": [
+        {
+          "entity": "NotDifficultAtAll",
+          "startPos": 5,
+          "endPos": 29
+        }
+      ]
+    },
+    {
+      "text": "they've made it somewhat difficult to do anything",
+      "intent": "Difficulty",
+      "entities": [
+        {
+          "entity": "SomewhatDifficult",
+          "startPos": 16,
+          "endPos": 33
+        }
+      ]
+    },
+    {
+      "text": "they've made it very difficult to do anything",
+      "intent": "Difficulty",
+      "entities": [
+        {
+          "entity": "VeryDifficult",
+          "startPos": 16,
+          "endPos": 29
+        }
+      ]
+    },
+    {
+      "text": "they've made it extremely difficult to do anything",
+      "intent": "Difficulty",
+      "entities": [
+        {
+          "entity": "ExtremelyDifficult",
+          "startPos": 16,
+          "endPos": 34
+        }
+      ]
+    },
+    {
+      "text": "around six days",
+      "intent": "Days",
+      "entities": [
+        {
+          "entity": "SeveralDays",
+          "startPos": 7,
+          "endPos": 14
+        }
+      ]
+    },
+    {
+      "text": "around six",
+      "intent": "Days",
+      "entities": [
+        {
+          "entity": "SeveralDays",
+          "startPos": 7,
+          "endPos": 9
+        }
+      ]
+    },
+    {
+      "text": "one week maybe",
+      "intent": "Days",
+      "entities": [
+        {
+          "entity": "MoreThanHalfTheDays",
+          "startPos": 0,
+          "endPos": 7
+        }
+      ]
+    },
+    {
+      "text": "probably a week out of the two in all",
+      "intent": "Days",
+      "entities": [
+        {
+          "entity": "MoreThanHalfTheDays",
+          "startPos": 9,
+          "endPos": 14
+        }
+      ]
+    },
+    {
+      "text": "probably a week in all",
+      "intent": "Days",
+      "entities": [
+        {
+          "entity": "MoreThanHalfTheDays",
+          "startPos": 9,
+          "endPos": 14
+        }
+      ]
+    },
+    {
+      "text": "ten days i reckon",
+      "intent": "Days",
+      "entities": [
+        {
+          "entity": "MoreThanHalfTheDays",
+          "startPos": 0,
+          "endPos": 7
+        }
+      ]
+    },
+    {
+      "text": "around two days i'd say",
+      "intent": "Days",
+      "entities": [
+        {
+          "entity": "SeveralDays",
+          "startPos": 7,
+          "endPos": 14
+        }
+      ]
+    },
+    {
+      "text": "around eight days i would say",
+      "intent": "Days",
+      "entities": [
+        {
+          "entity": "MoreThanHalfTheDays",
+          "startPos": 7,
+          "endPos": 16
+        }
+      ]
+    },
+    {
+      "text": "every day of the week",
+      "intent": "Days",
+      "entities": [
+        {
+          "entity": "NearlyEveryDay",
+          "startPos": 0,
+          "endPos": 8
+        }
+      ]
+    },
+    {
+      "text": "most days",
+      "intent": "Days",
+      "entities": [
+        {
+          "entity": "NearlyEveryDay",
+          "startPos": 0,
+          "endPos": 8
+        }
+      ]
+    },
+    {
+      "text": "most days i'd say, mainly in the evening",
+      "intent": "Days",
+      "entities": [
+        {
+          "entity": "NearlyEveryDay",
+          "startPos": 0,
+          "endPos": 8
+        }
+      ]
+    },
+    {
+      "text": "in the afternoon of most days",
+      "intent": "Days",
+      "entities": [
+        {
+          "entity": "NearlyEveryDay",
+          "startPos": 20,
+          "endPos": 28
+        }
+      ]
+    },
+    {
+      "text": "every second night maybe",
+      "intent": "Days",
+      "entities": [
+        {
+          "entity": "MoreThanHalfTheDays",
+          "startPos": 0,
+          "endPos": 17
+        }
+      ]
+    },
+    {
+      "text": "i've been feeling a bit down",
+      "intent": "Feeling",
+      "entities": [
+        {
+          "entity": "Depressed",
+          "startPos": 10,
+          "endPos": 27
+        }
+      ]
+    },
+    {
+      "text": "i have a bit of anxiety",
+      "intent": "Feeling",
+      "entities": [
+        {
+          "entity": "Anxious",
+          "startPos": 16,
+          "endPos": 22
+        }
+      ]
+    },
+    {
+      "text": "i'm feeling quite unhappy",
+      "intent": "Feeling",
+      "entities": [
+        {
+          "entity": "Depressed",
+          "startPos": 18,
+          "endPos": 24
+        }
+      ]
+    },
+    {
+      "text": "i've been feeling really down",
+      "intent": "Feeling",
+      "entities": [
+        {
+          "entity": "Depressed",
+          "startPos": 25,
+          "endPos": 28
+        }
+      ]
+    },
+    {
+      "text": "really low",
+      "intent": "Feeling",
+      "entities": [
+        {
+          "entity": "Depressed",
+          "startPos": 7,
+          "endPos": 9
+        }
+      ]
+    },
+    {
+      "text": "pretty happy!",
+      "intent": "Feeling",
+      "entities": [
+        {
+          "entity": "Happy",
+          "startPos": 7,
+          "endPos": 11
+        }
+      ]
+    },
+    {
+      "text": "a combination of low and anxious i'd say",
+      "intent": "Feeling",
+      "entities": [
+        {
+          "entity": "Anxious",
+          "startPos": 25,
+          "endPos": 31
+        },
+        {
+          "entity": "Depressed",
+          "startPos": 17,
+          "endPos": 19
+        }
+      ]
+    },
+    {
+      "text": "i've been feeling really low",
+      "intent": "Feeling",
+      "entities": [
+        {
+          "entity": "Depressed",
+          "startPos": 25,
+          "endPos": 27
+        }
+      ]
+    },
+    {
+      "text": "spiritless",
+      "intent": "Feeling",
+      "entities": [
+        {
+          "entity": "Depressed",
+          "startPos": 0,
+          "endPos": 9
+        }
+      ]
+    },
+    {
+      "text": "a bit down in the mouth",
+      "intent": "Feeling",
+      "entities": [
+        {
+          "entity": "Depressed",
+          "startPos": 6,
+          "endPos": 22
+        }
+      ]
+    },
+    {
+      "text": "incredibly unhappy",
+      "intent": "Feeling",
+      "entities": [
+        {
+          "entity": "Depressed",
+          "startPos": 11,
+          "endPos": 17
+        }
+      ]
+    },
+    {
+      "text": "i'm feeling great!",
+      "intent": "Feeling",
+      "entities": [
+        {
+          "entity": "Happy",
+          "startPos": 12,
+          "endPos": 16
+        }
+      ]
+    },
+    {
+      "text": "i'm feeling grand thanks",
+      "intent": "Feeling",
+      "entities": [
+        {
+          "entity": "Happy",
+          "startPos": 12,
+          "endPos": 16
+        }
+      ]
+    },
+    {
+      "text": "i've never been better!",
+      "intent": "Feeling",
+      "entities": [
+        {
+          "entity": "Happy",
+          "startPos": 5,
+          "endPos": 21
+        }
+      ]
+    },
+    {
+      "text": "i don't think i've ever felt more depressed",
+      "intent": "Feeling",
+      "entities": [
+        {
+          "entity": "Depressed",
+          "startPos": 34,
+          "endPos": 42
+        }
+      ]
+    },
+    {
+      "text": "in the pits you know?",
+      "intent": "Feeling",
+      "entities": [
+        {
+          "entity": "Depressed",
+          "startPos": 0,
+          "endPos": 10
+        }
+      ]
+    },
+    {
+      "text": "i just can't stop worrying",
+      "intent": "Feeling",
+      "entities": [
+        {
+          "entity": "Anxious",
+          "startPos": 18,
+          "endPos": 25
+        }
+      ]
+    },
+    {
+      "text": "really bummed out",
+      "intent": "Feeling",
+      "entities": [
+        {
+          "entity": "Depressed",
+          "startPos": 7,
+          "endPos": 16
+        }
+      ]
+    },
+    {
+      "text": "i've been feeling pretty blue",
+      "intent": "Feeling",
+      "entities": [
+        {
+          "entity": "Depressed",
+          "startPos": 25,
+          "endPos": 28
+        }
+      ]
+    },
+    {
+      "text": "nearly every single day",
+      "intent": "Days",
+      "entities": [
+        {
+          "entity": "NearlyEveryDay",
+          "startPos": 0,
+          "endPos": 18
+        }
+      ]
+    },
+    {
+      "text": "every one of them",
+      "intent": "Days",
+      "entities": [
+        {
+          "entity": "NearlyEveryDay",
+          "startPos": 0,
+          "endPos": 16
+        }
+      ]
+    },
+    {
+      "text": "every meal",
+      "intent": "Days",
+      "entities": [
+        {
+          "entity": "NearlyEveryDay",
+          "startPos": 0,
+          "endPos": 9
+        }
+      ]
+    },
+    {
+      "text": "this hasn't been a problem at all",
+      "intent": "Days",
+      "entities": [
+        {
+          "entity": "NotAtAll",
+          "startPos": 5,
+          "endPos": 32
+        }
+      ]
+    },
+    {
+      "text": "this hasn't been a problem for me at all",
+      "intent": "Days",
+      "entities": [
+        {
+          "entity": "NotAtAll",
+          "startPos": 5,
+          "endPos": 39
+        }
+      ]
+    },
+    {
+      "text": "unbelievably difficult",
+      "intent": "Difficulty",
+      "entities": [
+        {
+          "entity": "ExtremelyDifficult",
+          "startPos": 0,
+          "endPos": 21
+        }
+      ]
+    },
+    {
+      "text": "i feel very content",
+      "intent": "Feeling",
+      "entities": [
+        {
+          "entity": "Happy",
+          "startPos": 12,
+          "endPos": 18
+        }
+      ]
+    },
+    {
+      "text": "i'm in good cheer",
+      "intent": "Feeling",
+      "entities": [
+        {
+          "entity": "Happy",
+          "startPos": 7,
+          "endPos": 16
+        }
+      ]
+    },
+    {
+      "text": "i'm feeling very cheerful",
+      "intent": "Feeling",
+      "entities": [
+        {
+          "entity": "Happy",
+          "startPos": 17,
+          "endPos": 24
+        }
+      ]
+    },
+    {
+      "text": "i'm feeling pretty chirpy",
+      "intent": "Feeling",
+      "entities": [
+        {
+          "entity": "Happy",
+          "startPos": 19,
+          "endPos": 24
+        }
+      ]
+    },
+    {
+      "text": "i feel contented",
+      "intent": "Feeling",
+      "entities": [
+        {
+          "entity": "Happy",
+          "startPos": 7,
+          "endPos": 15
+        }
+      ]
+    },
+    {
+      "text": "chirpy",
+      "intent": "Feeling",
+      "entities": [
+        {
+          "entity": "Happy",
+          "startPos": 0,
+          "endPos": 5
+        }
+      ]
+    },
+    {
+      "text": "a bit down",
+      "intent": "Feeling",
+      "entities": [
+        {
+          "entity": "Depressed",
+          "startPos": 6,
+          "endPos": 9
+        }
+      ]
+    },
+    {
+      "text": "pretty down",
+      "intent": "Feeling",
+      "entities": [
+        {
+          "entity": "Depressed",
+          "startPos": 7,
+          "endPos": 10
+        }
+      ]
+    },
+    {
+      "text": "i'm been feeling down",
+      "intent": "Feeling",
+      "entities": [
+        {
+          "entity": "Depressed",
+          "startPos": 17,
+          "endPos": 20
+        }
+      ]
+    },
+    {
+      "text": "a week and a half",
+      "intent": "Days",
+      "entities": [
+        {
+          "entity": "NearlyEveryDay",
+          "startPos": 0,
+          "endPos": 16
+        }
+      ]
+    },
+    {
+      "text": "11 days",
+      "intent": "Days",
+      "entities": [
+        {
+          "entity": "MoreThanHalfTheDays",
+          "startPos": 0,
+          "endPos": 6
+        }
+      ]
+    },
+    {
+      "text": "13 days",
+      "intent": "Days",
+      "entities": [
+        {
+          "entity": "NearlyEveryDay",
+          "startPos": 0,
+          "endPos": 6
+        }
+      ]
+    },
+    {
+      "text": "less than half the days",
+      "intent": "Days",
+      "entities": [
+        {
+          "entity": "SeveralDays",
+          "startPos": 0,
+          "endPos": 22
+        }
+      ]
+    },
+    {
+      "text": "not feeling too great",
+      "intent": "Feeling",
+      "entities": []
+    },
+    {
+      "text": "pretty sad",
+      "intent": "Feeling",
+      "entities": [
+        {
+          "entity": "Depressed",
+          "startPos": 7,
+          "endPos": 9
+        }
+      ]
+    },
+    {
+      "text": "not too happy",
+      "intent": "Feeling",
+      "entities": []
+    },
+    {
+      "text": "the best i've ever felt",
+      "intent": "Feeling",
+      "entities": [
+        {
+          "entity": "Happy",
+          "startPos": 4,
+          "endPos": 22
+        }
+      ]
+    },
+    {
+      "text": "not too wonderful",
+      "intent": "Feeling",
+      "entities": []
+    }
+  ]
+}
