@@ -2,7 +2,7 @@
 
 .page-header{
 	border-bottom: 0px;
-	/*margin: 0px;*/
+	margin: 0px;
 }
 
 header{
@@ -14,6 +14,7 @@ header{
 
 h1{
 	font-weight: 400;
+	font-size: 30px;
 }
 
 header a, a:hover{
