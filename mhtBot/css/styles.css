@@ -1,5 +1,3 @@
-
-
 .page-header{
 	border-bottom: 0px;
 	margin: 0px;
@@ -17,24 +15,12 @@ h1{
 	font-size: 30px;
 }
 
-header a, a:hover{
+/*header a, a:hover{
 	text-decoration: none;
-	/*color: black;*/
 	background-color: #080808;
 	color: #9d9d9d;
-}
+}*/
 
 .nav-tabs{
 	border-top: 0px;
-}
-
-
-/*class="skype-button bubble*/
-
-.skype-button{
-	display: inline;
-	position: float; 
-	/*position: absolute;*/
-
-
 }
