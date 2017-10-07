@@ -34,18 +34,10 @@ server.listen(process.env.port || process.env.PORT || 3978, function() {
 });
 
 // Serve a static web page
-/*server.get(/.*//*, restify.serveStatic({
-	'directory': '.',
-	'default': 'index.html'
-}));*/
-
-
-// Serve a static web page
 server.get(/.*/, restify.serveStatic({
-	'directory': '__mhtBot',
-	'default': 'index.html'
+	'directory': '.',
+	'default': 'public/index.html'
 }));
-
 
 // ==============================//
 // Connect to Azure SQL database
