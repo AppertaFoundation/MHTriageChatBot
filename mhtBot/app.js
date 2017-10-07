@@ -41,7 +41,7 @@ server.listen(process.env.port || process.env.PORT || 3978, function() {
 
 
 // Serve a static web page
-server.get(/\/static\/?.*/, restify.serveStatic({
+server.get(/.*/, restify.serveStatic({
 	'directory': '__mhtBot',
 	'default': 'index.html'
 }));
