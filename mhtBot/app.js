@@ -34,11 +34,10 @@ server.listen(process.env.port || process.env.PORT || 3978, function() {
 });
 
 // Serve a static web page
-/*
-server.get(/.*//*, restify.serveStatic({
-	'directory': '.',
+server.get(/.*/, restify.serveStatic({
+	//'directory': '.',
 	'default': 'index.html'
-}));*/
+}));
 
 // ==============================//
 // Connect to Azure SQL database
