@@ -1,0 +1,24 @@
+header{
+	padding-top: 5px;
+	padding-bottom: 10px;
+	background-color: lightgray;
+	padding-left: 10px;
+
+}
+
+main{
+	margin: 10px;
+}
+
+h1{
+	font-size: 30px;
+}
+
+h2{
+	font-size: 20px;
+	padding-bottom: 12px;
+}
+
+.navbar{
+	margin-bottom: 0px;
+}
