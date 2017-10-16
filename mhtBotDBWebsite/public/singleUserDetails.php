@@ -46,7 +46,7 @@ if($questionnaireCompleted == true){
 ?>
 
 	<div class="table-responsive">
-	<table class="table" id="questionnaireTotals_<?php echo $username;?>">
+	<table class="table downloadTable" id="questionnaireTotals_<?php echo $username;?>">
 		<tr>
 			<th>ID</th>
 			<th>Questionnaire Type</th>
@@ -94,7 +94,7 @@ if($questionnaireIDs != null){
 ?>
 
 	<div class="table-responsive">
-	<table class="table" id="phq9History_<?php echo $username;?>">
+	<table class="table downloadTable" id="phq9History_<?php echo $username;?>">
 		<tr>
 			<th>Questionnaire ID</th>
 			<th>Question Text</th>
@@ -152,7 +152,7 @@ if($questionnaireIDs != null){
 ?>
 
 	<div class="table-responsive">
-	<table class="table" id="gad7History_<?php echo $username;?>">
+	<table class="table downloadTable" id="gad7History_<?php echo $username;?>">
 		<tr>
 			<th>Questionnaire ID</th>
 			<th>Question Text</th>
@@ -208,7 +208,7 @@ if($questionnaireIDs != null){
 ?>
 
 	<div class="table-responsive">
-	<table class="table" id="generalQsHistory_<?php echo $username;?>">
+	<table class="table downloadTable" id="generalQsHistory_<?php echo $username;?>">
 		<tr>
 			<th>Questionnaire ID</th>
 			<th>Question Text</th>

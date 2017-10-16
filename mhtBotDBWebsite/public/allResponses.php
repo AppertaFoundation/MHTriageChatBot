@@ -8,17 +8,19 @@ include '../includes/functions.php';
 <html lang="en">
 <head>
 	<?php include '../includes/bootstrapHead.php' ?>
-	<title>All Responses | MhtBot: Data</title>
+	<title>MhtBot: Data | All Responses</title>
 </head>
 
 <body>
 
 <?php include '../includes/nav.php'; ?>
 
+<header>
 <h1>All Responses</h1>
+</header>
 
-<div class="table-responsive downloadTable">
-<table class="table" id="allResponses_<?php echo $username;?>">
+<div class="table-responsive">
+<table class="table downloadTable" id="allResponses_<?php echo $username;?>">
 	<tr>
 		<th>Interaction ID</th>
 		<th>Question Number</th>
@@ -26,7 +28,9 @@ include '../includes/functions.php';
 		<th>User Response</th>
 	</tr>
 
+
 <?php
+
 	$tsql = "SELECT iq.InteractionID, iq.QuestionID, ur.UserResponse 
 				FROM UserResponses ur
 				JOIN InteractionQuestionIDs iq
@@ -44,7 +48,7 @@ include '../includes/functions.php';
 		$interactionID = $row['InteractionID'];
 		$questionID = $row['QuestionID'];
 		$question = getQuestionTextFromQuestionID($conn, $questionID);
-		$userResponse = $row['UserResponse'];
+		$userResponse = $row['UserResponse']; */
 ?>
 	<tr>
 		<td><?php echo $interactionID; ?></td>

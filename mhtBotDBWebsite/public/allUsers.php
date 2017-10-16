@@ -25,7 +25,7 @@ include '../includes/functions.php';
 <p>This is a list of all users on the system. More details about each individual user are accessible by clicking on their name.</p>
 
 <div class="btn-group">
-<?php  /*
+<?php 
 $userID = getAllUserIDs($conn);
 $username = null;
 foreach($userID as $userID){
@@ -37,7 +37,7 @@ foreach($userID as $userID){
 	<button class="btn-block" type="submit"><?php echo $username?></button>
 	</form>
 <?php
-} */
+} 
 ?>
 </div>
 
