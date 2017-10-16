@@ -18,7 +18,9 @@
 	}
 
 	header{
-		background-color: lightgray;
+		background-color: black;
+		color: lightgray;
+		/*background-color: lightgray;*/
 	}
 
 	h1{
@@ -29,9 +31,10 @@
 	h2{
 		font-size: 20px;
 		padding-bottom: 12px;
+		background-color: lightgray;
 	}
 
-	main{
+	section{
 		margin: 10px;
 	}
 </style>
@@ -50,6 +53,8 @@
 
 <h2>Web Chat</h2>
 
+<section>
+
 <div class="chatWindow">
 <iframe src='https://webchat.botframework.com/embed/MHTestBot?s=jDzUIBd3Vwo.cwA.gdo.VrE814IcCY-MfLwqWSmTZ8ehXBog6ScWWmgtLoOA_iI' height="400"></iframe>
 </div>
@@ -57,6 +62,7 @@
 
 <h2>Skype, Facebook Messenger, and/or SMS</h2>
 
+<section>
 <p>The MhtBot is also available via:</p>
 <ul>
 	<li>Skype (via the bubble on the bottom-right)</li>
@@ -66,9 +72,15 @@
 
 <p>Please note that MhtBot on Facebook Messenger is currently only available to designated testers.</p>
 
+</section>
+
 <h2>Data Collection</h2>
 
+<section>
+
 <p>The MhtBot stores user information. This data is available at the <a href="http://mhtbotdbaccess.azurewebsites.net/public/index.php">MhtBot: Data website</a>. Please note that this project is under development and all data collected is currently publically available - future development will restrict data to relevant healthcare providers and give user's access only to their own data.</p>
+
+</section>
 
 <span class="skype-button bubble " data-bot-id="dd66ed5f-8b15-42a4-a1ac-c96bbe03d82d"></span>
 <script src="https://swc.cdn.skype.com/sdk/v1/sdk.min.js"></script>
