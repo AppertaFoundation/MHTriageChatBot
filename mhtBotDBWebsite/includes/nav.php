@@ -1,5 +1,6 @@
 
 
+<link rel="stylesheet" href="../css/mystyles.css">
 
 <nav class="navbar navbar-inverse navbar-expand-md fixed-top">
 	<div class="container-fluid">
@@ -18,7 +19,7 @@
 
 		<div class="collapse navbar-collapse" id="siteNavBar">
 			<ul class="nav navbar-nav">
-				<li><a href="../public/index.php">Home</a><li>
+				<li><a href="../public/index.php">About</a><li>
 				<li><a href="../public/allUsers.php">All Users</a></li>
 				<li><a href="../public/highScoringUsers.php">High Scoring Users</a></li>
 				<li><a href="../public/harmRisk.php">Users at Risk of Harm</a></li>
