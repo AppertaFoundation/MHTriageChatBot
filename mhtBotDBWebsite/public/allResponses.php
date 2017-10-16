@@ -22,7 +22,6 @@ include '../includes/functions.php';
 <div class="table-responsive">
 <table class="table downloadTable" id="allResponses_<?php echo $username;?>">
 	<tr>
-		<th>Interaction ID</th>
 		<th>Question Number</th>
 		<th>Question Text</th>
 		<th>User Response</th>
@@ -51,7 +50,6 @@ include '../includes/functions.php';
 		$userResponse = $row['UserResponse']; 
 ?>
 	<tr>
-		<td><?php echo $interactionID; ?></td>
 		<td><?php echo $questionID; ?></td>
 		<td><?php echo $question; ?></td>
 		<td><?php echo $userResponse; ?></td>
