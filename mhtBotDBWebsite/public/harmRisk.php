@@ -23,6 +23,8 @@ include '../includes/functions.php';
 <main>
 
 <section>
+
+<h2>Method of Identification</h2>
 	<p>Users considered at risk of harm (suicide, self-harm) were identified as follows:</p>
 	<ul>
 	<li>Users who have answered at least 'More than half the days' to the PHQ-9 question 'How many days have you had thoughts that you would be better off dead or of hurting yourself in some way?'</li>
@@ -44,7 +46,7 @@ foreach($userIDs as $userID){
 
 	<form action = "singleUserDetails.php" method="post">
 	<input type="hidden" name="userID" value="<?php echo $userID;?>">
-	<button type="submit"><?php echo $username?></button>
+	<button class="btn-block" type="submit"><?php echo $username?></button>
 	</form>
 <?php
 }
@@ -62,14 +64,16 @@ foreach($userIDs as $userID){
 $suicideIdeationPhrases = array("want to commit suicide", "thinking about killing", "cutting", "suicide", "want to be dead", "wanting to die", "want to die", "wanted to die", "end it", "ending it all", "don't want to live", "can't cope anymore", "don't want to be alive", "can't take it anymore", "can't go on", "trigger warning", "eating disorder", "death", "selfharm", "self harm", "pain", "hate myself", "kill myself", "kill");
 
 for($i = 0; $i<count($suicideIdeationPhrases); $i++){
-?>
-<li><?php echo $suicideIdeationPhrases[$i]; ?></li>
-<?php
+	if($i == count($suicideIdeationPhrases) - 1){
+		echo $suicideIdeationPhrases[$i] . ".";
+	}else{
+		echo $suicideIdeationPhrases[$i] . ", ";
+	}
 }
 ?>
 </ul>
 
-<p>User's who gave responses containing one or more of the above words are as follows:</p>
+<p>Users who gave responses containing one or more of the above words are as follows:</p>
 
 <?php
 
@@ -95,7 +99,7 @@ while($row = sqlsrv_fetch_array($getResults, SQLSRV_FETCH_ASSOC)){
 
 	<form action = "singleUserDetails.php" method="post">
 	<input type="hidden" name="userID" value="<?php echo $userID;?>">
-	<button type="submit"><?php echo $username?></button>
+	<button class="btn-block" type="submit"><?php echo $username?></button>
 	</form>
 
 <?php

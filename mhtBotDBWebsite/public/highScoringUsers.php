@@ -24,64 +24,6 @@ include '../includes/functions.php';
 
 <section>
 
-<p>The severity of depression and anxiety corresponding to PHQ-9 and GAD-7 user scores is shown in the tables below.</p>
-
-<h2>Depression Severity Associated with PHQ-9 Scores</h2>
-<div class="table-responsive">
-<table class="table table-bordered" id="depressionSeverity">
-	<tr>
-		<th>Score Range</th>
-		<th>Depression Severity</th>
-	</tr>
-	<tr>
-		<td>0-5</td>
-		<td>Mild</td>
-	</tr>
-	<tr>
-		<td>6-10</td>
-		<td>Moderate</td>
-	</tr>
-	<tr>
-		<td>11-15</td>
-		<td>Moderately severe</td>
-	</tr>
-	<tr>
-		<td>16-20</td>
-		<td>Severe depression</td>
-	</tr>
-</table>
-</div>
-
-<h2>Anxiety Severity Associated with GAD-7 Scores</h2>
-<div class="table-responsive">
-<table class="table table-bordered" id="anxietySeverity">
-	<tr>
-		<th>Score Range</th>
-		<th>Anxiety Severity</th>
-	</tr>
-	<tr>
-		<td>0-5</td>
-		<td>Mild</td>
-	</tr>
-	<tr>
-		<td>6-10</td>
-		<td>Moderate</td>
-	</tr>
-	<tr>
-		<td>11-15</td>
-		<td>Moderately severe</td>
-	</tr>
-	<tr>
-		<td>15-21</td>
-		<td>Severe anxiety</td>
-	</tr>
-</table>
-</div>
-
-</section>
-
-<section>
-
 <h2>List of High Scoring Users</h2>
 
 <?php
@@ -132,7 +74,7 @@ foreach($userIDs as $userID){
 	?>
 		<form action = "singleUserDetails.php" method="post">
 		<input type="hidden" name="userID" value="<?php echo $userID;?>">
-		<button type="submit"><?php echo $username?></button>
+		<button class="btn-block" type="submit"><?php echo $username?></button>
 		</form>
 	<?php
 	}
@@ -140,6 +82,70 @@ foreach($userIDs as $userID){
 ?>
 
 </section>
+
+<section>
+
+<h2>Scoring System</h2>
+
+<div class="container">
+<div class="row">
+
+<div class="col-md-6">
+<table class="table-bordered table-condensed" id="depressionSeverity">
+	<caption>Depression Severity Associated with PHQ-9 Scores</caption>
+	<tr>
+		<th>Score Range</th>
+		<th>Depression Severity</th>
+	</tr>
+	<tr>
+		<td>0-5</td>
+		<td>Mild</td>
+	</tr>
+	<tr>
+		<td>6-10</td>
+		<td>Moderate</td>
+	</tr>
+	<tr>
+		<td>11-15</td>
+		<td>Moderately severe</td>
+	</tr>
+	<tr>
+		<td>16-20</td>
+		<td>Severe depression</td>
+	</tr>
+</table>
+</div>
+
+<div class="col-md-6">
+<table class="table-bordered table-condensed" id="anxietySeverity">
+	<caption>Anxiety Severity Associated with GAD-7 Scores</caption>
+	<tr>
+		<th>Score Range</th>
+		<th>Anxiety Severity</th>
+	</tr>
+	<tr>
+		<td>0-5</td>
+		<td>Mild</td>
+	</tr>
+	<tr>
+		<td>6-10</td>
+		<td>Moderate</td>
+	</tr>
+	<tr>
+		<td>11-15</td>
+		<td>Moderately severe</td>
+	</tr>
+	<tr>
+		<td>15-21</td>
+		<td>Severe anxiety</td>
+	</tr>
+</table>
+</div>
+</div>
+</div>
+
+</section>
+
 
 </main>
 </body>

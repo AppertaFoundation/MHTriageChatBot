@@ -33,11 +33,12 @@ foreach($userID as $userID){
 
 	<form action = "singleUserDetails.php" method="post">
 	<input type="hidden" name="userID" value="<?php echo $userID;?>">
-	<button type="submit"><?php echo $username?></button>
+	<button class="btn-block" type="submit"><?php echo $username?></button>
 	</form>
 <?php
 }
 ?>
+
 
 </main>
 </body>
@@ -45,4 +46,5 @@ foreach($userID as $userID){
 <?php include '../includes/scripts.php'; ?>
 
 </html>
+
 

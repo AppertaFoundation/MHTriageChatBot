@@ -20,7 +20,6 @@ $username = getUsernameFromID($conn, $userID);
 	<?php include '../includes/bootstrapHead.php' ?>
 	<title><?php echo $username;?> Details | MhtBot: Data</title>
 
-
 </head>
 <body>
 
