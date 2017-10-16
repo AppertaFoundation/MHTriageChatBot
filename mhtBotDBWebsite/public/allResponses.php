@@ -8,7 +8,7 @@ include '../includes/functions.php';
 <html lang="en">
 <head>
 	<?php include '../includes/bootstrapHead.php' ?>
-	<title>MhtBot: Data | All Responses</title>
+	<title>All Responses | MhtBot: Data</title>
 </head>
 
 <body>
@@ -20,7 +20,7 @@ include '../includes/functions.php';
 </header>
 
 <div class="table-responsive">
-<table class="table downloadTable" id="allResponses_<?php echo $username;?>">
+<table class="table downloadTable table-bordered" id="allResponses_<?php echo $username;?>">
 	<tr>
 		<th>Interaction ID</th>
 		<th>Question Number</th>
@@ -48,7 +48,7 @@ include '../includes/functions.php';
 		$interactionID = $row['InteractionID'];
 		$questionID = $row['QuestionID'];
 		$question = getQuestionTextFromQuestionID($conn, $questionID);
-		$userResponse = $row['UserResponse']; */
+		$userResponse = $row['UserResponse']; 
 ?>
 	<tr>
 		<td><?php echo $interactionID; ?></td>
