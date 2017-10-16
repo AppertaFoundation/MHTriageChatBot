@@ -25,7 +25,7 @@ $username = getUsernameFromID($conn, $userID);
 <?php include '../includes/nav.php'; ?>
 
 <header>
-<h1>Details for User <?php echo $username?></h1>
+<h1>Details for User: <?php echo $username?></h1>
 </header>
 
 <main>
@@ -48,7 +48,7 @@ if($questionnaireCompleted == true){
 	<div class="table-responsive">
 	<table class="table downloadTable" id="questionnaireTotals_<?php echo $username;?>">
 		<tr>
-			<th>ID</th>
+			<th>Questionnaire ID</th>
 			<th>Questionnaire Type</th>
 			<th>Total Score</th>
 			<th>Date Completed</th>

@@ -20,7 +20,7 @@ include '../includes/functions.php';
 </header>
 
 <div class="table-responsive">
-<table class="table downloadTable table-bordered" id="allResponses_<?php echo $username;?>">
+<table class="table downloadTable" id="allResponses_<?php echo $username;?>">
 	<tr>
 		<th>Interaction ID</th>
 		<th>Question Number</th>
