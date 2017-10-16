@@ -49,6 +49,7 @@ $threshold = 1;
 <p>Users who have score that is in the PHQ-9/GAD-7 severe range <?php echo $threshold; ?> or more times over a period of two weeks from today (<?php echo $dateTo; ?>) are listed below:</p>
 
 
+<div class="btn-group">
 <?php
 $userIDs = getAllUserIDs($conn);
 foreach($userIDs as $userID){
@@ -80,6 +81,7 @@ foreach($userIDs as $userID){
 	}
 }
 ?>
+</div>
 
 </section>
 

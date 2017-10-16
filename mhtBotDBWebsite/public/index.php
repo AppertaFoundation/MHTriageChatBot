@@ -11,7 +11,7 @@ include '../includes/functions.php';
 	<?php include '../includes/bootstrapHead.php' ?>
 	<meta name="description" content="Database supporting the mental health triage chatbot.">
 	
-	<title>Mental Health Triage Chatbot: Data</title>
+	<title>Mental Health Triage Chatbot: Data | About</title>
 
 </head>
 

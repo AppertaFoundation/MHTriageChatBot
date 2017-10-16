@@ -1,2 +1,2 @@
 
-$(".table-responsive").tableExport();
+$(".downloadTable").tableExport();

@@ -22,20 +22,36 @@ include '../includes/functions.php';
 
 <main>
 
-<section>
-
 <h2>Method of Identification</h2>
-	<p>Users considered at risk of harm (suicide, self-harm) were identified as follows:</p>
+
+<p>Users considered at risk of harm (suicide, self-harm) were identified as follows:</p>
 	<ul>
-	<li>Users who have answered at least 'More than half the days' to the PHQ-9 question 'How many days have you had thoughts that you would be better off dead or of hurting yourself in some way?'</li>
-	<li>User responses that contain suicide/self harm ideation words in the text</li>
+	<li>Users who have answered at least 'More than half the days' to the PHQ-9 question "How many days have you had thoughts that you would be better off dead or of hurting yourself in some way?"</li>
+	<li>User responses that contain suicide/self harm ideation words in the text.</li>
 	</ul>
-</section>
+
+<p>The keywords and phrases used to identify users at risk of suicide/self-harm are as follows:
+
+<?php 
+$suicideIdeationPhrases = array("want to commit suicide", "thinking about killing", "cutting", "suicide", "want to be dead", "wanting to die", "want to die", "wanted to die", "end it", "ending it all", "don't want to live", "can't cope anymore", "don't want to be alive", "can't take it anymore", "can't go on", "trigger warning", "eating disorder", "death", "selfharm", "self harm", "pain", "hate myself", "kill myself", "kill");
+
+for($i = 0; $i<count($suicideIdeationPhrases); $i++){
+	if($i == count($suicideIdeationPhrases) - 1){
+		echo $suicideIdeationPhrases[$i] . ".";
+	}else{
+		echo $suicideIdeationPhrases[$i] . ", ";
+	}
+}
+?>
+</p>
+
+<p>The keywords and phrases searched for within user responses is based on <a href="http://dl.acm.org/citation.cfm?id=2791023">this</a> paper.
 
 <h2>Identified from PHQ9</h2>
 
-<p>List of users who have answered at least 'More than half the days' to the PHQ-9 question 'How many days have you had thoughts that you would be better off dead or of hurting yourself in some way?'</p>
+<p>List of users who have answered at least 'More than half the days' to the PHQ-9 question "How many days have you had thoughts that you would be better off dead or of hurting yourself in some way?"</p>
 
+<div class="btn-group">
 <?php
 //Note: this is the question ID of this question as stored in the database
 $questionID = 16;
@@ -51,30 +67,13 @@ foreach($userIDs as $userID){
 <?php
 }
 ?>
+</div>
 
 <h2>Identified by Keyword/Key Phrase Analysis</h2>
 
-<p>The keywords and phrases searched for within user responses is based on <a href="http://dl.acm.org/citation.cfm?id=2791023">this</a> paper.
+<p>Users identified to be at risk of harm by keyword/key phrase analysis are as follows:</p>
 
-<p>The keywords and phrases used to identify users at risk of suicide/self-harm are as follows:</p>
-
-<ul>
-<?php 
-
-$suicideIdeationPhrases = array("want to commit suicide", "thinking about killing", "cutting", "suicide", "want to be dead", "wanting to die", "want to die", "wanted to die", "end it", "ending it all", "don't want to live", "can't cope anymore", "don't want to be alive", "can't take it anymore", "can't go on", "trigger warning", "eating disorder", "death", "selfharm", "self harm", "pain", "hate myself", "kill myself", "kill");
-
-for($i = 0; $i<count($suicideIdeationPhrases); $i++){
-	if($i == count($suicideIdeationPhrases) - 1){
-		echo $suicideIdeationPhrases[$i] . ".";
-	}else{
-		echo $suicideIdeationPhrases[$i] . ", ";
-	}
-}
-?>
-</ul>
-
-<p>Users who gave responses containing one or more of the above words are as follows:</p>
-
+<div class="btn-group">
 <?php
 
 $tsql = "SELECT UserResponse, InteractionID
@@ -106,6 +105,7 @@ while($row = sqlsrv_fetch_array($getResults, SQLSRV_FETCH_ASSOC)){
 	}
 }
 ?>
+</div>
 
 </main>
 </body>

@@ -17,7 +17,7 @@ include '../includes/functions.php';
 
 <h1>All Responses</h1>
 
-<div class="table-responsive">
+<div class="table-responsive" class="downloadTable">
 <table class="table" id="allResponses_<?php echo $username;?>">
 	<tr>
 		<th>Interaction ID</th>
