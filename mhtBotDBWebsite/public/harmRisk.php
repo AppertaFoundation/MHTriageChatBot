@@ -33,7 +33,7 @@ include '../includes/functions.php';
 <p>The keywords and phrases used to identify users at risk of suicide/self-harm are as follows:
 
 <?php 
-$suicideIdeationPhrases = array("want to commit suicide", "thinking about killing", "cutting", "suicide", "want to be dead", "wanting to die", "want to die", "wanted to die", "end it", "ending it all", "don't want to live", "can't cope anymore", "don't want to be alive", "can't take it anymore", "can't go on", "trigger warning", "eating disorder", "death", "selfharm", "self harm", "pain", "hate myself", "kill myself", "kill");
+$suicideIdeationPhrases = array("want to commit suicide", "thinking about killing", "cutting", "suicide", "want to be dead", "wanting to die", "want to die", "wanted to die", "end it", "ending it all", "don't want to live", "can't cope anymore", "don't want to be alive", "can't take it anymore", "can't go on", "trigger warning", "eating disorder", "death", "selfharm", "self harm", "pain", "hate myself", "kill myself", "kill", "suicidal");
 
 for($i = 0; $i<count($suicideIdeationPhrases); $i++){
 	if($i == count($suicideIdeationPhrases) - 1){
